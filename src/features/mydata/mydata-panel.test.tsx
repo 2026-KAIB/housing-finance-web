@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
 import { loadMydata } from "@/lib/fixtures/loader";
+import { formatWon } from "@/lib/format/money";
 
 import { MydataPanel } from "./mydata-panel";
 
@@ -41,6 +42,7 @@ describe("MydataPanel", () => {
     expect(screen.getByText(account.account_num_masked)).toBeInTheDocument();
     expect(screen.getByText(account.prod_name)).toBeInTheDocument();
     expect(screen.getByText("연 0.1%")).toBeInTheDocument();
+    expect(screen.getByText(formatWon(account.balance_amt))).toBeInTheDocument();
   });
 
   it("대출이 없으면 빈 상태를 안내한다", async () => {
@@ -55,15 +57,17 @@ describe("MydataPanel", () => {
 
   it("대출이 있으면 상환방식 라벨을 보여준다", async () => {
     const user = userEvent.setup();
-    render(
-      <MydataPanel personaId={WITH_LOAN} mydata={await loadMydata(WITH_LOAN)} />,
-    );
+    const mydata = await loadMydata(WITH_LOAN);
+    render(<MydataPanel personaId={WITH_LOAN} mydata={mydata} />);
 
     await user.click(screen.getByRole("button", { name: "마이데이터 불러오기" }));
     await user.click(screen.getByRole("tab", { name: /대출/ }));
 
     expect(screen.getByText("원리금균등분할상환")).toBeInTheDocument();
     expect(screen.getByText("한국장학재단 일반상환 학자금대출")).toBeInTheDocument();
+
+    const loan = mydata.loans[0];
+    expect(screen.getByText(formatWon(loan.balance_amt))).toBeInTheDocument();
   });
 
   it("기준일 배지를 보여준다", async () => {
