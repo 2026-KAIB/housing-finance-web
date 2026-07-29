@@ -20,7 +20,7 @@
 - 상품별 점수표·탈락사유 컴포넌트는 만들지 않는다. 엔진 출력에 데이터가 없다. (스펙 D7)
 - 엔진 결과 금액·점수는 **소수 문자열**(`"2774194.2000000"`, `"85.54063388867203018409788706"`)이다. 반드시 포맷터를 거쳐 표시한다.
 - 계좌번호는 화면·픽스처 어디에도 원본을 남기지 않는다. 마스킹된 값만 저장한다. (스펙 2.3)
-- 모든 커밋 전에 `npm run typecheck && npm run test && npm run build`가 통과해야 한다.
+- 커밋 전에 `npm run typecheck && npm run test`가 반드시 통과해야 한다. 앱 코드·설정·의존성이 바뀐 태스크는 `npm run build`까지 통과해야 한다 (각 태스크의 검증 단계가 어느 쪽인지 명시한다).
 - 브랜치는 `feature/frontend-prototype`. 커밋 메시지 마지막 줄은 `Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>`.
 
 ## File Structure
@@ -316,8 +316,8 @@ export function formatYmd(ymd: string): string {
 
 - [ ] **Step 11: 전체 테스트와 타입체크 통과 확인**
 
-Run: `npm run test && npm run typecheck`
-Expected: 두 명령 모두 PASS. 테스트 파일 2개, 실패 0.
+Run: `npm run typecheck && npm run test && npm run build`
+Expected: 세 명령 모두 PASS. 테스트 파일 2개, 실패 0.
 
 - [ ] **Step 12: 커밋**
 
@@ -1283,10 +1283,10 @@ export type PortfolioResult = z.infer<typeof portfolioResultSchema>;
 - [ ] **Step 8: 전체 검증**
 
 ```bash
-npm run test && npm run typecheck
+npm run typecheck && npm run test
 ```
 
-Expected: 모두 PASS. `simulation.ts`는 변경되지 않았다 — `git diff --name-only`에 나타나면 안 된다.
+Expected: 모두 PASS. 이 태스크는 앱 코드를 건드리지 않으므로 `build`는 필요 없다. `simulation.ts`는 변경되지 않았다 — `git diff --name-only`에 나타나면 안 된다.
 
 - [ ] **Step 9: 커밋**
 
@@ -1606,7 +1606,15 @@ export function categoryOf(personaId) {
 Run: `npx vitest run scripts/lib/transform.test.mjs`
 Expected: PASS (17 tests)
 
-- [ ] **Step 5: 커밋**
+- [ ] **Step 5: 전체 검증**
+
+```bash
+npm run typecheck && npm run test
+```
+
+Expected: 두 명령 모두 PASS. 이 태스크는 앱 코드를 건드리지 않으므로 `build`는 필요 없다.
+
+- [ ] **Step 6: 커밋**
 
 ```bash
 git add scripts/lib/transform.mjs scripts/lib/transform.test.mjs
