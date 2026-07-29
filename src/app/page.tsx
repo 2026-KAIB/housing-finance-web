@@ -28,7 +28,7 @@ export default function HomePage() {
         <h1 className="m-0 max-w-[760px] text-[clamp(40px,7vw,72px)] font-bold leading-[1.05] tracking-[-0.06em]">
           내 금융 흐름으로 계산하는 보증금 마련 로드맵
         </h1>
-        <p className="m-0 max-w-[680px] text-lg leading-[1.7] text-muted">
+        <p className="m-0 max-w-[680px] text-lg leading-[1.7] text-brand-muted">
           단순한 금리 비교가 아니라 비상자금, 저축여력, 목표 시점을 함께
           계산합니다.
         </p>
@@ -57,7 +57,7 @@ export default function HomePage() {
             <h2 className="mt-9 mb-2.5 text-[22px] font-bold tracking-[-0.03em]">
               {service.title}
             </h2>
-            <p className="m-0 leading-relaxed text-muted">
+            <p className="m-0 leading-relaxed text-brand-muted">
               {service.description}
             </p>
           </article>

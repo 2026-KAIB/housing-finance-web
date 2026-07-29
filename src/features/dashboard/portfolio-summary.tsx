@@ -1,13 +1,14 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { PortfolioResult } from "@/lib/contracts/result";
+import { formatIsoDate } from "@/lib/format/date";
 import { formatKoreanUnit, toNumber } from "@/lib/format/money";
 
 function Metric({ label, value }: { label: string; value: string }) {
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-semibold text-muted">
+        <CardTitle className="text-sm font-semibold text-brand-muted">
           {label}
         </CardTitle>
       </CardHeader>
@@ -25,7 +26,9 @@ export function PortfolioSummary({ result }: { result: PortfolioResult }) {
         {result.final_policy_status === "PASS" && (
           <Badge variant="outline">정책 통과</Badge>
         )}
-        <Badge variant="outline">기준일 {result.source.as_of}</Badge>
+        <Badge variant="outline">
+          기준일 {formatIsoDate(result.source.as_of)}
+        </Badge>
         <Badge variant="outline">
           목표 달성률 {Math.round(toNumber(result.coverage_ratio) * 100)}%
         </Badge>

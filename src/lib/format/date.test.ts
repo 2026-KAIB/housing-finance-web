@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { formatYm, formatYmShort, formatYmd } from "./date";
+import { formatIsoDate, formatYm, formatYmShort, formatYmd } from "./date";
 
 describe("formatYm", () => {
   it("YYYYMM을 한글로 바꾼다", () => {
@@ -27,6 +27,18 @@ describe("formatYmd", () => {
   it("8자리가 아니면 던진다", () => {
     expect(() => formatYmd("202608")).toThrow(
       "YYYYMMDD 형식이 아닙니다: 202608",
+    );
+  });
+});
+
+describe("formatIsoDate", () => {
+  it("YYYY-MM-DD를 점 구분으로 바꾼다", () => {
+    expect(formatIsoDate("2026-08-20")).toBe("2026.08.20");
+  });
+
+  it("YYYY-MM-DD 형식이 아니면 던진다", () => {
+    expect(() => formatIsoDate("20260820")).toThrow(
+      "YYYY-MM-DD 형식이 아닙니다: 20260820",
     );
   });
 });

@@ -15,7 +15,7 @@ export function PlaceholderPage({
       <h1 className="mb-4 text-[clamp(36px,6vw,64px)] font-bold tracking-[-0.05em]">
         {title}
       </h1>
-      <p className="max-w-[680px] leading-relaxed text-muted">{description}</p>
+      <p className="max-w-[680px] leading-relaxed text-brand-muted">{description}</p>
     </main>
   );
 }

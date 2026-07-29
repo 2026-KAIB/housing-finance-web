@@ -34,7 +34,7 @@ export function MydataPanel({
     return (
       <div className="grid gap-3 rounded-xl border border-line bg-surface p-8">
         <h2 className="text-xl font-bold">마이데이터 불러오기</h2>
-        <p className="text-muted">
+        <p className="text-brand-muted">
           동의한 금융기관의 계좌·예적금·대출·거래내역을 조회합니다.
         </p>
         <div>

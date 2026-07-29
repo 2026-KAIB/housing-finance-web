@@ -55,7 +55,3 @@ export async function loadResult(personaId: string): Promise<PortfolioResult> {
   const mod = await import(`../../mocks/fixtures/${personaId}/result.json`);
   return portfolioResultSchema.parse(mod.default);
 }
-
-export function transactionsUrl(personaId: string): string {
-  return `/fixtures/${personaId}/transactions.json`;
-}

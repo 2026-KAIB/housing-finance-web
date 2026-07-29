@@ -41,7 +41,7 @@ export function toChartRows(rows: MonthlySummary[]): ChartRow[] {
 
 export function MonthlyFlowChart({ rows }: { rows: MonthlySummary[] }) {
   if (rows.length === 0) {
-    return <p className="py-6 text-muted">집계할 거래내역이 없습니다.</p>;
+    return <p className="py-6 text-brand-muted">집계할 거래내역이 없습니다.</p>;
   }
 
   return (
@@ -69,7 +69,7 @@ export function MonthlyFlowChart({ rows }: { rows: MonthlySummary[] }) {
         </ResponsiveContainer>
       </div>
 
-      <p className="text-xs text-muted">
+      <p className="text-xs text-brand-muted">
         거래내역 단순 합계입니다. 안전소득·안전지출과는 다른 값이며 백엔드
         현금흐름 엔진이 계산합니다.
       </p>

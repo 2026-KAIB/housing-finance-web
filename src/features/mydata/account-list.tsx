@@ -12,7 +12,7 @@ import { formatRate, formatWon } from "@/lib/format/money";
 
 export function AccountList({ accounts }: { accounts: MydataAccount[] }) {
   if (accounts.length === 0) {
-    return <p className="py-6 text-muted">해당하는 계좌가 없습니다.</p>;
+    return <p className="py-6 text-brand-muted">해당하는 계좌가 없습니다.</p>;
   }
 
   return (

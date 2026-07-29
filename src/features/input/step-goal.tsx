@@ -8,6 +8,7 @@ import {
   liquidityPreferenceLabel,
   riskPreferenceLabel,
 } from "@/lib/format/codes";
+import { formatYmd } from "@/lib/format/date";
 import { formatKoreanUnit } from "@/lib/format/money";
 
 import { FieldRow, ReadonlyRow } from "./field-row";
@@ -28,7 +29,7 @@ export function StepGoal({ profile }: { profile: PersonaProfile }) {
   return (
     <div className="grid gap-6 md:grid-cols-2">
       <div className="grid gap-4">
-        <h3 className="text-sm font-bold text-muted">목표</h3>
+        <h3 className="text-sm font-bold text-brand-muted">목표</h3>
 
         <FieldRow
           label="목표 보증금 (원)"
@@ -95,7 +96,7 @@ export function StepGoal({ profile }: { profile: PersonaProfile }) {
       </div>
 
       <div className="grid gap-4">
-        <h3 className="text-sm font-bold text-muted">저축 계획</h3>
+        <h3 className="text-sm font-bold text-brand-muted">저축 계획</h3>
 
         <FieldRow
           label="월 저축 예산 (원)"
@@ -147,7 +148,7 @@ export function StepGoal({ profile }: { profile: PersonaProfile }) {
           />
           <ReadonlyRow
             label="자금 필요 시점"
-            value={profile.savings.fund_needed_date}
+            value={formatYmd(profile.savings.fund_needed_date)}
           />
         </div>
       </div>

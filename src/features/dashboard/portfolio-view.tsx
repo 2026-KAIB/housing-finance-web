@@ -2,6 +2,7 @@ import type { PortfolioResult } from "@/lib/contracts/result";
 import { categoryLabel } from "@/lib/format/codes";
 
 import { AllocationTable } from "./allocation-table";
+import { PortfolioCaveats } from "./portfolio-caveats";
 import { PortfolioStatusNotice } from "./portfolio-status-notice";
 import { PortfolioSummary } from "./portfolio-summary";
 
@@ -34,6 +35,7 @@ export function PortfolioView({
         <>
           <PortfolioSummary result={result} />
           <AllocationTable allocations={result.allocations} />
+          <PortfolioCaveats result={result} />
         </>
       ) : (
         <PortfolioStatusNotice result={result} />

@@ -7,7 +7,6 @@ import {
   loadProfile,
   loadResult,
   normalizePersonaParam,
-  transactionsUrl,
 } from "./loader";
 
 const SAMPLE = "persona_e_college_student_basic";
@@ -49,12 +48,6 @@ describe("페르소나별 로더", () => {
     await expect(loadProfile("persona_zz_nobody")).rejects.toThrow(
       "알 수 없는 페르소나: persona_zz_nobody",
     );
-  });
-});
-
-describe("transactionsUrl", () => {
-  it("public 정적 경로를 돌려준다", () => {
-    expect(transactionsUrl(SAMPLE)).toBe(`/fixtures/${SAMPLE}/transactions.json`);
   });
 });
 

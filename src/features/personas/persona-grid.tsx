@@ -33,7 +33,7 @@ export function PersonaGrid({ personas }: { personas: PersonaIndexEntry[] }) {
       <h1 className="mb-2 text-3xl font-bold tracking-[-0.04em]">
         페르소나 선택
       </h1>
-      <p className="mb-6 text-muted">
+      <p className="mb-6 text-brand-muted">
         대학생 20명의 합성 마이데이터입니다. 한 명을 고르면 입력폼이 자동으로
         채워집니다.
       </p>
@@ -94,7 +94,7 @@ export function PersonaGrid({ personas }: { personas: PersonaIndexEntry[] }) {
                     value={formatYm(persona.headline.target_move_in_ym)}
                   />
                   {persona.portfolio_status !== "COMPLETE" && (
-                    <p className="mt-1 text-xs font-semibold text-muted">
+                    <p className="mt-1 text-xs font-semibold text-brand-muted">
                       {portfolioStatusLabel(persona.portfolio_status)}
                     </p>
                   )}
@@ -111,7 +111,7 @@ export function PersonaGrid({ personas }: { personas: PersonaIndexEntry[] }) {
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <span className="flex items-baseline justify-between gap-4">
-      <span className="text-muted">{label}</span>
+      <span className="text-brand-muted">{label}</span>
       <span className="font-semibold tabular-nums">{value}</span>
     </span>
   );

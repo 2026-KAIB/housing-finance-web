@@ -8,7 +8,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           HOME PLAN
         </Link>
         <nav
-          className="flex gap-5 pb-4 text-sm text-muted md:pb-0"
+          className="flex gap-5 pb-4 text-sm text-brand-muted md:pb-0"
           aria-label="주요 메뉴"
         >
           <Link href="/personas">페르소나 선택</Link>

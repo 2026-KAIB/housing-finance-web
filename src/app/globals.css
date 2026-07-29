@@ -149,12 +149,16 @@ a {
 
 /* Task 2 project theme tokens. Declared after shadcn's generated blocks
    above so these values win where keys overlap (--color-background,
-   --color-muted, --color-accent). */
+   --color-accent). --color-muted is intentionally NOT declared here: it
+   collides with shadcn's surface token (bg-muted, used by TabsList,
+   Button's outline/ghost hover, Badge, Card footer, Table). The project's
+   text color lives under --color-brand-muted instead, used via
+   text-brand-muted. See globals.test.ts for the regression test. */
 @theme {
   --color-background: #f5f7f3;
   --color-surface: #ffffff;
   --color-text: #17211b;
-  --color-muted: #617068;
+  --color-brand-muted: #617068;
   --color-line: #dce4de;
   --color-accent: #256b46;
   --color-accent-soft: #e1f2e8;

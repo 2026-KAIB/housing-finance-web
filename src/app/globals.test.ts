@@ -8,13 +8,24 @@ import { describe, expect, it } from "vitest";
 
 // Task 2's seven brand tokens live in an `@theme` block in globals.css.
 // shadcn's `init`/`add` commands write their own `@theme inline` block into
-// the same file, which redeclares three of the same keys
-// (--color-background, --color-muted, --color-accent). Tailwind v4 merges
-// duplicate @theme keys with last-declaration-wins, so whichever block is
-// textually LAST in the file wins for those three keys. Task 2's block is
-// currently kept last specifically to win that merge — nothing else
-// enforces it. If a future `shadcn add` (or any edit) reintroduces a
-// shadcn block below it, this test must fail.
+// the same file, which redeclares two of the same keys
+// (--color-background, --color-accent). Tailwind v4 merges duplicate
+// @theme keys with last-declaration-wins, so whichever block is textually
+// LAST in the file wins for those two keys. Task 2's block is currently
+// kept last specifically to win that merge — nothing else enforces it. If
+// a future `shadcn add` (or any edit) reintroduces a shadcn block below
+// it, this test must fail.
+//
+// --color-muted is deliberately NOT one of Task 2's keys: it used to be
+// (as a brand *text* color, #617068), but shadcn also owns --color-muted
+// as a light *surface* token (bg-muted, used by TabsList, Button's
+// outline/ghost hover, Badge, Card footer, Table). With Task 2's value
+// textually last, it was winning the merge and painting shadcn's surfaces
+// dark slate-green — e.g. the step 2 tab strip rendered at ~1.9:1 label
+// contrast. The brand text color now lives under --color-brand-muted
+// (text-brand-muted) instead, so --color-muted is free to resolve to
+// shadcn's own near-white surface value. The second `it` below guards
+// specifically against that collision coming back.
 //
 // This compiles the real globals.css through the real Tailwind v4 PostCSS
 // pipeline (the same plugin next.config/postcss.config uses) and asserts
@@ -26,7 +37,7 @@ const EXPECTED_TOKENS: Record<string, string> = {
   "--color-background": "#f5f7f3",
   "--color-surface": "#ffffff",
   "--color-text": "#17211b",
-  "--color-muted": "#617068",
+  "--color-brand-muted": "#617068",
   "--color-line": "#dce4de",
   "--color-accent": "#256b46",
   "--color-accent-soft": "#e1f2e8",
@@ -61,4 +72,16 @@ describe("globals.css 브랜드 토큰이 shadcn 블록에 가려지지 않는�
       expect(values).toEqual([expected]);
     },
   );
+
+  it("--color-muted은 shadcn의 표면 토큰이며 브랜드 텍스트색(#617068)으로 덮이지 않는다", async () => {
+    const compiled = await compileGlobalsCss();
+    const values = resolvedValuesFor(compiled, "--color-muted");
+
+    // Regression guard for the collision itself: --color-muted must not
+    // resolve to Task 2's old brand text value. If it does, some future
+    // edit reintroduced a project-level --color-muted declaration and
+    // shadcn surfaces (TabsList, Button hover, Badge, Card footer, Table)
+    // would go dark slate-green again.
+    expect(values).not.toEqual(["#617068"]);
+  });
 });

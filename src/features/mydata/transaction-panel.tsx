@@ -16,7 +16,7 @@ import {
   type Transactions,
   transactionsSchema,
 } from "@/lib/contracts/persona";
-import { transactionsUrl } from "@/lib/fixtures/loader";
+import { transactionsUrl } from "@/lib/fixtures/paths";
 import { formatWon } from "@/lib/format/money";
 
 const PAGE_SIZE = 50;
@@ -63,7 +63,7 @@ export function TransactionPanel({
   }, [personaId, withTransactions.length]);
 
   if (withTransactions.length === 0) {
-    return <p className="py-6 text-muted">거래내역이 있는 계좌가 없습니다.</p>;
+    return <p className="py-6 text-brand-muted">거래내역이 있는 계좌가 없습니다.</p>;
   }
 
   if (error) {
@@ -75,7 +75,7 @@ export function TransactionPanel({
   }
 
   if (!data) {
-    return <p className="py-6 text-muted">거래내역을 불러오는 중입니다…</p>;
+    return <p className="py-6 text-brand-muted">거래내역을 불러오는 중입니다…</p>;
   }
 
   const rows = withTransactions.flatMap(
@@ -84,7 +84,7 @@ export function TransactionPanel({
 
   return (
     <div className="grid gap-3">
-      <p className="text-sm text-muted">
+      <p className="text-sm text-brand-muted">
         전체 {rows.length.toLocaleString("ko-KR")}건 중 {Math.min(visible, rows.length)}건
       </p>
 

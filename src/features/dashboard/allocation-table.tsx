@@ -11,6 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import type { Allocation } from "@/lib/contracts/result";
+import { formatIsoDate } from "@/lib/format/date";
 import { formatKoreanUnit, formatScore, toNumber } from "@/lib/format/money";
 
 const COLORS = ["#256b46", "#7aa88f", "#b45309", "#617068"];
@@ -72,7 +73,7 @@ export function AllocationTable({
                   {allocation.term_months}개월
                 </TableCell>
                 <TableCell className="tabular-nums">
-                  {allocation.maturity_date}
+                  {formatIsoDate(allocation.maturity_date)}
                 </TableCell>
                 <TableCell className="text-right tabular-nums">
                   {formatKoreanUnit(allocation.expected_maturity_amount)}

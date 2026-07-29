@@ -12,7 +12,7 @@ import { formatRate, formatWon } from "@/lib/format/money";
 
 export function LoanList({ loans }: { loans: MydataLoan[] }) {
   if (loans.length === 0) {
-    return <p className="py-6 text-muted">보유한 대출이 없습니다.</p>;
+    return <p className="py-6 text-brand-muted">보유한 대출이 없습니다.</p>;
   }
 
   return (

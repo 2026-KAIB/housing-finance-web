@@ -17,8 +17,6 @@ export const portfolioStatusSchema = z.enum([
   "NO_ALLOCATION_REQUIRED",
 ]);
 
-export const accountKindSchema = z.enum(["demand", "savings", "loan"]);
-
 export const personaIndexEntrySchema = z.object({
   persona_id: z.string().min(1),
   display_name: z.string().min(1),

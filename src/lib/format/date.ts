@@ -21,3 +21,11 @@ export function formatYmd(ymd: string): string {
 
   return `${ymd.slice(0, 4)}.${ymd.slice(4, 6)}.${ymd.slice(6, 8)}`;
 }
+
+export function formatIsoDate(value: string): string {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    throw new Error(`YYYY-MM-DD 형식이 아닙니다: ${value}`);
+  }
+
+  return value.replaceAll("-", ".");
+}

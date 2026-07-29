@@ -82,7 +82,7 @@ export function StepBasic({ profile }: { profile: PersonaProfile }) {
       </div>
 
       <div>
-        <h3 className="mb-2 text-sm font-bold text-muted">
+        <h3 className="mb-2 text-sm font-bold text-brand-muted">
           마이데이터에서 확인된 정보
         </h3>
         <ReadonlyRow

@@ -63,6 +63,28 @@ describe("PortfolioView — NO_ALLOCATION_REQUIRED", () => {
   });
 });
 
+describe("PortfolioView — COMPLETE에서도 엔진의 caveat를 보여준다", () => {
+  // No COMPLETE fixture exercises this today (all 14 have empty reason
+  // arrays and zero unallocated amounts) — this is the latent case a live
+  // engine can hit: a COMPLETE result that still carries a caveat. The
+  // screen must not silently drop it, so we fabricate one from a real
+  // result rather than waiting for a fixture that doesn't exist.
+  it("validation_reasons와 월 미배분액을 함께 보여준다", async () => {
+    const base = await loadResult(COMPLETE);
+    const result = {
+      ...base,
+      validation_reasons: ["상품 X가 재검증에서 제외됨"],
+      monthly_unallocated: "50000",
+    };
+
+    render(<PortfolioView result={result} edited={false} />);
+
+    expect(screen.getByText("상품 X가 재검증에서 제외됨")).toBeInTheDocument();
+    expect(screen.getByText(/월 미배분액/)).toBeInTheDocument();
+    expect(screen.getByText(/5만원/)).toBeInTheDocument();
+  });
+});
+
 describe("PortfolioView — 편집 안내", () => {
   it("edited면 안내 문구를 띄운다", async () => {
     render(<PortfolioView result={await loadResult(COMPLETE)} edited />);
