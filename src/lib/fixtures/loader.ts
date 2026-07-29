@@ -26,6 +26,12 @@ export function isKnownPersona(
   );
 }
 
+export function normalizePersonaParam(
+  raw: string | string[] | undefined,
+): string | undefined {
+  return Array.isArray(raw) ? raw[0] : raw;
+}
+
 function assertKnown(personaId: string): void {
   if (!isKnownPersona(personaId)) {
     throw new Error(`알 수 없는 페르소나: ${personaId}`);

@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation";
 
-import { isKnownPersona } from "./loader";
+import { isKnownPersona, normalizePersonaParam } from "./loader";
 
 export function requirePersonaId(raw: string | string[] | undefined): string {
-  const personaId = Array.isArray(raw) ? raw[0] : raw;
+  const personaId = normalizePersonaParam(raw);
 
   if (!isKnownPersona(personaId)) {
     redirect("/personas");

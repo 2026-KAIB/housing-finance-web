@@ -6,6 +6,7 @@ import {
   loadPersonaIndex,
   loadProfile,
   loadResult,
+  normalizePersonaParam,
   transactionsUrl,
 } from "./loader";
 
@@ -54,5 +55,25 @@ describe("페르소나별 로더", () => {
 describe("transactionsUrl", () => {
   it("public 정적 경로를 돌려준다", () => {
     expect(transactionsUrl(SAMPLE)).toBe(`/fixtures/${SAMPLE}/transactions.json`);
+  });
+});
+
+describe("normalizePersonaParam", () => {
+  it("문자열은 그대로 돌려준다", () => {
+    expect(normalizePersonaParam(SAMPLE)).toBe(SAMPLE);
+  });
+
+  it("배열이면 마지막이 아니라 첫 번째 원소를 돌려준다", () => {
+    expect(normalizePersonaParam([SAMPLE, "persona_a_social_starter"])).toBe(
+      SAMPLE,
+    );
+  });
+
+  it("빈 배열은 던지지 않고 undefined를 돌려준다", () => {
+    expect(normalizePersonaParam([])).toBeUndefined();
+  });
+
+  it("undefined는 undefined를 돌려준다", () => {
+    expect(normalizePersonaParam(undefined)).toBeUndefined();
   });
 });
