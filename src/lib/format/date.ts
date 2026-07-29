@@ -1,16 +1,16 @@
-export function formatYm(ym: string): string {
+function assertYm(ym: string): void {
   if (!/^\d{6}$/.test(ym)) {
     throw new Error(`YYYYMM 형식이 아닙니다: ${ym}`);
   }
+}
 
+export function formatYm(ym: string): string {
+  assertYm(ym);
   return `${ym.slice(0, 4)}년 ${Number(ym.slice(4, 6))}월`;
 }
 
 export function formatYmShort(ym: string): string {
-  if (!/^\d{6}$/.test(ym)) {
-    throw new Error(`YYYYMM 형식이 아닙니다: ${ym}`);
-  }
-
+  assertYm(ym);
   return `${ym.slice(2, 4)}.${ym.slice(4, 6)}`;
 }
 
