@@ -21,11 +21,11 @@ const services = [
 export default function HomePage() {
   return (
     <main>
-      <section className="grid gap-6 pt-24 pb-16">
+      <section className="grid gap-6 pt-16 md:pt-24 pb-16">
         <p className="m-0 font-bold text-accent">
           HOUSING FINANCE CONSULTING
         </p>
-        <h1 className="m-0 max-w-[760px] text-[clamp(40px,7vw,72px)] leading-[1.05] tracking-[-0.06em]">
+        <h1 className="m-0 max-w-[760px] text-[clamp(40px,7vw,72px)] font-bold leading-[1.05] tracking-[-0.06em]">
           내 금융 흐름으로 계산하는 보증금 마련 로드맵
         </h1>
         <p className="m-0 max-w-[680px] text-lg leading-[1.7] text-muted">
@@ -54,7 +54,7 @@ export default function HomePage() {
             <span className="text-[13px] font-extrabold text-accent">
               {service.step}
             </span>
-            <h2 className="mt-9 mb-2.5 text-[22px] tracking-[-0.03em]">
+            <h2 className="mt-9 mb-2.5 text-[22px] font-bold tracking-[-0.03em]">
               {service.title}
             </h2>
             <p className="m-0 leading-relaxed text-muted">
