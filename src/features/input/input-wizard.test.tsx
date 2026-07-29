@@ -59,6 +59,19 @@ describe("InputWizard", () => {
     ).not.toBeInTheDocument();
   });
 
+  it("월 소득을 비우면 다음으로 넘어가지 않는다", async () => {
+    const user = userEvent.setup();
+    await renderWizard();
+
+    await user.clear(screen.getByLabelText("월 소득 (원)"));
+    await user.click(screen.getByRole("button", { name: "다음" }));
+
+    expect(await screen.findByText("금액을 입력하세요")).toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { level: 2, name: /마이데이터/ }),
+    ).not.toBeInTheDocument();
+  });
+
   it("step 1에서는 이전 버튼이 없다", async () => {
     await renderWizard();
     expect(screen.queryByRole("button", { name: "이전" })).not.toBeInTheDocument();

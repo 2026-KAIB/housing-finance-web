@@ -2,7 +2,17 @@ import { z } from "zod";
 
 import type { PersonaProfile } from "@/lib/contracts/persona";
 
-const won = z.coerce.number().min(0, "0 이상이어야 합니다");
+// z.coerce.number() alone turns "" into 0 (Number("") === 0), so clearing a
+// money field would silently pass validation as ₩0 instead of failing. This
+// preprocess maps "" to undefined first so the empty case fails with a
+// "missing" message, while an explicit 0 (some 취약형 personas legitimately
+// have monthly_savings_budget/lump_sum_budget of 0) still passes.
+const won = z.preprocess(
+  (value) => (value === "" ? undefined : value),
+  z.coerce
+    .number({ error: "금액을 입력하세요" })
+    .min(0, "0 이상이어야 합니다"),
+);
 
 export const inputFormSchema = z.object({
   age: z.coerce.number().int().min(1, "나이를 입력하세요"),
