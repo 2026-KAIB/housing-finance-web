@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FormProvider, type Resolver, useForm } from "react-hook-form";
 
@@ -9,10 +10,12 @@ import type { Mydata, PersonaProfile } from "@/lib/contracts/persona";
 
 import {
   type InputFormValues,
+  changedFields,
   inputFormSchema,
   toFormValues,
 } from "./form-schema";
 import { StepBasic } from "./step-basic";
+import { StepGoal } from "./step-goal";
 import { StepMydata } from "./step-mydata";
 
 const STEP_TITLES = ["기본정보", "마이데이터", "목표설정"] as const;
@@ -27,6 +30,7 @@ export function InputWizard({
   mydata: Mydata;
 }) {
   const [step, setStep] = useState(0);
+  const router = useRouter();
   const defaultValues = toFormValues(profile);
 
   const form = useForm<InputFormValues>({
@@ -49,6 +53,13 @@ export function InputWizard({
     setStep((current) => Math.min(current + 1, STEP_TITLES.length - 1));
   }
 
+  const onSubmit = form.handleSubmit((values) => {
+    const edited = changedFields(defaultValues, values).length > 0;
+    router.push(
+      `/dashboard?persona=${personaId}${edited ? "&edited=1" : ""}`,
+    );
+  });
+
   return (
     <section className="py-12">
       <p className="m-0 font-bold text-accent">{profile.display_name}</p>
@@ -60,7 +71,7 @@ export function InputWizard({
         <form onSubmit={(event) => event.preventDefault()}>
           {step === 0 && <StepBasic profile={profile} />}
           {step === 1 && <StepMydata personaId={personaId} mydata={mydata} />}
-          {step === 2 && <h2 className="text-xl font-bold">목표설정</h2>}
+          {step === 2 && <StepGoal profile={profile} />}
 
           <div className="mt-8 flex gap-2">
             {step > 0 && (
@@ -75,6 +86,11 @@ export function InputWizard({
             {step < STEP_TITLES.length - 1 && (
               <Button type="button" onClick={goNext}>
                 다음
+              </Button>
+            )}
+            {step === STEP_TITLES.length - 1 && (
+              <Button type="button" onClick={onSubmit}>
+                결과 보기
               </Button>
             )}
           </div>
