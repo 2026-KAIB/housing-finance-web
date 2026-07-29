@@ -71,6 +71,9 @@ describe.each(index.personas.map((persona) => persona.persona_id))(
       const sum = mydata.accounts.reduce((acc, a) => acc + a.balance_amt, 0);
 
       expect(mydata.totals.total_balance).toBe(sum);
+      expect(mydata.totals.total_loan_balance).toBe(
+        mydata.loans.reduce((acc, loan) => acc + loan.balance_amt, 0),
+      );
       expect(mydata.totals.account_count).toBe(mydata.accounts.length);
       expect(mydata.totals.loan_count).toBe(mydata.loans.length);
     });
