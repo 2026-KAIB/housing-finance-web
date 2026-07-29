@@ -1,11 +1,21 @@
-import { PlaceholderPage } from "../../components/ui/placeholder-page";
+import { InputWizard } from "@/features/input/input-wizard";
+import { requirePersonaId } from "@/lib/fixtures/guard";
+import { loadMydata, loadProfile } from "@/lib/fixtures/loader";
 
-export default function InputPage() {
+export default async function InputPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ persona?: string | string[] }>;
+}) {
+  const personaId = requirePersonaId((await searchParams).persona);
+  const [profile, mydata] = await Promise.all([
+    loadProfile(personaId),
+    loadMydata(personaId),
+  ]);
+
   return (
-    <PlaceholderPage
-      eyebrow="INPUT"
-      title="금융정보와 주택 목표 입력"
-      description="사용자 프로필, 월 소득·지출, 자산·부채, 목표 주택 가격과 목표 날짜를 단계별 폼으로 구현할 영역입니다."
-    />
+    <main>
+      <InputWizard personaId={personaId} profile={profile} mydata={mydata} />
+    </main>
   );
 }
