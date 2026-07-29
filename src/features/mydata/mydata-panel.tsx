@@ -11,6 +11,8 @@ import { formatWon } from "@/lib/format/money";
 
 import { AccountList } from "./account-list";
 import { LoanList } from "./loan-list";
+import { MonthlyFlowChart } from "./monthly-flow-chart";
+import { TransactionPanel } from "./transaction-panel";
 
 export function MydataPanel({
   personaId,
@@ -64,6 +66,7 @@ export function MydataPanel({
           <TabsTrigger value="demand">계좌 {demand.length}</TabsTrigger>
           <TabsTrigger value="savings">예적금 {savings.length}</TabsTrigger>
           <TabsTrigger value="loans">대출 {mydata.loans.length}</TabsTrigger>
+          <TabsTrigger value="transactions">거래내역</TabsTrigger>
         </TabsList>
 
         <TabsContent value="demand">
@@ -74,6 +77,12 @@ export function MydataPanel({
         </TabsContent>
         <TabsContent value="loans">
           <LoanList loans={mydata.loans} />
+        </TabsContent>
+        <TabsContent value="transactions">
+          <div className="grid gap-8">
+            <MonthlyFlowChart rows={mydata.monthly_summary} />
+            <TransactionPanel personaId={personaId} accounts={mydata.accounts} />
+          </div>
         </TabsContent>
       </Tabs>
     </div>
