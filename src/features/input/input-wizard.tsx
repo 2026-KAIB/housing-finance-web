@@ -13,6 +13,7 @@ import {
   toFormValues,
 } from "./form-schema";
 import { StepBasic } from "./step-basic";
+import { StepMydata } from "./step-mydata";
 
 const STEP_TITLES = ["기본정보", "마이데이터", "목표설정"] as const;
 
@@ -58,9 +59,7 @@ export function InputWizard({
       <FormProvider {...form}>
         <form onSubmit={(event) => event.preventDefault()}>
           {step === 0 && <StepBasic profile={profile} />}
-          {step === 1 && (
-            <h2 className="text-xl font-bold">마이데이터 불러오기</h2>
-          )}
+          {step === 1 && <StepMydata personaId={personaId} mydata={mydata} />}
           {step === 2 && <h2 className="text-xl font-bold">목표설정</h2>}
 
           <div className="mt-8 flex gap-2">
