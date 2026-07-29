@@ -8,7 +8,8 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "build:fixtures": "node scripts/build-fixtures.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",

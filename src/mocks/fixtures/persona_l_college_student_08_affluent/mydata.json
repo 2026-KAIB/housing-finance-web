@@ -1,0 +1,152 @@
+{
+  "persona_id": "persona_l_college_student_08_affluent",
+  "as_of": "20260724",
+  "accounts": [
+    {
+      "account_num_masked": "4080-**-**0001",
+      "prod_name": "KB국민 대학생 생활통장",
+      "account_type": "1001",
+      "account_type_label": "수시입출금",
+      "account_kind": "demand",
+      "saving_method": "01",
+      "saving_method_label": "자유입출금",
+      "balance_amt": 8000000,
+      "withdrawable_amt": 8000000,
+      "offered_rate": 0.001,
+      "issue_date": "20240102",
+      "has_transactions": true
+    },
+    {
+      "account_num_masked": "4080-**-**0002",
+      "prod_name": "KB 대학생 목표적금",
+      "account_type": "1003",
+      "account_type_label": "적금",
+      "account_kind": "savings",
+      "saving_method": "03",
+      "saving_method_label": "정액적립식",
+      "balance_amt": 7000000,
+      "withdrawable_amt": 7000000,
+      "offered_rate": 0.034,
+      "issue_date": "20250102",
+      "exp_date": "20280102",
+      "commit_amt": 36000000,
+      "monthly_paid_in_amt": 1000000,
+      "last_paid_in_cnt": 18,
+      "has_transactions": false
+    },
+    {
+      "account_num_masked": "4080-**-**0003",
+      "prod_name": "KB 가족지원 정기예금",
+      "account_type": "1002",
+      "account_type_label": "정기예금",
+      "account_kind": "savings",
+      "saving_method": "02",
+      "saving_method_label": "거치식",
+      "balance_amt": 10000000,
+      "withdrawable_amt": 10000000,
+      "offered_rate": 0.031,
+      "issue_date": "20250701",
+      "exp_date": "20270701",
+      "commit_amt": 10000000,
+      "has_transactions": false
+    }
+  ],
+  "loans": [],
+  "monthly_summary": [
+    {
+      "ym": "202508",
+      "income": 2000000,
+      "expense": 2000000,
+      "interest": 0,
+      "net": 0
+    },
+    {
+      "ym": "202509",
+      "income": 2000000,
+      "expense": 2000000,
+      "interest": 1059,
+      "net": 0
+    },
+    {
+      "ym": "202510",
+      "income": 2000000,
+      "expense": 2000000,
+      "interest": 0,
+      "net": 0
+    },
+    {
+      "ym": "202511",
+      "income": 2000000,
+      "expense": 2000000,
+      "interest": 0,
+      "net": 0
+    },
+    {
+      "ym": "202512",
+      "income": 2000000,
+      "expense": 2000000,
+      "interest": 3590,
+      "net": 0
+    },
+    {
+      "ym": "202601",
+      "income": 2000000,
+      "expense": 2000000,
+      "interest": 0,
+      "net": 0
+    },
+    {
+      "ym": "202602",
+      "income": 2000000,
+      "expense": 2000000,
+      "interest": 0,
+      "net": 0
+    },
+    {
+      "ym": "202603",
+      "income": 2000000,
+      "expense": 2000000,
+      "interest": 1390,
+      "net": 0
+    },
+    {
+      "ym": "202604",
+      "income": 2000000,
+      "expense": 2000000,
+      "interest": 0,
+      "net": 0
+    },
+    {
+      "ym": "202605",
+      "income": 2000000,
+      "expense": 2000000,
+      "interest": 0,
+      "net": 0
+    },
+    {
+      "ym": "202606",
+      "income": 2000000,
+      "expense": 2000000,
+      "interest": 3225,
+      "net": 0
+    },
+    {
+      "ym": "202607",
+      "income": 2000000,
+      "expense": 1845500,
+      "interest": 0,
+      "net": 154500
+    }
+  ],
+  "totals": {
+    "account_count": 3,
+    "loan_count": 0,
+    "total_balance": 25000000,
+    "total_loan_balance": 0
+  },
+  "derived_by": "fixture-script",
+  "source": {
+    "generator": "generate_all.py",
+    "as_of": "2026-07-24"
+  }
+}

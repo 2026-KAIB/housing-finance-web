@@ -1,0 +1,45 @@
+{
+  "persona_id": "persona_e_college_student_basic",
+  "display_name": "대학생1(기본형)",
+  "category": "basic",
+  "basic": {
+    "birth_date": "20010315",
+    "age": 25,
+    "education_status": "university_student",
+    "military_service_status": "completed",
+    "employment_type": "part_time",
+    "marital_status": "single",
+    "household_size": 3,
+    "lives_with_parents": true,
+    "tuition_payer": "parents",
+    "current_housing_type": "living_with_parents"
+  },
+  "goal": {
+    "target_housing_type": "monthly_rent",
+    "target_region": "30200",
+    "target_price": 5000000,
+    "target_lease_deposit": 5000000,
+    "target_monthly_rent": 200000,
+    "target_management_fee": 50000,
+    "target_move_in_ym": "202807",
+    "risk_preference": "stability"
+  },
+  "finance": {
+    "annual_income_verified": 9600000,
+    "monthly_income": 800000,
+    "monthly_average_expense": 700000
+  },
+  "savings": {
+    "fund_needed_date": "20280728",
+    "monthly_savings_budget": 100000,
+    "lump_sum_budget": 300000,
+    "emergency_reserve": 700000,
+    "liquidity_preference": "high",
+    "accepts_principal_risk": false,
+    "maximum_recommended_products": 2
+  },
+  "source": {
+    "generator": "generate_all.py",
+    "as_of": "2026-07-24"
+  }
+}

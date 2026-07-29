@@ -1,0 +1,58 @@
+{
+  "persona_id": "persona_n_college_student_10_affluent",
+  "display_name": "대학생10(부유형)",
+  "category": "affluent",
+  "status": "COMPLETE",
+  "success": true,
+  "coverage_ratio": "1",
+  "monthly_allocated": "2200000",
+  "monthly_unallocated": "0",
+  "lump_sum_allocated": "6600000",
+  "lump_sum_unallocated": "0",
+  "expected_total_principal": "19800000",
+  "expected_maturity_amount": "19955131.02000000",
+  "expected_net_interest": "155131.02000000",
+  "final_policy_status": "PASS",
+  "final_policy_valid": true,
+  "reasons": [],
+  "validation_reasons": [],
+  "allocations": [
+    {
+      "product_name": "KB내맘대로적금",
+      "product_kind": "installment_savings",
+      "allocation_amount": "2200000",
+      "term_months": 6,
+      "maturity_date": "2027-01-28",
+      "expected_maturity_amount": "13263280.8000000",
+      "expected_net_interest": "63280.8000000",
+      "product_score": "50.67725408344967185994152144"
+    },
+    {
+      "product_name": "KB골든라이프연금예금",
+      "product_kind": "term_deposit",
+      "allocation_amount": "6600000",
+      "term_months": 6,
+      "maturity_date": "2027-01-28",
+      "expected_maturity_amount": "6691850.22000000",
+      "expected_net_interest": "91850.22000000",
+      "product_score": "58.80456980810275205359053326"
+    }
+  ],
+  "input": {
+    "age": 25,
+    "monthly_income": 4000000,
+    "monthly_expense": 1800000,
+    "current_assets": 30000000,
+    "monthly_savings_budget": 2200000,
+    "lump_sum_budget": 6600000,
+    "fund_needed_date": "20280128"
+  },
+  "evaluation": {
+    "ELIGIBLE": 20,
+    "INELIGIBLE": 32
+  },
+  "source": {
+    "generator": "college_student_portfolio_results.json",
+    "as_of": "2026-07-28"
+  }
+}

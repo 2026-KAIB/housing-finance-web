@@ -1,0 +1,58 @@
+{
+  "persona_id": "persona_h_college_student_04_basic",
+  "display_name": "대학생4(기본형)",
+  "category": "basic",
+  "status": "COMPLETE",
+  "success": true,
+  "coverage_ratio": "1",
+  "monthly_allocated": "250000",
+  "monthly_unallocated": "0",
+  "lump_sum_allocated": "650000",
+  "lump_sum_unallocated": "0",
+  "expected_total_principal": "6650000",
+  "expected_maturity_amount": "6831509.3000000",
+  "expected_net_interest": "181509.3000000",
+  "final_policy_status": "PASS",
+  "final_policy_valid": true,
+  "reasons": [],
+  "validation_reasons": [],
+  "allocations": [
+    {
+      "product_name": "KB 국민프리미엄적금",
+      "product_kind": "installment_savings",
+      "allocation_amount": "250000",
+      "term_months": 24,
+      "maturity_date": "2028-07-28",
+      "expected_maturity_amount": "6155664.0000000",
+      "expected_net_interest": "155664.0000000",
+      "product_score": "85.54063388867203018409788706"
+    },
+    {
+      "product_name": "일반정기예금",
+      "product_kind": "term_deposit",
+      "allocation_amount": "650000",
+      "term_months": 24,
+      "maturity_date": "2028-07-28",
+      "expected_maturity_amount": "675845.3000000",
+      "expected_net_interest": "25845.3000000",
+      "product_score": "66.71642478569996347847688134"
+    }
+  ],
+  "input": {
+    "age": 24,
+    "monthly_income": 1100000,
+    "monthly_expense": 850000,
+    "current_assets": 3000000,
+    "monthly_savings_budget": 250000,
+    "lump_sum_budget": 650000,
+    "fund_needed_date": "20280728"
+  },
+  "evaluation": {
+    "ELIGIBLE": 29,
+    "INELIGIBLE": 11
+  },
+  "source": {
+    "generator": "college_student_portfolio_results.json",
+    "as_of": "2026-07-28"
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "persona_id": "persona_v_college_student_18_poor",
+  "as_of": "20260724",
+  "accounts": [
+    {
+      "account_num_masked": "4180-**-**0001",
+      "prod_name": "KB국민 대학생 생활통장",
+      "account_type": "1001",
+      "account_type_label": "수시입출금",
+      "account_kind": "demand",
+      "saving_method": "01",
+      "saving_method_label": "자유입출금",
+      "balance_amt": 550000,
+      "withdrawable_amt": 550000,
+      "offered_rate": 0.001,
+      "issue_date": "20240102",
+      "has_transactions": true
+    }
+  ],
+  "loans": [],
+  "monthly_summary": [
+    {
+      "ym": "202508",
+      "income": 700000,
+      "expense": 700000,
+      "interest": 0,
+      "net": 0
+    },
+    {
+      "ym": "202509",
+      "income": 700000,
+      "expense": 700000,
+      "interest": 2405,
+      "net": 0
+    },
+    {
+      "ym": "202510",
+      "income": 700000,
+      "expense": 700000,
+      "interest": 0,
+      "net": 0
+    },
+    {
+      "ym": "202511",
+      "income": 700000,
+      "expense": 700000,
+      "interest": 0,
+      "net": 0
+    },
+    {
+      "ym": "202512",
+      "income": 700000,
+      "expense": 700000,
+      "interest": 2522,
+      "net": 0
+    },
+    {
+      "ym": "202601",
+      "income": 700000,
+      "expense": 700000,
+      "interest": 0,
+      "net": 0
+    },
+    {
+      "ym": "202602",
+      "income": 700000,
+      "expense": 700000,
+      "interest": 0,
+      "net": 0
+    },
+    {
+      "ym": "202603",
+      "income": 700000,
+      "expense": 700000,
+      "interest": 1054,
+      "net": 0
+    },
+    {
+      "ym": "202604",
+      "income": 700000,
+      "expense": 700000,
+      "interest": 0,
+      "net": 0
+    },
+    {
+      "ym": "202605",
+      "income": 700000,
+      "expense": 700000,
+      "interest": 0,
+      "net": 0
+    },
+    {
+      "ym": "202606",
+      "income": 700000,
+      "expense": 700000,
+      "interest": 2011,
+      "net": 0
+    },
+    {
+      "ym": "202607",
+      "income": 700000,
+      "expense": 425500,
+      "interest": 0,
+      "net": 274500
+    }
+  ],
+  "totals": {
+    "account_count": 1,
+    "loan_count": 0,
+    "total_balance": 550000,
+    "total_loan_balance": 0
+  },
+  "derived_by": "fixture-script",
+  "source": {
+    "generator": "generate_all.py",
+    "as_of": "2026-07-24"
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "persona_id": "persona_r_college_student_14_poor",
+  "display_name": "대학생14(가난형)",
+  "category": "poor",
+  "status": "COMPLETE",
+  "success": true,
+  "coverage_ratio": "1",
+  "monthly_allocated": "50000",
+  "monthly_unallocated": "0",
+  "lump_sum_allocated": "0",
+  "lump_sum_unallocated": "0",
+  "expected_total_principal": "1200000",
+  "expected_maturity_amount": "1229187.0000000",
+  "expected_net_interest": "29187.0000000",
+  "final_policy_status": "PASS",
+  "final_policy_valid": true,
+  "reasons": [],
+  "validation_reasons": [],
+  "allocations": [
+    {
+      "product_name": "KB 국민프리미엄적금",
+      "product_kind": "installment_savings",
+      "allocation_amount": "50000",
+      "term_months": 24,
+      "maturity_date": "2028-07-28",
+      "expected_maturity_amount": "1229187.0000000",
+      "expected_net_interest": "29187.0000000",
+      "product_score": "83.71999682197084981070158731"
+    }
+  ],
+  "input": {
+    "age": 20,
+    "monthly_income": 600000,
+    "monthly_expense": 550000,
+    "current_assets": 600000,
+    "monthly_savings_budget": 50000,
+    "lump_sum_budget": 0,
+    "fund_needed_date": "20280728"
+  },
+  "evaluation": {
+    "ELIGIBLE": 24,
+    "INELIGIBLE": 10
+  },
+  "source": {
+    "generator": "college_student_portfolio_results.json",
+    "as_of": "2026-07-28"
+  }
+}

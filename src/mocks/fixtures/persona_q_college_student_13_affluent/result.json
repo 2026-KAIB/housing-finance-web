@@ -1,0 +1,41 @@
+{
+  "persona_id": "persona_q_college_student_13_affluent",
+  "display_name": "대학생13(부유형)",
+  "category": "affluent",
+  "status": "INFEASIBLE",
+  "success": false,
+  "coverage_ratio": "0",
+  "monthly_allocated": "0",
+  "monthly_unallocated": "3000000",
+  "lump_sum_allocated": "0",
+  "lump_sum_unallocated": "14000000",
+  "expected_total_principal": "0",
+  "expected_maturity_amount": "0",
+  "expected_net_interest": "0",
+  "final_policy_status": "UNKNOWN",
+  "final_policy_valid": false,
+  "reasons": [
+    "상품 최소 납입액, 예산 또는 예금자보호 제약을 만족하는 조합이 없습니다."
+  ],
+  "validation_reasons": [
+    "정책을 재검증할 포트폴리오 배분 결과가 없습니다."
+  ],
+  "allocations": [],
+  "input": {
+    "age": 26,
+    "monthly_income": 5000000,
+    "monthly_expense": 2000000,
+    "current_assets": 120000000,
+    "monthly_savings_budget": 3000000,
+    "lump_sum_budget": 14000000,
+    "fund_needed_date": "20270728"
+  },
+  "evaluation": {
+    "ELIGIBLE": 0,
+    "INELIGIBLE": 52
+  },
+  "source": {
+    "generator": "college_student_portfolio_results.json",
+    "as_of": "2026-07-28"
+  }
+}

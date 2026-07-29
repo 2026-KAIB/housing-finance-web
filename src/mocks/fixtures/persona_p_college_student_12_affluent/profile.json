@@ -1,0 +1,47 @@
+{
+  "persona_id": "persona_p_college_student_12_affluent",
+  "display_name": "대학생12(부유형)",
+  "category": "affluent",
+  "basic": {
+    "birth_date": "20040315",
+    "age": 22,
+    "education_status": "university_student",
+    "military_service_status": "not_applicable",
+    "employment_type": "scholarship_and_support",
+    "marital_status": "single",
+    "household_size": 3,
+    "lives_with_parents": false,
+    "tuition_payer": "scholarship",
+    "current_housing_type": "dormitory"
+  },
+  "goal": {
+    "target_housing_type": "monthly_rent",
+    "target_region": "11290",
+    "target_price": 30000000,
+    "target_lease_deposit": 30000000,
+    "target_monthly_rent": 600000,
+    "target_management_fee": 100000,
+    "target_move_in_ym": "202901",
+    "risk_preference": "stability"
+  },
+  "finance": {
+    "annual_income_verified": 21600000,
+    "monthly_income": 1800000,
+    "monthly_average_expense": 900000,
+    "current_assets": 40000000,
+    "monthly_debt_payment": 0
+  },
+  "savings": {
+    "fund_needed_date": "20290128",
+    "monthly_savings_budget": 900000,
+    "lump_sum_budget": 3300000,
+    "emergency_reserve": 2700000,
+    "liquidity_preference": "medium",
+    "accepts_principal_risk": false,
+    "maximum_recommended_products": 3
+  },
+  "source": {
+    "generator": "generate_all.py",
+    "as_of": "2026-07-24"
+  }
+}
