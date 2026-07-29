@@ -1,0 +1,23 @@
+export function formatYm(ym: string): string {
+  if (!/^\d{6}$/.test(ym)) {
+    throw new Error(`YYYYMM 형식이 아닙니다: ${ym}`);
+  }
+
+  return `${ym.slice(0, 4)}년 ${Number(ym.slice(4, 6))}월`;
+}
+
+export function formatYmShort(ym: string): string {
+  if (!/^\d{6}$/.test(ym)) {
+    throw new Error(`YYYYMM 형식이 아닙니다: ${ym}`);
+  }
+
+  return `${ym.slice(2, 4)}.${ym.slice(4, 6)}`;
+}
+
+export function formatYmd(ymd: string): string {
+  if (!/^\d{8}$/.test(ymd)) {
+    throw new Error(`YYYYMMDD 형식이 아닙니다: ${ymd}`);
+  }
+
+  return `${ymd.slice(0, 4)}.${ymd.slice(4, 6)}.${ymd.slice(6, 8)}`;
+}
