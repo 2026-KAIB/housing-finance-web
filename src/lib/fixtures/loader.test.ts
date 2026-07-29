@@ -1,0 +1,58 @@
+import { describe, expect, it } from "vitest";
+
+import {
+  isKnownPersona,
+  loadMydata,
+  loadPersonaIndex,
+  loadProfile,
+  loadResult,
+  transactionsUrl,
+} from "./loader";
+
+const SAMPLE = "persona_e_college_student_basic";
+
+describe("loadPersonaIndex", () => {
+  it("20명을 검증된 형태로 돌려준다", () => {
+    expect(loadPersonaIndex().personas).toHaveLength(20);
+  });
+});
+
+describe("isKnownPersona", () => {
+  it("목록에 있는 id만 통과시킨다", () => {
+    expect(isKnownPersona(SAMPLE)).toBe(true);
+    expect(isKnownPersona("persona_a_social_starter")).toBe(false);
+    expect(isKnownPersona(undefined)).toBe(false);
+    expect(isKnownPersona("")).toBe(false);
+  });
+});
+
+describe("페르소나별 로더", () => {
+  it("profile을 파싱해서 돌려준다", async () => {
+    const profile = await loadProfile(SAMPLE);
+    expect(profile.persona_id).toBe(SAMPLE);
+    expect(profile.goal.target_housing_type).toBe("monthly_rent");
+  });
+
+  it("mydata를 파싱해서 돌려준다", async () => {
+    const mydata = await loadMydata(SAMPLE);
+    expect(mydata.derived_by).toBe("fixture-script");
+    expect(mydata.accounts.length).toBeGreaterThan(0);
+  });
+
+  it("result를 파싱해서 돌려준다", async () => {
+    const result = await loadResult(SAMPLE);
+    expect(result.status).toBe("COMPLETE");
+  });
+
+  it("없는 페르소나는 던진다", async () => {
+    await expect(loadProfile("persona_zz_nobody")).rejects.toThrow(
+      "알 수 없는 페르소나: persona_zz_nobody",
+    );
+  });
+});
+
+describe("transactionsUrl", () => {
+  it("public 정적 경로를 돌려준다", () => {
+    expect(transactionsUrl(SAMPLE)).toBe(`/fixtures/${SAMPLE}/transactions.json`);
+  });
+});
