@@ -83,12 +83,15 @@
 | 파일 | 책임 | 의존 |
 |---|---|---|
 | `src/lib/map/kakao-loader.ts` | SDK 스크립트 주입 + `kakao.maps.load()`를 Promise로 감쌈 | 없음 (DOM만) |
-| `src/lib/map/kakao.d.ts` | 사용하는 SDK 표면만 선언한 최소 타입 | 없음 |
+| `src/lib/map/kakao-types.ts` | 사용하는 SDK 표면만 선언한 최소 타입 + `Window.kakao` 전역 선언 | 없음 |
 | `src/components/map/kakao-map.tsx` | 컨테이너 ref + 지도 인스턴스 생성, 로딩/오류 상태 렌더 | `kakao-loader` |
 | `src/features/input/desired-home-panel.tsx` | 토글 그룹 + `KakaoMap` 조립 | `KakaoMap`, `Button` |
 
 지도 컴포넌트를 `features/input`이 아니라 `components/map`에 두는 이유: 이후 매물 검색·대시보드에서도
 같은 지도가 필요하고, 입력 스텝에 종속될 이유가 없다.
+
+타입을 `.d.ts`가 아니라 일반 `.ts` 모듈로 두는 이유: `tsconfig.json`이 `skipLibCheck: true`라
+`.d.ts` 안의 선언은 타입 검사에서 제외된다.
 
 ### 4.2 kakao-loader.ts
 
