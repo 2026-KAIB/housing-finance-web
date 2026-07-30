@@ -1,0 +1,48 @@
+{
+  "persona_id": "persona_k_college_student_07_basic",
+  "display_name": "대학생7(기본형)",
+  "category": "basic",
+  "status": "COMPLETE",
+  "success": true,
+  "coverage_ratio": "1",
+  "monthly_allocated": "100000",
+  "monthly_unallocated": "0",
+  "lump_sum_allocated": "0",
+  "lump_sum_unallocated": "0",
+  "expected_total_principal": "1200000",
+  "expected_maturity_amount": "1216285.500000",
+  "expected_net_interest": "16285.500000",
+  "final_policy_status": "PASS",
+  "final_policy_valid": true,
+  "reasons": [],
+  "validation_reasons": [],
+  "allocations": [
+    {
+      "product_name": "KB 스타적금 III",
+      "product_kind": "installment_savings",
+      "allocation_amount": "100000",
+      "term_months": 12,
+      "maturity_date": "2027-07-28",
+      "expected_maturity_amount": "1216285.500000",
+      "expected_net_interest": "16285.500000",
+      "product_score": "74.84580359886312832180849734"
+    }
+  ],
+  "input": {
+    "age": 25,
+    "monthly_income": 1000000,
+    "monthly_expense": 900000,
+    "current_assets": 1200000,
+    "monthly_savings_budget": 100000,
+    "lump_sum_budget": 0,
+    "fund_needed_date": "20280128"
+  },
+  "evaluation": {
+    "ELIGIBLE": 16,
+    "INELIGIBLE": 18
+  },
+  "source": {
+    "generator": "college_student_portfolio_results.json",
+    "as_of": "2026-07-28"
+  }
+}

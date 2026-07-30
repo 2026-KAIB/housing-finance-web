@@ -1,0 +1,209 @@
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+import {
+  loadMydata,
+  loadPersonaIndex,
+  loadProfile,
+} from "@/lib/fixtures/loader";
+import { formatWon } from "@/lib/format/money";
+
+import { InputWizard } from "./input-wizard";
+
+const { push } = vi.hoisted(() => ({ push: vi.fn() }));
+
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push }),
+  redirect: vi.fn(),
+}));
+
+const SAMPLE = "persona_e_college_student_basic";
+
+async function renderWizard() {
+  const [profile, mydata] = await Promise.all([
+    loadProfile(SAMPLE),
+    loadMydata(SAMPLE),
+  ]);
+
+  render(
+    <InputWizard
+      personaId={SAMPLE}
+      personas={loadPersonaIndex().personas}
+      profile={profile}
+      mydata={mydata}
+    />,
+  );
+  return { profile, mydata };
+}
+
+/** step 1 → step 2 → step 3. 단계마다 [다음] 한 번. */
+async function goToReview(user: ReturnType<typeof userEvent.setup>) {
+  await user.click(screen.getByRole("button", { name: "다음" }));
+  await user.click(screen.getByRole("button", { name: "다음" }));
+}
+
+describe("InputWizard", () => {
+  beforeEach(() => {
+    push.mockClear();
+  });
+
+  it("step 1에 기본정보·목표설정·저축계획이 함께 프리필된다", async () => {
+    await renderWizard();
+
+    expect(screen.getByLabelText("나이")).toHaveValue(25);
+    expect(screen.getByLabelText("월 소득 (원)")).toHaveValue(800000);
+    expect(screen.getByLabelText("월 평균 지출 (원)")).toHaveValue(700000);
+    expect(screen.getByLabelText("목표 금액 (원)")).toHaveValue(5000000);
+    expect(screen.getByLabelText("월 저축 예산 (원)")).toHaveValue(100000);
+  });
+
+  it("목표 시점을 YYYY-MM으로 프리필한다", async () => {
+    await renderWizard();
+
+    expect(screen.getByLabelText("목표 시점 (YYYY-MM)")).toHaveValue("2028-07");
+  });
+
+  it("위험 성향이 프로필 값으로 선택되어 있다", async () => {
+    await renderWizard();
+
+    expect(screen.getByLabelText("위험 성향")).toHaveValue("stability");
+  });
+
+  it("step 1에 페르소나 선택기를 둔다", async () => {
+    await renderWizard();
+
+    expect(
+      screen.getByLabelText("페르소나 선택 (프로토타입 전용)"),
+    ).toHaveValue(SAMPLE);
+  });
+
+  it("다음 버튼으로 step 2 마이데이터로 이동한다", async () => {
+    const user = userEvent.setup();
+    await renderWizard();
+
+    await user.click(screen.getByRole("button", { name: "다음" }));
+    expect(
+      screen.getByRole("heading", { level: 2, name: /마이데이터/ }),
+    ).toBeInTheDocument();
+  });
+
+  it("나이를 비우면 다음으로 넘어가지 않는다", async () => {
+    const user = userEvent.setup();
+    await renderWizard();
+
+    await user.clear(screen.getByLabelText("나이"));
+    await user.click(screen.getByRole("button", { name: "다음" }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "나이를 입력하세요",
+    );
+    expect(
+      screen.queryByRole("heading", { level: 2, name: /마이데이터/ }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("월 소득을 비우면 다음으로 넘어가지 않는다", async () => {
+    const user = userEvent.setup();
+    await renderWizard();
+
+    await user.clear(screen.getByLabelText("월 소득 (원)"));
+    await user.click(screen.getByRole("button", { name: "다음" }));
+
+    expect(await screen.findByText("금액을 입력하세요")).toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { level: 2, name: /마이데이터/ }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("목표 시점이 YYYY-MM이 아니면 다음으로 넘어가지 않는다", async () => {
+    const user = userEvent.setup();
+    await renderWizard();
+
+    const moveIn = screen.getByLabelText("목표 시점 (YYYY-MM)");
+    await user.clear(moveIn);
+    await user.type(moveIn, "202807");
+    await user.click(screen.getByRole("button", { name: "다음" }));
+
+    expect(
+      await screen.findByText("YYYY-MM 형식으로 입력하세요"),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { level: 2, name: /마이데이터/ }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("step 1에서는 이전 버튼이 없다", async () => {
+    await renderWizard();
+    expect(
+      screen.queryByRole("button", { name: "이전" }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("step 3에서 입력값을 다시 보여준다", async () => {
+    const user = userEvent.setup();
+    await renderWizard();
+
+    await goToReview(user);
+
+    expect(
+      screen.getByRole("heading", { level: 2, name: "입력한 정보" }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("5,000,000원")).toBeInTheDocument();
+    expect(screen.getByText("2028년 7월")).toBeInTheDocument();
+  });
+
+  it("마이데이터를 불러오지 않고 step 3에 오면 미연동을 알린다", async () => {
+    const user = userEvent.setup();
+    await renderWizard();
+
+    await goToReview(user);
+
+    expect(
+      screen.getByText(/아직 마이데이터를 불러오지 않았습니다/),
+    ).toBeInTheDocument();
+  });
+
+  it("step 2에서 불러온 상태가 step 3까지 유지된다", async () => {
+    const user = userEvent.setup();
+    const { mydata } = await renderWizard();
+
+    await user.click(screen.getByRole("button", { name: "다음" }));
+    await user.click(
+      screen.getByRole("button", { name: "마이데이터 불러오기" }),
+    );
+    await user.click(screen.getByRole("button", { name: "다음" }));
+
+    expect(screen.getByText("불러오기 완료")).toBeInTheDocument();
+    expect(
+      screen.getByText(formatWon(mydata.totals.total_balance)),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(/아직 마이데이터를 불러오지 않았습니다/),
+    ).not.toBeInTheDocument();
+  });
+
+  it("step 3에서 결과 보기를 누르면 대시보드로 이동한다", async () => {
+    const user = userEvent.setup();
+    await renderWizard();
+
+    await goToReview(user);
+    await user.click(screen.getByRole("button", { name: "결과 보기" }));
+
+    expect(push).toHaveBeenCalledWith(`/dashboard?persona=${SAMPLE}`);
+  });
+
+  it("값을 바꾸면 edited 표시를 붙여 이동한다", async () => {
+    const user = userEvent.setup();
+    await renderWizard();
+
+    const target = screen.getByLabelText("목표 금액 (원)");
+    await user.clear(target);
+    await user.type(target, "9000000");
+
+    await goToReview(user);
+    await user.click(screen.getByRole("button", { name: "결과 보기" }));
+
+    expect(push).toHaveBeenCalledWith(`/dashboard?persona=${SAMPLE}&edited=1`);
+  });
+});

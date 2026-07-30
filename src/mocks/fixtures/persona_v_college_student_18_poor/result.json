@@ -1,0 +1,39 @@
+{
+  "persona_id": "persona_v_college_student_18_poor",
+  "display_name": "대학생18(가난형)",
+  "category": "poor",
+  "status": "NO_ALLOCATION_REQUIRED",
+  "success": true,
+  "coverage_ratio": "1",
+  "monthly_allocated": "0",
+  "monthly_unallocated": "0",
+  "lump_sum_allocated": "0",
+  "lump_sum_unallocated": "0",
+  "expected_total_principal": "0",
+  "expected_maturity_amount": "0",
+  "expected_net_interest": "0",
+  "final_policy_status": "PASS",
+  "final_policy_valid": true,
+  "reasons": [
+    "배분할 월 적립액과 일시예치금이 모두 0원입니다."
+  ],
+  "validation_reasons": [],
+  "allocations": [],
+  "input": {
+    "age": 25,
+    "monthly_income": 700000,
+    "monthly_expense": 700000,
+    "current_assets": 550000,
+    "monthly_savings_budget": 0,
+    "lump_sum_budget": 0,
+    "fund_needed_date": "20280128"
+  },
+  "evaluation": {
+    "ELIGIBLE": 0,
+    "INELIGIBLE": 0
+  },
+  "source": {
+    "generator": "college_student_portfolio_results.json",
+    "as_of": "2026-07-28"
+  }
+}

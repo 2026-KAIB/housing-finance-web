@@ -1,0 +1,47 @@
+{
+  "persona_id": "persona_s_college_student_15_poor",
+  "display_name": "대학생15(가난형)",
+  "category": "poor",
+  "basic": {
+    "birth_date": "20020315",
+    "age": 24,
+    "education_status": "university_student",
+    "military_service_status": "completed",
+    "employment_type": "part_time",
+    "marital_status": "single",
+    "household_size": 3,
+    "lives_with_parents": true,
+    "tuition_payer": "student_loan",
+    "current_housing_type": "parents"
+  },
+  "goal": {
+    "target_housing_type": "monthly_rent",
+    "target_region": "27200",
+    "target_price": 5000000,
+    "target_lease_deposit": 5000000,
+    "target_monthly_rent": 250000,
+    "target_management_fee": 50000,
+    "target_move_in_ym": "202901",
+    "risk_preference": "stability"
+  },
+  "finance": {
+    "annual_income_verified": 9600000,
+    "monthly_income": 800000,
+    "monthly_average_expense": 650000,
+    "current_assets": 350000,
+    "monthly_debt_payment": 100000
+  },
+  "savings": {
+    "fund_needed_date": "20290128",
+    "monthly_savings_budget": 50000,
+    "lump_sum_budget": 0,
+    "emergency_reserve": 300000,
+    "liquidity_preference": "high",
+    "accepts_principal_risk": false,
+    "maximum_recommended_products": 2
+  },
+  "source": {
+    "generator": "generate_all.py",
+    "as_of": "2026-07-24"
+  }
+}
