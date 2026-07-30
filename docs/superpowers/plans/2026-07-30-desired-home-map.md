@@ -552,6 +552,7 @@ const { loadKakaoMaps } = vi.hoisted(() => ({ loadKakaoMaps: vi.fn() }));
 vi.mock("@/lib/map/kakao-loader", () => ({ loadKakaoMaps }));
 
 beforeEach(() => {
+  loadKakaoMaps.mockClear();
   // 영원히 pending인 Promise를 주면 지도는 로딩 상태로 멈춘다.
   // 비동기 상태 전이 없이 패널 구조만 검증하기 위한 선택이다.
   loadKakaoMaps.mockReturnValue(new Promise(() => {}));

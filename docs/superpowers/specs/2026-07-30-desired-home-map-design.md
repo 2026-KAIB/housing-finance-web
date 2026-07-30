@@ -69,7 +69,11 @@
 - 버튼: `variant="outline"`, `size="sm"`, `aria-expanded={homePanelOpen}`,
   `aria-controls="desired-home-panel"`.
 - 패널은 `목표 설정` Group의 `children` 안, `GoalFields` **아래**에 **조건부 마운트**한다.
-  닫으면 언마운트되고, 다시 열면 지도가 새로 생성된다. CSS로 숨기지 않는 이유는 §4.4에 있다.
+  닫으면 언마운트되고, 다시 열면 지도가 새로 생성된다. 조건부 마운트를 택한 이유는 구현이
+  단순하고 다시 열 때 `relayout()`을 호출할 필요가 없기 때문이다. 대가로 열 때마다 지도를
+  새로 만들고, 직전 `kakao.maps.Map` 인스턴스는 SDK에 destroy API가 없어 그대로 버려진다
+  (누수). 이 비용이 문제가 되면 `hidden` 속성으로 렌더한 채 유지하고 다시 보일 때
+  `relayout()`을 호출하는 방식으로 바꿀 수 있다.
 
 ### 3.3 폼 검증과의 관계
 
@@ -131,15 +135,24 @@ export function loadKakaoMaps(appKey: string): Promise<KakaoMaps>
   별도 정리 코드는 두지 않는다.
 - 이 컴포넌트는 SSR에서 아무것도 하지 않는다(`useEffect`가 실행되지 않으므로 스켈레톤이
   서버 마크업이 된다).
+- **알려진 한계 (다음 사이클로 이연)**: 위 네 상태는 `sdk.js` 요청이 HTTP 200으로 끝나지만
+  SDK가 끝내 초기화되지 않는 경로(광고 차단기가 빈 200을 돌려주는 경우, 프록시, 또는
+  `maps.load()` 콜백이 영영 호출되지 않는 경우)를 다루지 않는다. 이 경우 `onload`에서
+  `kakao`가 없어 즉시 실패 처리되는 것도 아니고 `onerror`도 발생하지 않으므로, 화면은
+  "지도를 불러오는 중…"에서 멈춘 채 영영 전환되지 않는다. 대응은 일정 시간 후 `error`로
+  전환하는 `setTimeout`이며, 이번 사이클에는 구현하지 않는다.
 
 ### 4.4 DesiredHomePanel
 
 - 토글 값: `useState<"region" | "price">("region")`.
 - 마크업: `<div role="group" aria-label="희망 주택 조건">` 안에 `Button` 2개.
   활성 `variant="brand"`, 비활성 `variant="outline"`, 각각 `aria-pressed`.
-- **탭(`components/ui/tabs.tsx`)을 쓰지 않는 이유**: base-ui `Tabs`는 패널 단위로 콘텐츠를
-  마운트/언마운트한다. 두 토글이 같은 지도를 공유하는 현재 설계에서 탭을 쓰면 전환할 때마다
-  지도가 파괴·재생성된다. 또한 패널 내용이 갈리지 않는 tablist는 접근성상 부정확하다.
+- **탭(`components/ui/tabs.tsx`)을 쓰지 않는 이유**: 두 토글이 가리키는 내용이 아직 갈리지
+  않는다 — 지금은 같은 지도 하나를 공유할 뿐이다. 내용이 다르지 않은데 tablist로 구성하면
+  스크린 리더 사용자에게 실제로는 없는 패널 전환이 있다고 알리게 되어 접근성상 부정확하다.
+  부가적으로 base-ui `Tabs.Panel`은 기본값이 패널 단위 마운트/언마운트라 전환할 때마다
+  지도가 파괴·재생성될 수 있지만, 이는 `keepMounted` prop으로 피할 수 있어 결정적인 이유는
+  아니다.
 - 지도는 토글 그룹 **아래에 한 번만** 렌더한다. 토글 값은 아직 지도에 영향을 주지 않으며,
   이후 탭별 내용이 갈릴 때의 분기 지점으로만 존재한다.
 - 패널 컨테이너: `id="desired-home-panel"`, `rounded-lg border border-line p-4` (기존 토큰 사용).

@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
   loadMydata,
@@ -11,12 +11,17 @@ import { formatWon } from "@/lib/format/money";
 
 import { InputWizard } from "./input-wizard";
 
-const { push } = vi.hoisted(() => ({ push: vi.fn() }));
+const { push, loadKakaoMaps } = vi.hoisted(() => ({
+  push: vi.fn(),
+  loadKakaoMaps: vi.fn(),
+}));
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push }),
   redirect: vi.fn(),
 }));
+
+vi.mock("@/lib/map/kakao-loader", () => ({ loadKakaoMaps }));
 
 const SAMPLE = "persona_e_college_student_basic";
 
@@ -46,6 +51,13 @@ async function goToReview(user: ReturnType<typeof userEvent.setup>) {
 describe("InputWizard", () => {
   beforeEach(() => {
     push.mockClear();
+    loadKakaoMaps.mockClear();
+    loadKakaoMaps.mockReturnValue(new Promise(() => {}));
+    vi.stubEnv("NEXT_PUBLIC_KAKAO_MAP_APP_KEY", "TEST_KEY");
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
   });
 
   it("step 1에 기본정보·목표설정·저축계획이 함께 프리필된다", async () => {
