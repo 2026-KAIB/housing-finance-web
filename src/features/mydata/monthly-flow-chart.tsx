@@ -22,6 +22,7 @@ import {
 import type { MonthlySummary } from "@/lib/contracts/persona";
 import { formatYm, formatYmShort } from "@/lib/format/date";
 import { formatWon } from "@/lib/format/money";
+import { CHART_GRID, seriesColor } from "@/lib/theme/chart-colors";
 
 export type ChartRow = {
   label: string;
@@ -49,7 +50,7 @@ export function MonthlyFlowChart({ rows }: { rows: MonthlySummary[] }) {
       <div className="h-64 w-full">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={toChartRows(rows)}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#dce4de" />
+            <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} />
             <XAxis dataKey="label" tick={{ fontSize: 12 }} />
             <YAxis
               tick={{ fontSize: 12 }}
@@ -63,8 +64,8 @@ export function MonthlyFlowChart({ rows }: { rows: MonthlySummary[] }) {
               }
             />
             <Legend />
-            <Bar dataKey="income" name="입금" fill="#256b46" />
-            <Bar dataKey="expense" name="출금" fill="#b45309" />
+            <Bar dataKey="income" name="입금" fill={seriesColor(0)} />
+            <Bar dataKey="expense" name="출금" fill={seriesColor(1)} />
           </BarChart>
         </ResponsiveContainer>
       </div>
