@@ -3,13 +3,13 @@ import Link from "next/link";
 const services = [
   {
     step: "01",
-    title: "페르소나 선택",
-    description: "대학생 20명 중 한 명을 골라 마이데이터를 불러옵니다.",
+    title: "정보 입력",
+    description: "기본 정보와 목표 금액·시점을 입력합니다.",
   },
   {
     step: "02",
-    title: "정보 확인",
-    description: "계좌·예적금·대출·거래내역과 목표 보증금을 확인합니다.",
+    title: "마이데이터 연동",
+    description: "계좌·예적금·대출·거래내역을 불러옵니다.",
   },
   {
     step: "03",
@@ -26,7 +26,7 @@ export default function HomePage() {
           HOUSING FINANCE CONSULTING
         </p>
         <h1 className="m-0 max-w-[760px] text-[clamp(40px,7vw,72px)] font-bold leading-[1.05] tracking-[-0.06em]">
-          내 금융 흐름으로 계산하는 보증금 마련 로드맵
+          내 금융 흐름으로 계산하는 주택 매매 자금 로드맵
         </h1>
         <p className="m-0 max-w-[680px] text-lg leading-[1.7] text-brand-muted">
           단순한 금리 비교가 아니라 비상자금, 저축여력, 목표 시점을 함께

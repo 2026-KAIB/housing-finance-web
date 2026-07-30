@@ -86,7 +86,7 @@ export function PersonaGrid({ personas }: { personas: PersonaIndexEntry[] }) {
                     value={formatKoreanUnit(persona.headline.monthly_expense)}
                   />
                   <Row
-                    label="목표 보증금"
+                    label="목표 금액"
                     value={formatKoreanUnit(persona.headline.target_price)}
                   />
                   <Row

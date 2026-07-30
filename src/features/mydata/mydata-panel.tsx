@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -14,15 +12,21 @@ import { LoanList } from "./loan-list";
 import { MonthlyFlowChart } from "./monthly-flow-chart";
 import { TransactionPanel } from "./transaction-panel";
 
+/**
+ * 불러온 상태는 호출자가 쥔다. 입력 위저드가 step 3(입력 확인)에서 연동 여부를
+ * 보고해야 하므로 이 컴포넌트 안에 상태를 두면 그 사실을 알 수 없다.
+ */
 export function MydataPanel({
   personaId,
   mydata,
+  loaded,
+  onLoad,
 }: {
   personaId: string;
   mydata: Mydata;
+  loaded: boolean;
+  onLoad: () => void;
 }) {
-  const [loaded, setLoaded] = useState(false);
-
   const demand = mydata.accounts.filter(
     (account) => account.account_kind === "demand",
   );
@@ -38,7 +42,7 @@ export function MydataPanel({
           동의한 금융기관의 계좌·예적금·대출·거래내역을 조회합니다.
         </p>
         <div>
-          <Button type="button" onClick={() => setLoaded(true)}>
+          <Button type="button" onClick={onLoad}>
             마이데이터 불러오기
           </Button>
         </div>

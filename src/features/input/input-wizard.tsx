@@ -6,7 +6,11 @@ import { useState } from "react";
 import { FormProvider, type Resolver, useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
-import type { Mydata, PersonaProfile } from "@/lib/contracts/persona";
+import type {
+  Mydata,
+  PersonaIndexEntry,
+  PersonaProfile,
+} from "@/lib/contracts/persona";
 
 import {
   type InputFormValues,
@@ -14,22 +18,26 @@ import {
   inputFormSchema,
   toFormValues,
 } from "./form-schema";
-import { StepBasic } from "./step-basic";
-import { StepGoal } from "./step-goal";
+import { StepInput } from "./step-input";
 import { StepMydata } from "./step-mydata";
+import { StepReview } from "./step-review";
 
-const STEP_TITLES = ["기본정보", "마이데이터", "목표설정"] as const;
+const STEP_TITLES = ["정보 입력", "마이데이터 연동", "입력 확인"] as const;
 
 export function InputWizard({
   personaId,
+  personas,
   profile,
   mydata,
 }: {
   personaId: string;
+  personas: PersonaIndexEntry[];
   profile: PersonaProfile;
   mydata: Mydata;
 }) {
   const [step, setStep] = useState(0);
+  // step 2에서 불러온 상태를 step 3이 보고해야 하므로 위저드가 쥔다.
+  const [mydataLoaded, setMydataLoaded] = useState(false);
   const router = useRouter();
   const defaultValues = toFormValues(profile);
 
@@ -45,6 +53,7 @@ export function InputWizard({
   });
 
   async function goNext() {
+    // 사용자가 입력하는 값은 전부 step 1에 있으므로 여기서만 검증한다.
     if (step === 0) {
       const valid = await form.trigger();
       if (!valid) return;
@@ -69,9 +78,28 @@ export function InputWizard({
 
       <FormProvider {...form}>
         <form onSubmit={(event) => event.preventDefault()}>
-          {step === 0 && <StepBasic profile={profile} />}
-          {step === 1 && <StepMydata personaId={personaId} mydata={mydata} />}
-          {step === 2 && <StepGoal profile={profile} />}
+          {step === 0 && (
+            <StepInput
+              personaId={personaId}
+              personas={personas}
+              profile={profile}
+            />
+          )}
+          {step === 1 && (
+            <StepMydata
+              personaId={personaId}
+              mydata={mydata}
+              loaded={mydataLoaded}
+              onLoad={() => setMydataLoaded(true)}
+            />
+          )}
+          {step === 2 && (
+            <StepReview
+              profile={profile}
+              mydata={mydata}
+              mydataLoaded={mydataLoaded}
+            />
+          )}
 
           <div className="mt-8 flex gap-2">
             {step > 0 && (

@@ -1,18 +1,40 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { useState } from "react";
 import { describe, expect, it } from "vitest";
 
+import type { Mydata } from "@/lib/contracts/persona";
 import { loadMydata } from "@/lib/fixtures/loader";
 import { formatWon } from "@/lib/format/money";
 
 import { MydataPanel } from "./mydata-panel";
+
+// 불러온 상태는 호출자(입력 위저드)가 쥔다. 그 역할을 대신하는 최소 껍데기.
+function Harness({
+  personaId,
+  mydata,
+}: {
+  personaId: string;
+  mydata: Mydata;
+}) {
+  const [loaded, setLoaded] = useState(false);
+
+  return (
+    <MydataPanel
+      personaId={personaId}
+      mydata={mydata}
+      loaded={loaded}
+      onLoad={() => setLoaded(true)}
+    />
+  );
+}
 
 const WITH_LOAN = "persona_s_college_student_15_poor";
 const NO_LOAN = "persona_e_college_student_basic";
 
 describe("MydataPanel", () => {
   it("불러오기 전에는 목록을 보여주지 않는다", async () => {
-    render(<MydataPanel personaId={NO_LOAN} mydata={await loadMydata(NO_LOAN)} />);
+    render(<Harness personaId={NO_LOAN} mydata={await loadMydata(NO_LOAN)} />);
 
     expect(
       screen.getByRole("button", { name: "마이데이터 불러오기" }),
@@ -22,7 +44,7 @@ describe("MydataPanel", () => {
 
   it("불러오기를 누르면 탭이 나타난다", async () => {
     const user = userEvent.setup();
-    render(<MydataPanel personaId={NO_LOAN} mydata={await loadMydata(NO_LOAN)} />);
+    render(<Harness personaId={NO_LOAN} mydata={await loadMydata(NO_LOAN)} />);
 
     await user.click(screen.getByRole("button", { name: "마이데이터 불러오기" }));
 
@@ -34,7 +56,7 @@ describe("MydataPanel", () => {
   it("계좌 탭에 마스킹된 계좌번호와 잔액을 보여준다", async () => {
     const user = userEvent.setup();
     const mydata = await loadMydata(NO_LOAN);
-    render(<MydataPanel personaId={NO_LOAN} mydata={mydata} />);
+    render(<Harness personaId={NO_LOAN} mydata={mydata} />);
 
     await user.click(screen.getByRole("button", { name: "마이데이터 불러오기" }));
 
@@ -47,7 +69,7 @@ describe("MydataPanel", () => {
 
   it("대출이 없으면 빈 상태를 안내한다", async () => {
     const user = userEvent.setup();
-    render(<MydataPanel personaId={NO_LOAN} mydata={await loadMydata(NO_LOAN)} />);
+    render(<Harness personaId={NO_LOAN} mydata={await loadMydata(NO_LOAN)} />);
 
     await user.click(screen.getByRole("button", { name: "마이데이터 불러오기" }));
     await user.click(screen.getByRole("tab", { name: /대출/ }));
@@ -58,7 +80,7 @@ describe("MydataPanel", () => {
   it("대출이 있으면 상환방식 라벨을 보여준다", async () => {
     const user = userEvent.setup();
     const mydata = await loadMydata(WITH_LOAN);
-    render(<MydataPanel personaId={WITH_LOAN} mydata={mydata} />);
+    render(<Harness personaId={WITH_LOAN} mydata={mydata} />);
 
     await user.click(screen.getByRole("button", { name: "마이데이터 불러오기" }));
     await user.click(screen.getByRole("tab", { name: /대출/ }));
@@ -72,7 +94,7 @@ describe("MydataPanel", () => {
 
   it("기준일 배지를 보여준다", async () => {
     const user = userEvent.setup();
-    render(<MydataPanel personaId={NO_LOAN} mydata={await loadMydata(NO_LOAN)} />);
+    render(<Harness personaId={NO_LOAN} mydata={await loadMydata(NO_LOAN)} />);
 
     await user.click(screen.getByRole("button", { name: "마이데이터 불러오기" }));
     expect(screen.getByText("기준일 2026.07.24")).toBeInTheDocument();

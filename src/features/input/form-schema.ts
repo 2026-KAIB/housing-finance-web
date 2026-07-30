@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import type { PersonaProfile } from "@/lib/contracts/persona";
+import { YM_INPUT, formatYmInput } from "@/lib/format/date";
 
 // z.coerce.number() alone turns "" into 0 (Number("") === 0), so clearing a
 // money field would silently pass validation as ₩0 instead of failing. This
@@ -21,11 +22,9 @@ export const inputFormSchema = z.object({
   monthly_average_expense: won,
   current_assets: won.optional(),
   target_price: won,
-  target_monthly_rent: won,
-  target_management_fee: won,
-  target_move_in_ym: z
-    .string()
-    .regex(/^\d{6}$/, "YYYYMM 형식으로 입력하세요"),
+  // 계약(픽스처)은 YYYYMM이지만 입력은 YYYY-MM으로 받는다. 경계 변환은
+  // toFormValues(→ 폼)와 parseYmInput(→ 계약)이 담당한다.
+  target_move_in_ym: z.string().regex(YM_INPUT, "YYYY-MM 형식으로 입력하세요"),
   risk_preference: z.string().min(1, "위험 성향을 선택하세요"),
   monthly_savings_budget: won,
   lump_sum_budget: won,
@@ -42,9 +41,7 @@ export function toFormValues(profile: PersonaProfile): InputFormValues {
     monthly_average_expense: profile.finance.monthly_average_expense,
     current_assets: profile.finance.current_assets,
     target_price: profile.goal.target_price,
-    target_monthly_rent: profile.goal.target_monthly_rent,
-    target_management_fee: profile.goal.target_management_fee,
-    target_move_in_ym: profile.goal.target_move_in_ym,
+    target_move_in_ym: formatYmInput(profile.goal.target_move_in_ym),
     risk_preference: profile.goal.risk_preference,
     monthly_savings_budget: profile.savings.monthly_savings_budget,
     lump_sum_budget: profile.savings.lump_sum_budget,

@@ -1,6 +1,10 @@
 import { InputWizard } from "@/features/input/input-wizard";
 import { requirePersonaId } from "@/lib/fixtures/guard";
-import { loadMydata, loadProfile } from "@/lib/fixtures/loader";
+import {
+  loadMydata,
+  loadPersonaIndex,
+  loadProfile,
+} from "@/lib/fixtures/loader";
 
 export default async function InputPage({
   searchParams,
@@ -15,7 +19,12 @@ export default async function InputPage({
 
   return (
     <main>
-      <InputWizard personaId={personaId} profile={profile} mydata={mydata} />
+      <InputWizard
+        personaId={personaId}
+        personas={loadPersonaIndex().personas}
+        profile={profile}
+        mydata={mydata}
+      />
     </main>
   );
 }

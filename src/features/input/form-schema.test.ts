@@ -14,9 +14,7 @@ describe("inputFormSchema", () => {
       monthly_income: "800000",
       monthly_average_expense: "700000",
       target_price: "5000000",
-      target_monthly_rent: "200000",
-      target_management_fee: "50000",
-      target_move_in_ym: "202807",
+      target_move_in_ym: "2028-07",
       risk_preference: "stability",
       monthly_savings_budget: "100000",
       lump_sum_budget: "300000",
@@ -27,23 +25,37 @@ describe("inputFormSchema", () => {
     expect(parsed.monthly_income).toBe(800000);
   });
 
-  it("목표 시점이 YYYYMM이 아니면 거부한다", () => {
-    const result = inputFormSchema.safeParse({
+  it("목표 시점이 YYYY-MM이 아니면 거부한다", () => {
+    const base = {
       age: 25,
       household_size: 3,
       monthly_income: 800000,
       monthly_average_expense: 700000,
       target_price: 5000000,
-      target_monthly_rent: 200000,
-      target_management_fee: 50000,
-      target_move_in_ym: "2028-07",
       risk_preference: "stability",
       monthly_savings_budget: 100000,
       lump_sum_budget: 300000,
       emergency_reserve: 700000,
-    });
+    };
 
-    expect(result.success).toBe(false);
+    for (const invalid of ["202807", "2028-13", "2028-7", "2028/07"]) {
+      const result = inputFormSchema.safeParse({
+        ...base,
+        target_move_in_ym: invalid,
+      });
+
+      expect(result.success, invalid).toBe(false);
+      if (!result.success) {
+        expect(result.error.issues[0]?.message).toBe(
+          "YYYY-MM 형식으로 입력하세요",
+        );
+      }
+    }
+
+    expect(
+      inputFormSchema.safeParse({ ...base, target_move_in_ym: "2028-07" })
+        .success,
+    ).toBe(true);
   });
 });
 
@@ -54,9 +66,7 @@ describe("금액 필드(won)", () => {
     monthly_income: 800000,
     monthly_average_expense: 700000,
     target_price: 5000000,
-    target_monthly_rent: 200000,
-    target_management_fee: 50000,
-    target_move_in_ym: "202807",
+    target_move_in_ym: "2028-07",
     risk_preference: "stability",
     monthly_savings_budget: 100000,
     lump_sum_budget: 300000,
@@ -118,7 +128,7 @@ describe("toFormValues", () => {
     expect(values.age).toBe(25);
     expect(values.monthly_income).toBe(800000);
     expect(values.target_price).toBe(5000000);
-    expect(values.target_move_in_ym).toBe("202807");
+    expect(values.target_move_in_ym).toBe("2028-07");
     expect(values.monthly_savings_budget).toBe(100000);
   });
 
