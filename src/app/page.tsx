@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { loadPersonaIndex } from "@/lib/fixtures/loader";
+
 const services = [
   {
     step: "01",
@@ -19,6 +21,10 @@ const services = [
 ];
 
 export default function HomePage() {
+  // 실사용이라면 빈 폼으로 시작한다. 프로토타입은 프리필된 값이 있어야 결과까지
+  // 이어지므로 첫 페르소나로 step 1에 들어가고, 그 안의 선택기로 바꾼다.
+  const [entryPersona] = loadPersonaIndex().personas;
+
   return (
     <main>
       <section className="grid gap-6 pt-16 md:pt-24 pb-16">
@@ -35,9 +41,9 @@ export default function HomePage() {
         <div className="flex flex-wrap gap-3">
           <Link
             className="inline-flex min-h-12 items-center justify-center rounded-xl border border-accent bg-accent px-5 font-bold text-white"
-            href="/personas"
+            href={`/input?persona=${entryPersona.persona_id}`}
           >
-            페르소나 선택하기
+            금융 라이프 컨설팅 받기
           </Link>
         </div>
       </section>
