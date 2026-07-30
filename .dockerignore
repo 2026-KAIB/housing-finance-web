@@ -1,9 +1,12 @@
 .git
 .github
+docs
 node_modules
 .next
+out
+dist
 coverage
 .env
 .env.local
 npm-debug.log*
-
+*.tsbuildinfo
