@@ -184,17 +184,44 @@ bounding box는 (82,54)–(625,601) = 544×548이다.
 | `--chart-1`~`-5` | 차트 | §4.4 램프 |
 | `--destructive` | 오류 | 변경 없음 |
 
-### 4.4 차트 색상
+### 4.4 차트 색상 (검증 완료)
 
-하드코딩된 4색을 KB 계열로 교체한다. 아래는 **잠정값**이며, 구현 시 `dataviz` 스킬로
-계열 구분성과 대비를 확정한다(값이 바뀔 수 있으나 §4.1 토큰과 §2.2 범위는 고정).
+초안의 잠정 4색(`#4e473f`, `#ffcc00`, `#8c6d3f`, `#d9cdb8`)은 `dataviz` 검증기에서
+**탈락**했다: 명도 밴드 이탈(`#4e473f` 0.402 / `#ffcc00` 0.865, 허용 0.43–0.77),
+채도 하한 미달(`#4e473f` 0.016 · `#8c6d3f` 0.074 · `#d9cdb8` 0.031 — 회색으로 읽힘).
+UI용 브랜드 색을 차트 마크에 그대로 쓸 수 없다는 뜻이다.
 
-| 위치 | 현재 | 잠정 변경 |
+같은 KB 색상 계열에서 명도·채도만 조정해(snap-to-passing) 확정한 값:
+
+```
+node scripts/validate_palette.js "#eda100,#8a4b12" --mode light --surface "#faf7f1"
+  [PASS] 명도 밴드 · [PASS] 채도 하한
+  [PASS] CVD 분리 ΔE 28.9(protan) / 28.2(tritan)
+  [PASS] 정상시야 하한 ΔE 29.3
+  [WARN] 표면 대비 #eda100 2.02:1 — 완화 채널 필요
+```
+
+| 위치 | 현재 | 변경 |
 |---|---|---|
-| `allocation-table.tsx:17` `COLORS` | `#256b46`, `#7aa88f`, `#b45309`, `#617068` | `#4e473f`, `#ffcc00`, `#8c6d3f`, `#d9cdb8` |
-| `monthly-flow-chart.tsx:66` 입금 bar | `#256b46` | `#ffcc00` |
-| `monthly-flow-chart.tsx:67` 출금 bar | `#b45309` | `#7a5c3e` |
-| `monthly-flow-chart.tsx:52` grid stroke | `#dce4de` | `#e7e0d4` |
+| `allocation-table.tsx:17` `COLORS` | `#256b46`, `#7aa88f`, `#b45309`, `#617068` | 상수 삭제 → `seriesColor(index)` |
+| `monthly-flow-chart.tsx:66` 입금 bar | `#256b46` | `seriesColor(0)` = `#eda100` |
+| `monthly-flow-chart.tsx:67` 출금 bar | `#b45309` | `seriesColor(1)` = `#8a4b12` |
+| `monthly-flow-chart.tsx:52` grid stroke | `#dce4de` | `CHART_GRID` = `#e7e0d4` |
+
+값은 `src/lib/theme/chart-colors.ts`에 모으고 검증 근거를 주석으로 붙인다. 컴포넌트에
+hex를 하드코딩하지 않는다.
+
+**계열 수:** 픽스처 20개의 `allocations` 길이는 0·1·2뿐이다(각 6·6·8건). 기존 4색
+배열과 `% COLORS.length` 순환은 과설계이고, 순환 배정은 색이 가리키는 대상을 바꿔
+계열 식별을 깬다. 계열 2개 + "기타" 중성색(`#8c857a`)으로 대체한다.
+
+**대비 WARN 완화:** 두 차트 모두 범례와 인접 데이터 표가 있어야 한다. 월별 차트는
+이미 둘 다 있고, 배분 도넛은 범례가 없어 식별이 색과 hover 툴팁에만 의존하므로
+`<Legend />`를 추가한다. 이 완화 채널을 제거하는 변경은 WARN을 실제 실패로 바꾼다.
+
+**§4.3 편차:** shadcn `--chart-1`~`-5`는 재지정하지 않는다. 이 토큰을 읽는 컴포넌트가
+없고(shadcn chart 컴포넌트 미설치), 검증하지 않은 5슬롯 브랜드 팔레트를 남기는 것이
+무채색 기본값을 남기는 것보다 위험하다. 주석으로 `chart-colors.ts`를 가리킨다.
 
 ### 4.5 body 배경 그라디언트
 
@@ -291,7 +318,8 @@ brand: "bg-brand text-brand-ink hover:bg-brand-strong"
 | `--color-muted` 충돌 재발 | §D3 — `@theme`에 추가하지 않고 `:root`에서만 조정 |
 | 알파 처리에서 캐릭터 내부 흰색(렌즈·태블릿) 손실 | flood fill 방식으로 이미 검증 완료(§D4) |
 | 옐로 위 흰 글자 잔존 | CTA를 `text-brand-ink`로 교체(§5.3), 완료 기준 4의 grep |
-| 차트 4색의 계열 구분성 저하 (브라운·탠 근접) | 구현 시 `dataviz` 스킬로 확정(§4.4) |
+| 차트 색의 계열 구분성 저하 | 검증 완료 — CVD ΔE 28.9/28.2, 정상시야 29.3 (§4.4) |
+| 차트 대비 WARN 완화 채널(범례·표) 유실 | §4.4에 명시. 범례·표를 지우는 변경은 리뷰에서 막는다 |
 
 ---
 
@@ -303,5 +331,7 @@ brand: "bg-brand text-brand-ink hover:bg-brand-strong"
 4. `button.tsx` — `brand` variant 추가
 5. `page.tsx` — 히어로 2단 + 캐릭터 + CTA
 6. `page.test.tsx` — 캐릭터·에셋 어서션
-7. 차트 색상 2파일 (`dataviz` 확정 후)
+7. 차트 색상 — `src/lib/theme/chart-colors.ts` 신설 + 2파일 적용 + 도넛 범례
 8. 완료 기준 1~6 검증
+
+구현 계획: `docs/superpowers/plans/2026-07-30-kb-brand-theme.md`
