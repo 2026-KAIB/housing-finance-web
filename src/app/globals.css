@@ -12,18 +12,26 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
+  /* KB 브라운. 옐로가 아니다 — text-primary(button의 link variant, badge)가
+     옐로에서 1.51:1이 된다. --ring도 같은 이유로 브라운이다(포커스 링은
+     인접색 대비 3:1 필요). */
+  --primary: #4e473f;
+  --primary-foreground: #ffffff;
+  --secondary: #f2ede4;
+  --secondary-foreground: #4e473f;
+  --muted: #f4efe7;
+  --muted-foreground: #6b6259;
+  /* --accent/--accent-foreground는 사문 토큰이다. 프로젝트 @theme 블록이
+     --color-accent를 직접 선언해 유틸리티에서 이긴다. */
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --border: #e7e0d4;
+  --input: #e7e0d4;
+  --ring: #4e473f;
+  /* 이 프로젝트의 차트는 src/lib/theme/chart-colors.ts를 쓴다. shadcn
+     chart 컴포넌트가 없어 아래 토큰을 읽는 곳이 없으므로, 검증하지 않은
+     5슬롯 브랜드 팔레트를 남기지 않고 기본값을 둔다. */
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
@@ -46,7 +54,7 @@ body {
   background:
     radial-gradient(
       circle at top right,
-      rgba(37, 107, 70, 0.12),
+      rgba(255, 204, 0, 0.22),
       transparent 28rem
     ),
     var(--color-background);
@@ -153,13 +161,24 @@ a {
    collides with shadcn's surface token (bg-muted, used by TabsList,
    Button's outline/ghost hover, Badge, Card footer, Table). The project's
    text color lives under --color-brand-muted instead, used via
-   text-brand-muted. See globals.test.ts for the regression test. */
+   text-brand-muted. See globals.test.ts for the regression test.
+
+   KB금융그룹 팔레트. kbstar.com·kbland.kr의 실제 CSS에서 추출했다
+   (#ffcc00은 양쪽 공통, 브라운은 #4e473f/#4c4a3f).
+
+   역할 분리가 핵심이다: --color-accent(브라운)는 텍스트·강조,
+   --color-brand(옐로)는 채움 전용이다. 옐로는 흰 배경 대비 1.51:1이라
+   텍스트로 쓸 수 없어서, 겸용 토큰 하나로 두면 text-accent를 쓰는
+   6곳이 동시에 읽히지 않게 된다. 옐로 위 텍스트는 --color-brand-ink. */
 @theme {
-  --color-background: #f5f7f3;
+  --color-background: #faf7f1;
   --color-surface: #ffffff;
-  --color-text: #17211b;
-  --color-brand-muted: #617068;
-  --color-line: #dce4de;
-  --color-accent: #256b46;
-  --color-accent-soft: #e1f2e8;
+  --color-text: #26221c;
+  --color-brand-muted: #6b6259;
+  --color-line: #e7e0d4;
+  --color-accent: #4e473f;
+  --color-accent-soft: #fff6d9;
+  --color-brand: #ffcc00;
+  --color-brand-strong: #f5b800;
+  --color-brand-ink: #3d3730;
 }

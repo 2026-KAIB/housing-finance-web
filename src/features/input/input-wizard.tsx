@@ -112,12 +112,12 @@ export function InputWizard({
               </Button>
             )}
             {step < STEP_TITLES.length - 1 && (
-              <Button type="button" onClick={goNext}>
+              <Button type="button" variant="brand" onClick={goNext}>
                 다음
               </Button>
             )}
             {step === STEP_TITLES.length - 1 && (
-              <Button type="button" onClick={onSubmit}>
+              <Button type="button" variant="brand" onClick={onSubmit}>
                 결과 보기
               </Button>
             )}

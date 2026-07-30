@@ -34,13 +34,17 @@ import { describe, expect, it } from "vitest";
 // right-looking text, it just doesn't win.
 
 const EXPECTED_TOKENS: Record<string, string> = {
-  "--color-background": "#f5f7f3",
+  "--color-background": "#faf7f1",
   "--color-surface": "#ffffff",
-  "--color-text": "#17211b",
-  "--color-brand-muted": "#617068",
-  "--color-line": "#dce4de",
-  "--color-accent": "#256b46",
-  "--color-accent-soft": "#e1f2e8",
+  "--color-text": "#26221c", // 배경 대비 14.79:1
+  "--color-brand-muted": "#6b6259", // 배경 대비 5.58:1
+  "--color-line": "#e7e0d4",
+  "--color-accent": "#4e473f", // KB 브라운. 흰 배경 9.14:1
+  "--color-accent-soft": "#fff6d9",
+  // 옐로는 채움 전용이다. 흰 배경 1.51:1이라 텍스트에 쓸 수 없다.
+  "--color-brand": "#ffcc00",
+  "--color-brand-strong": "#f5b800",
+  "--color-brand-ink": "#3d3730", // 옐로 위 7.77:1
 };
 
 async function compileGlobalsCss(): Promise<string> {
@@ -83,5 +87,27 @@ describe("globals.css 브랜드 토큰이 shadcn 블록에 가려지지 않는�
     // shadcn surfaces (TabsList, Button hover, Badge, Card footer, Table)
     // would go dark slate-green again.
     expect(values).not.toEqual(["#617068"]);
+  });
+});
+
+describe("shadcn :root 토큰이 KB 계열로 재지정된다", () => {
+  // .dark 블록이 같은 키를 다시 선언하므로 컴파일 결과에 2건이 나온다.
+  // 라이트 모드 선언이 먼저 오므로 [0]을 본다. .dark는 범위 밖이다.
+  it.each([
+    ["--primary", "#4e473f"], // 옐로가 아니다: text-primary(link 버튼·badge)가 1.51:1이 된다
+    ["--ring", "#4e473f"], // 포커스 링은 인접색 대비 3:1이 필요하다
+    ["--border", "#e7e0d4"],
+    ["--input", "#e7e0d4"],
+  ])("%s는 %s로 해결된다", async (token, expected) => {
+    const compiled = await compileGlobalsCss();
+
+    expect(resolvedValuesFor(compiled, token)[0]).toBe(expected);
+  });
+
+  it("body 배경 글로우가 녹색이 아니라 KB 옐로다", async () => {
+    const compiled = await compileGlobalsCss();
+
+    expect(compiled).toContain("rgba(255, 204, 0, 0.22)");
+    expect(compiled).not.toContain("rgba(37, 107, 70");
   });
 });

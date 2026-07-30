@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { loadPersonaIndex } from "@/lib/fixtures/loader";
@@ -27,24 +28,45 @@ export default function HomePage() {
 
   return (
     <main>
-      <section className="grid gap-6 pt-16 md:pt-24 pb-16">
-        <p className="m-0 font-bold text-accent">
-          HOUSING FINANCE CONSULTING
-        </p>
-        <h1 className="m-0 max-w-[760px] text-[clamp(40px,7vw,72px)] font-bold leading-[1.05] tracking-[-0.06em]">
-          내 금융 흐름으로 계산하는 주택 매매 자금 로드맵
-        </h1>
-        <p className="m-0 max-w-[680px] text-lg leading-[1.7] text-brand-muted">
-          단순한 금리 비교가 아니라 비상자금, 저축여력, 목표 시점을 함께
-          계산합니다.
-        </p>
-        <div className="flex flex-wrap gap-3">
-          <Link
-            className="inline-flex min-h-12 items-center justify-center rounded-xl border border-accent bg-accent px-5 font-bold text-white"
-            href={`/input?persona=${entryPersona.persona_id}`}
-          >
-            금융 라이프 컨설팅 받기
-          </Link>
+      <section className="grid items-center gap-8 pt-16 pb-16 md:grid-cols-2 md:pt-24">
+        <div className="order-2 grid gap-6 md:order-1">
+          <p className="m-0 font-bold text-accent">
+            HOUSING FINANCE CONSULTING
+          </p>
+          <h1 className="m-0 max-w-[760px] text-[clamp(40px,7vw,72px)] font-bold leading-[1.05] tracking-[-0.06em]">
+            내 금융 흐름으로 계산하는 주택 매매 자금 로드맵
+          </h1>
+          <p className="m-0 max-w-[680px] text-lg leading-[1.7] text-brand-muted">
+            단순한 금리 비교가 아니라 비상자금, 저축여력, 목표 시점을 함께
+            계산합니다.
+          </p>
+          <div className="flex flex-wrap gap-3">
+            <Link
+              className="inline-flex min-h-12 items-center justify-center rounded-xl border border-brand-strong bg-brand px-5 font-bold text-brand-ink transition-colors hover:bg-brand-strong"
+              href={`/input?persona=${entryPersona.persona_id}`}
+            >
+              금융 라이프 컨설팅 받기
+            </Link>
+          </div>
+        </div>
+
+        <div className="order-1 flex justify-center md:order-2 md:justify-end">
+          <div className="relative flex aspect-square w-40 items-center justify-center md:w-[320px]">
+            {/* 캐릭터 몸통이 옐로라 솔리드 옐로 배경에서는 분리가 약하다.
+                부드러운 글로우로 브랜드색을 깔고 캐릭터는 띄운다. */}
+            <div
+              aria-hidden
+              className="absolute inset-0 rounded-full bg-[radial-gradient(circle,var(--color-brand)_0%,transparent_70%)] opacity-60"
+            />
+            <Image
+              alt="KB 부동산 캐릭터"
+              className="relative h-auto w-full"
+              height={556}
+              priority
+              src="/character/kb-star.png"
+              width={560}
+            />
+          </div>
         </div>
       </section>
 

@@ -1,6 +1,13 @@
 "use client";
 
-import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+import {
+  Cell,
+  Legend,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+} from "recharts";
 
 import {
   Table,
@@ -13,8 +20,7 @@ import {
 import type { Allocation } from "@/lib/contracts/result";
 import { formatIsoDate } from "@/lib/format/date";
 import { formatKoreanUnit, formatScore, toNumber } from "@/lib/format/money";
-
-const COLORS = ["#256b46", "#7aa88f", "#b45309", "#617068"];
+import { CHART_SURFACE, seriesColor } from "@/lib/theme/chart-colors";
 
 export function AllocationTable({
   allocations,
@@ -31,9 +37,17 @@ export function AllocationTable({
       <div className="h-64 w-full">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
-            <Pie data={chartData} dataKey="value" nameKey="name" innerRadius={60}>
+            <Pie
+              data={chartData}
+              dataKey="value"
+              nameKey="name"
+              innerRadius={60}
+              paddingAngle={2}
+              stroke={CHART_SURFACE}
+              strokeWidth={2}
+            >
               {chartData.map((entry, index) => (
-                <Cell key={entry.name} fill={COLORS[index % COLORS.length]} />
+                <Cell key={entry.name} fill={seriesColor(index)} />
               ))}
             </Pie>
             <Tooltip
@@ -43,6 +57,7 @@ export function AllocationTable({
                   : value
               }
             />
+            <Legend />
           </PieChart>
         </ResponsiveContainer>
       </div>

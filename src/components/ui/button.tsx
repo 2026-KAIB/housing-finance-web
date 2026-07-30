@@ -9,6 +9,9 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: "bg-primary text-primary-foreground hover:bg-primary/80",
+        // KB 옐로 CTA. 옐로 위 글자는 반드시 text-brand-ink다 —
+        // text-white는 1.51:1, text-brand-ink는 7.77:1.
+        brand: "bg-brand text-brand-ink hover:bg-brand-strong",
         outline:
           "border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
         secondary:
