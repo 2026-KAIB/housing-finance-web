@@ -1,6 +1,7 @@
 name: Web CI/CD
 
 on:
+  workflow_dispatch:
   pull_request:
   push:
     branches:
@@ -44,7 +45,10 @@ jobs:
         run: npm run build
 
   publish:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: >-
+      (github.event_name == 'push' ||
+      github.event_name == 'workflow_dispatch') &&
+      github.ref == 'refs/heads/main'
     needs:
       - validate
     runs-on: ubuntu-latest
@@ -87,7 +91,8 @@ jobs:
 
   deploy:
     if: >-
-      github.event_name == 'push' &&
+      (github.event_name == 'push' ||
+      github.event_name == 'workflow_dispatch') &&
       github.ref == 'refs/heads/main' &&
       vars.ENABLE_HOME_DEPLOY == 'true'
     needs:

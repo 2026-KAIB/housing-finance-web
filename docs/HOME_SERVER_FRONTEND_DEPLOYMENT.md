@@ -145,6 +145,18 @@ Value: true
 배포 작업은 건너뛴다. 따라서 runner 설치 전에 workflow를 main에
 머지해도 배포 작업이 대기 상태로 남지 않는다.
 
+변수를 만든 뒤 첫 배포를 시작하려면 다음 메뉴에서 `main`을 선택하고
+`Run workflow`를 누른다.
+
+```text
+Actions
+-> Web CI/CD
+-> Run workflow
+-> Branch: main
+```
+
+이후에는 `main`이 갱신될 때마다 같은 과정이 자동으로 실행된다.
+
 ### main 보호
 
 `main` 브랜치에는 다음 보호 규칙을 권장한다.
