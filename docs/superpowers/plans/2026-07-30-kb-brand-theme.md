@@ -542,6 +542,7 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
   - `CHART_SERIES: readonly ["#eda100", "#8a4b12"]`
   - `CHART_OTHER: "#8c857a"`
   - `CHART_GRID: "#e7e0d4"`
+  - `CHART_SURFACE: "#ffffff"`
   - `seriesColor(index: number): string` — 인덱스 0·1은 계열색, 2 이상은 `CHART_OTHER`
 
 - [ ] **Step 1: 실패하는 테스트를 쓴다**
@@ -555,6 +556,7 @@ import {
   CHART_GRID,
   CHART_OTHER,
   CHART_SERIES,
+  CHART_SURFACE,
   seriesColor,
 } from "./chart-colors";
 
@@ -574,6 +576,10 @@ describe("차트 계열 색상", () => {
 
   it("그리드는 본문 구분선과 같은 값이라 뒤로 물러난다", () => {
     expect(CHART_GRID).toBe("#e7e0d4");
+  });
+
+  it("마크 사이 간격은 표면색과 같다", () => {
+    expect(CHART_SURFACE).toBe("#ffffff");
   });
 });
 ```
@@ -620,6 +626,12 @@ export const CHART_OTHER = "#8c857a";
 /** 그리드·축처럼 뒤로 물러나야 하는 선. --color-line과 같은 값. */
 export const CHART_GRID = "#e7e0d4";
 
+/**
+ * 마크 사이를 벌리는 표면색. --color-surface와 같은 값이다. 인접한 채움
+ * 사이에 2px 표면색 간격을 두면 두 계열이 맞닿아 섞여 보이지 않는다.
+ */
+export const CHART_SURFACE = "#ffffff";
+
 export function seriesColor(index: number): string {
   return CHART_SERIES[index] ?? CHART_OTHER;
 }
@@ -656,7 +668,7 @@ import { CHART_GRID, seriesColor } from "@/lib/theme/chart-colors";
 `allocation-table.tsx`에서 `COLORS` 상수(17행)를 **삭제**하고 import를 추가한다:
 
 ```tsx
-import { seriesColor } from "@/lib/theme/chart-colors";
+import { CHART_SURFACE, seriesColor } from "@/lib/theme/chart-colors";
 ```
 
 `Legend`를 recharts import에 추가한다:
@@ -682,7 +694,7 @@ import {
               nameKey="name"
               innerRadius={60}
               paddingAngle={2}
-              stroke="#ffffff"
+              stroke={CHART_SURFACE}
               strokeWidth={2}
             >
               {chartData.map((entry, index) => (
