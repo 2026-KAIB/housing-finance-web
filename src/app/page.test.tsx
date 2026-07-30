@@ -46,6 +46,23 @@ describe("HomePage", () => {
     ).toBeInTheDocument();
   });
 
+  it("메인 화면에 KB 캐릭터를 보여준다", () => {
+    render(<HomePage />);
+
+    expect(screen.getByAltText("KB 부동산 캐릭터")).toBeInTheDocument();
+  });
+
+  it("시작 버튼은 옐로 위에 흰 글자를 쓰지 않는다", () => {
+    render(<HomePage />);
+
+    // #ffcc00 위의 흰 글자는 1.51:1이다. text-brand-ink(#3d3730)는 7.77:1.
+    const cta = screen.getByRole("link", { name: "금융 라이프 컨설팅 받기" });
+
+    expect(cta.className).toContain("bg-brand");
+    expect(cta.className).toContain("text-brand-ink");
+    expect(cta.className).not.toContain("text-white");
+  });
+
   // 캐릭터는 public 경로 문자열로 참조하므로 파일이 없어도 타입체크·렌더가
   // 통과하고 런타임 404로만 드러난다. 파일 자체를 테스트로 붙잡는다.
   //
