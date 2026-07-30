@@ -140,6 +140,18 @@ describe("InputWizard", () => {
     ).not.toBeInTheDocument();
   });
 
+  it("희망 주택 패널을 열어도 다음 단계로 넘어간다", async () => {
+    const user = userEvent.setup();
+    await renderWizard();
+
+    await user.click(screen.getByRole("button", { name: "희망 주택" }));
+    await user.click(screen.getByRole("button", { name: "다음" }));
+
+    expect(
+      screen.getByRole("heading", { level: 2, name: /마이데이터/ }),
+    ).toBeInTheDocument();
+  });
+
   it("step 3에서 입력값을 다시 보여준다", async () => {
     const user = userEvent.setup();
     await renderWizard();
