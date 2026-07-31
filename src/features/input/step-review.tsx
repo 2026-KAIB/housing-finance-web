@@ -5,6 +5,7 @@ import { useFormContext } from "react-hook-form";
 
 import { Badge } from "@/components/ui/badge";
 import type { Mydata, PersonaProfile } from "@/lib/contracts/persona";
+import { seoulDistrictLabel } from "@/lib/constants/seoul-districts";
 import { riskPreferenceLabel } from "@/lib/format/codes";
 import { formatYm, formatYmd, parseYmInput } from "@/lib/format/date";
 import { formatWon } from "@/lib/format/money";
@@ -53,7 +54,11 @@ export function StepReview({
 
           <div>
             <ReadonlyRow
-              label="목표 금액"
+              label="지역"
+              value={seoulDistrictLabel(values.target_region)}
+            />
+            <ReadonlyRow
+              label="목표 가격"
               value={formatWon(values.target_price)}
             />
             <ReadonlyRow
