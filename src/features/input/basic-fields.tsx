@@ -4,7 +4,7 @@ import { useFormContext } from "react-hook-form";
 
 import { Input } from "@/components/ui/input";
 import type { PersonaProfile } from "@/lib/contracts/persona";
-import { formatKoreanUnit } from "@/lib/format/money";
+import { koreanUnitHint } from "@/lib/format/money";
 
 import { FieldRow } from "./field-row";
 import type { InputFormValues } from "./form-schema";
@@ -12,6 +12,7 @@ import type { InputFormValues } from "./form-schema";
 export function BasicFields({ profile }: { profile: PersonaProfile }) {
   const {
     register,
+    watch,
     formState: { errors },
   } = useFormContext<InputFormValues>();
 
@@ -36,7 +37,7 @@ export function BasicFields({ profile }: { profile: PersonaProfile }) {
       <FieldRow
         label="월 소득 (원)"
         htmlFor="monthly_income"
-        hint={formatKoreanUnit(profile.finance.monthly_income)}
+        hint={koreanUnitHint(watch("monthly_income"))}
         error={errors.monthly_income?.message}
       >
         <Input
@@ -49,7 +50,7 @@ export function BasicFields({ profile }: { profile: PersonaProfile }) {
       <FieldRow
         label="월 평균 지출 (원)"
         htmlFor="monthly_average_expense"
-        hint={formatKoreanUnit(profile.finance.monthly_average_expense)}
+        hint={koreanUnitHint(watch("monthly_average_expense"))}
         error={errors.monthly_average_expense?.message}
       >
         <Input

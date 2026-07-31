@@ -85,7 +85,8 @@ describe("StepReview", () => {
     expect(rowValue("가구원수")).toBe("3명");
     expect(rowValue("월 소득")).toBe("800,000원");
     expect(rowValue("월 평균 지출")).toBe("700,000원");
-    expect(rowValue("목표 금액")).toBe("5,000,000원");
+    expect(rowValue("지역")).toBe("서초구");
+    expect(rowValue("목표 가격")).toBe("5,000,000원");
     expect(rowValue("목표 시점")).toBe("2028년 7월");
     expect(rowValue("위험 성향")).toBe("안정형");
     expect(rowValue("월 저축 예산")).toBe("100,000원");
@@ -98,8 +99,20 @@ describe("StepReview", () => {
       overrides: { target_price: 9000000, target_move_in_ym: "2029-12" },
     });
 
-    expect(rowValue("목표 금액")).toBe("9,000,000원");
+    expect(rowValue("목표 가격")).toBe("9,000,000원");
     expect(rowValue("목표 시점")).toBe("2029년 12월");
+  });
+
+  it("전체를 고르면 서울 전체로 표기한다", async () => {
+    await renderReview({ overrides: { target_region: "ALL" } });
+
+    expect(rowValue("지역")).toBe("서울 전체");
+  });
+
+  it("고른 구의 이름을 표기한다", async () => {
+    await renderReview({ overrides: { target_region: "11680" } });
+
+    expect(rowValue("지역")).toBe("강남구");
   });
 
   it("사용자가 고치지 않는 프로필 정보도 함께 보여준다", async () => {

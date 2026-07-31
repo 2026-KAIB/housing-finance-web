@@ -16,7 +16,7 @@
   },
   "goal": {
     "target_housing_type": "monthly_rent",
-    "target_region": "30200",
+    "target_region": "11260",
     "target_price": 8000000,
     "target_lease_deposit": 8000000,
     "target_monthly_rent": 300000,

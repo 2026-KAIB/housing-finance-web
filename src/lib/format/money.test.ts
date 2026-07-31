@@ -5,6 +5,7 @@ import {
   formatRate,
   formatScore,
   formatWon,
+  koreanUnitHint,
   toNumber,
 } from "./money";
 
@@ -47,6 +48,31 @@ describe("formatKoreanUnit", () => {
 
   it("음수는 부호를 앞에 붙인다", () => {
     expect(formatKoreanUnit(-700000)).toBe("-70만원");
+  });
+});
+
+describe("koreanUnitHint", () => {
+  it("입력값을 한글 단위로 바꾼다", () => {
+    expect(koreanUnitHint(700000)).toBe("70만원");
+    expect(koreanUnitHint(0)).toBe("0원");
+  });
+
+  it("숫자 입력이 돌려주는 문자열도 받는다", () => {
+    // <input type="number">는 값을 문자열로 돌려준다.
+    expect(koreanUnitHint("700000")).toBe("70만원");
+  });
+
+  it("비어 있으면 힌트를 숨긴다", () => {
+    for (const blank of ["", undefined, null]) {
+      expect(koreanUnitHint(blank)).toBeUndefined();
+    }
+  });
+
+  it("숫자로 볼 수 없으면 던지지 않고 힌트를 숨긴다", () => {
+    // formatKoreanUnit은 이런 값에 throw한다. 힌트가 라이브 입력에 붙는
+    // 이상 렌더 중에 던지면 화면 전체가 죽으므로 여기서 막는다.
+    expect(koreanUnitHint("N/A")).toBeUndefined();
+    expect(koreanUnitHint(Number.NaN)).toBeUndefined();
   });
 });
 

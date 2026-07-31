@@ -5,7 +5,6 @@ import { useFormContext } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import type { PersonaProfile } from "@/lib/contracts/persona";
 import { riskPreferenceLabel } from "@/lib/format/codes";
-import { formatKoreanUnit } from "@/lib/format/money";
 
 import { FieldRow } from "./field-row";
 import type { InputFormValues } from "./form-schema";
@@ -23,16 +22,7 @@ export function GoalFields({ profile }: { profile: PersonaProfile }) {
     : [...RISK_OPTIONS, profile.goal.risk_preference];
 
   return (
-    <div className="grid gap-4 md:grid-cols-3">
-      <FieldRow
-        label="목표 금액 (원)"
-        htmlFor="target_price"
-        hint={formatKoreanUnit(profile.goal.target_price)}
-        error={errors.target_price?.message}
-      >
-        <Input id="target_price" type="number" {...register("target_price")} />
-      </FieldRow>
-
+    <div className="grid gap-4 md:grid-cols-2">
       <FieldRow
         label="목표 시점 (YYYY-MM)"
         htmlFor="target_move_in_ym"

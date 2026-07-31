@@ -33,6 +33,23 @@ export function formatKoreanUnit(value: string | number): string {
   return `${sign}${parts.join(" ")}원`;
 }
 
+/**
+ * 입력 중인 폼 값을 힌트로 보여줄 때 쓴다. formatKoreanUnit과 달리 던지지 않고
+ * undefined를 돌려주며, FieldRow는 undefined를 받으면 힌트를 그리지 않는다.
+ *
+ * 던지지 않는 것이 핵심이다 — 힌트가 라이브 입력에 붙어 있으므로, 사용자가
+ * 필드를 비우거나 숫자로 볼 수 없는 값을 남긴 순간 렌더 도중 예외가 나면
+ * 화면 전체가 죽는다.
+ */
+export function koreanUnitHint(value: unknown): string | undefined {
+  if (value === "" || value === undefined || value === null) return undefined;
+
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) return undefined;
+
+  return formatKoreanUnit(parsed);
+}
+
 export function formatRate(value: number): string {
   const percent = Math.round(value * 10_000) / 100;
   return `연 ${percent}%`;
