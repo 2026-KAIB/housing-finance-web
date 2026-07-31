@@ -161,7 +161,10 @@ Expected: FAIL — `Failed to resolve import "./seoul-districts"`
  * 부동산 DB(`db_schema_realestate.md`)의 `sgg_codes` 테이블과 같은 값이라,
  * 나중에 API로 갈아끼울 때 형식을 바꿀 필요가 없다.
  */
-export const SEOUL_DISTRICTS = [
+export const SEOUL_DISTRICTS: readonly {
+  readonly code: string;
+  readonly name: string;
+}[] = [
   { code: "11110", name: "종로구" },
   { code: "11140", name: "중구" },
   { code: "11170", name: "용산구" },
@@ -187,7 +190,7 @@ export const SEOUL_DISTRICTS = [
   { code: "11680", name: "강남구" },
   { code: "11710", name: "송파구" },
   { code: "11740", name: "강동구" },
-] as const satisfies readonly { code: string; name: string }[];
+];
 
 /**
  * "아직 안 골랐다"(빈 문자열)와 구분되는 "전체로 골랐다" 센티널.
@@ -219,7 +222,11 @@ export function seoulDistrictLabel(code: string): string {
 - [ ] **Step 4: 테스트가 통과하는지 확인한다**
 
 Run: `npx vitest run src/lib/constants/seoul-districts.test.ts`
-Expected: PASS — 12 tests
+Expected: PASS — 11 tests (5 + 3 + 3)
+
+`as const`을 쓰지 않는 이유: 리터럴 타입이 보존되면 `district.code`가 25개 코드의 유니온이
+되어 테스트의 `district.code === ALL_DISTRICTS`(`"ALL"` 리터럴) 비교가 TS2367(겹치지 않는
+비교)로 typecheck를 깨뜨린다. Tasks 2-5 중 리터럴 유니온이 필요한 곳은 없다.
 
 - [ ] **Step 5: 전체 검증**
 
