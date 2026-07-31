@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { FormProvider, useForm } from "react-hook-form";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -10,10 +10,37 @@ import { DesiredHomePanel } from "./desired-home-panel";
 import { type InputFormValues, toFormValues } from "./form-schema";
 
 const { loadKakaoMaps } = vi.hoisted(() => ({ loadKakaoMaps: vi.fn() }));
+const { fetchRegionPrice } = vi.hoisted(() => ({ fetchRegionPrice: vi.fn() }));
 
 vi.mock("@/lib/map/kakao-loader", () => ({ loadKakaoMaps }));
 
+// 패널이 시세를 조회하므로, 목이 없으면 테스트가 실제 네트워크로 나간다.
+vi.mock("@/lib/api/region-price", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/lib/api/region-price")>()),
+  fetchRegionPrice,
+}));
+
 const SAMPLE = "persona_e_college_student_basic";
+
+// persona_e는 11650(서초구)로 프리필된다.
+const PRICE_REFERENCE = {
+  schema_version: "1.0.0" as const,
+  sgg_code: "11650",
+  sgg_name: "서초구",
+  stat_level: "sgg_all" as const,
+  computed_at: "2026-07-30T09:00:00+09:00",
+  bands: [
+    {
+      area_band: "60_85" as const,
+      trade_count: 210,
+      median_price_won: 1_800_000_000,
+      p25_price_won: 1_500_000_000,
+      p75_price_won: 2_100_000_000,
+      median_price_per_pyeong_won: 28_000_000,
+      is_reliable: true,
+    },
+  ],
+};
 
 function Harness({ profile }: { profile: PersonaProfile }) {
   const form = useForm<InputFormValues>({
@@ -34,6 +61,8 @@ async function renderPanel() {
 }
 
 beforeEach(() => {
+  fetchRegionPrice.mockReset();
+  fetchRegionPrice.mockResolvedValue(PRICE_REFERENCE);
   loadKakaoMaps.mockClear();
   // 영원히 pending인 Promise를 주면 지도는 로딩 상태로 멈춘다.
   // 비동기 상태 전이 없이 패널 구조만 검증하기 위한 선택이다.
@@ -131,5 +160,33 @@ describe("DesiredHomePanel 배치", () => {
     const { container } = render(<Harness profile={profile} />);
 
     expect(container.querySelector("#desired-home-panel")).not.toBeNull();
+  });
+});
+
+describe("DesiredHomePanel 시세", () => {
+  it("선택된 지역의 시세를 조회한다", async () => {
+    await renderPanel();
+
+    await waitFor(() =>
+      expect(fetchRegionPrice).toHaveBeenCalledWith("11650", expect.anything()),
+    );
+  });
+
+  it("시세 행을 누르면 목표 가격이 채워진다", async () => {
+    const user = userEvent.setup();
+    await renderPanel();
+
+    await user.click(await screen.findByRole("button", { name: /60~85㎡/ }));
+
+    expect(screen.getByLabelText("목표 가격 (원)")).toHaveValue(1_800_000_000);
+  });
+
+  it("시세 표는 지도 바깥에 있다", async () => {
+    await renderPanel();
+
+    const map = screen.getByRole("region", { name: "대한민국 지도" });
+    const table = await screen.findByRole("region", { name: /시세/ });
+
+    expect(map.contains(table)).toBe(false);
   });
 });

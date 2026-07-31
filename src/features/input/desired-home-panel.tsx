@@ -14,13 +14,17 @@ import { koreanUnitHint } from "@/lib/format/money";
 
 import { FieldRow } from "./field-row";
 import type { InputFormValues } from "./form-schema";
+import { RegionPriceTable } from "./region-price-table";
 
 export function DesiredHomePanel({ id }: { id: string }) {
   const {
     register,
+    setValue,
     watch,
     formState: { errors },
   } = useFormContext<InputFormValues>();
+
+  const targetRegion = watch("target_region");
 
   return (
     <div id={id} className="grid gap-4">
@@ -60,6 +64,14 @@ export function DesiredHomePanel({ id }: { id: string }) {
           <Input id="target_price" type="number" {...register("target_price")} />
         </FieldRow>
       </div>
+
+      <RegionPriceTable
+        sggCode={targetRegion ?? ""}
+        onSelectPrice={(won) =>
+          // shouldValidate가 없으면 값은 채워졌는데 기존 검증 오류가 남는다.
+          setValue("target_price", won, { shouldValidate: true })
+        }
+      />
 
       <KakaoMap className="h-[260px] md:h-[360px]" />
     </div>

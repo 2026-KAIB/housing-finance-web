@@ -11,9 +11,10 @@ import { formatWon } from "@/lib/format/money";
 
 import { InputWizard } from "./input-wizard";
 
-const { push, loadKakaoMaps } = vi.hoisted(() => ({
+const { push, loadKakaoMaps, fetchRegionPrice } = vi.hoisted(() => ({
   push: vi.fn(),
   loadKakaoMaps: vi.fn(),
+  fetchRegionPrice: vi.fn(),
 }));
 
 vi.mock("next/navigation", () => ({
@@ -22,6 +23,14 @@ vi.mock("next/navigation", () => ({
 }));
 
 vi.mock("@/lib/map/kakao-loader", () => ({ loadKakaoMaps }));
+
+// 희망 주택 패널은 프리필된 지역의 시세를 조회한다. 목이 없으면 테스트가
+// http://localhost:8000 으로 실제 요청을 보내고, 그 포트에 개발 서버가 떠
+// 있는지에 따라 결과가 달라진다.
+vi.mock("@/lib/api/region-price", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/lib/api/region-price")>()),
+  fetchRegionPrice,
+}));
 
 const SAMPLE = "persona_e_college_student_basic";
 
@@ -63,6 +72,10 @@ describe("InputWizard", () => {
     push.mockClear();
     loadKakaoMaps.mockClear();
     loadKakaoMaps.mockReturnValue(new Promise(() => {}));
+    // 영원히 pending이면 시세 표는 로딩 상태로 멈춘다. 이 파일은 폼 동작을
+    // 보므로 시세 응답의 내용이 필요 없다.
+    fetchRegionPrice.mockReset();
+    fetchRegionPrice.mockReturnValue(new Promise(() => {}));
     vi.stubEnv("NEXT_PUBLIC_KAKAO_MAP_APP_KEY", "TEST_KEY");
   });
 
