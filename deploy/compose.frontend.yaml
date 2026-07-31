@@ -1,0 +1,41 @@
+services:
+  web:
+    image: ${WEB_IMAGE:?WEB_IMAGE must be set}
+    container_name: housing-finance-web
+    restart: unless-stopped
+    init: true
+    environment:
+      NODE_ENV: production
+      HOSTNAME: 0.0.0.0
+      PORT: "3000"
+      BACKEND_API_URL: ${BACKEND_API_URL:-http://housing-finance-api:8000}
+    ports:
+      - "${WEB_BIND_ADDRESS:-0.0.0.0}:${WEB_HOST_PORT:-18082}:3000"
+    networks:
+      - platform
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - >-
+          fetch('http://127.0.0.1:3000/health')
+          .then((response) => { if (!response.ok) process.exit(1) })
+          .catch(() => process.exit(1))
+      interval: 10s
+      timeout: 3s
+      retries: 6
+      start_period: 20s
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+      - /app/.next/cache:size=128m,uid=1001,gid=1001
+
+networks:
+  platform:
+    name: ${PLATFORM_NETWORK:-housing-platform}
+    external: true
