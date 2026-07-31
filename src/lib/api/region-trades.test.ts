@@ -33,7 +33,9 @@ const PAGE: RegionTradePage = {
 
 function queryOf(call: number = 0): URLSearchParams {
   const [url] = vi.mocked(fetch).mock.calls[call]!;
-  return new URL(String(url)).searchParams;
+  // NEXT_PUBLIC_API_BASE_URL이 비면 같은 출처의 상대 경로(/api/...)로 나간다.
+  // 상대 경로에는 기준 URL이 있어야 URL 파서가 받아들인다.
+  return new URL(String(url), "http://localhost").searchParams;
 }
 
 beforeEach(() => {
