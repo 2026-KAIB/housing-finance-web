@@ -10,17 +10,17 @@ import { type InputFormValues, toFormValues } from "./form-schema";
 import { StepInput } from "./step-input";
 
 const { loadKakaoMaps } = vi.hoisted(() => ({ loadKakaoMaps: vi.fn() }));
-const { fetchRegionPrice } = vi.hoisted(() => ({ fetchRegionPrice: vi.fn() }));
+const { fetchRegionTrades } = vi.hoisted(() => ({ fetchRegionTrades: vi.fn() }));
 
 vi.mock("@/lib/map/kakao-loader", () => ({ loadKakaoMaps }));
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn() }) }));
 
-// 희망 주택 패널은 프리필된 지역의 시세를 조회한다. 목이 없으면 테스트가
+// 희망 주택 패널은 프리필된 지역의 실거래를 조회한다. 목이 없으면 테스트가
 // http://localhost:8000 으로 실제 요청을 보내고, 그 포트에 개발 서버가 떠
 // 있는지에 따라 결과가 달라진다.
-vi.mock("@/lib/api/region-price", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("@/lib/api/region-price")>()),
-  fetchRegionPrice,
+vi.mock("@/lib/api/region-trades", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/lib/api/region-trades")>()),
+  fetchRegionTrades,
 }));
 
 const SAMPLE = "persona_e_college_student_basic";
@@ -49,9 +49,9 @@ async function renderStep() {
 
 beforeEach(() => {
   loadKakaoMaps.mockReturnValue(new Promise(() => {}));
-  // 영원히 pending이면 시세 표는 로딩 상태로 멈춘다. 이 파일은 패널의 구조만
-  // 보므로 시세 응답의 내용이 필요 없다.
-  fetchRegionPrice.mockReturnValue(new Promise(() => {}));
+  // 영원히 pending이면 실거래 목록은 로딩 상태로 멈춘다. 이 파일은 패널의 구조만
+  // 보므로 응답 내용이 필요 없다.
+  fetchRegionTrades.mockReturnValue(new Promise(() => {}));
   vi.stubEnv("NEXT_PUBLIC_KAKAO_MAP_APP_KEY", "TEST_KEY");
 });
 

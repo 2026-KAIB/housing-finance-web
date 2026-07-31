@@ -14,7 +14,7 @@ import { koreanUnitHint } from "@/lib/format/money";
 
 import { FieldRow } from "./field-row";
 import type { InputFormValues } from "./form-schema";
-import { RegionPriceTable } from "./region-price-table";
+import { RegionTradeTable } from "./region-trade-table";
 
 export function DesiredHomePanel({ id }: { id: string }) {
   const {
@@ -65,7 +65,7 @@ export function DesiredHomePanel({ id }: { id: string }) {
         </FieldRow>
       </div>
 
-      <RegionPriceTable
+      <RegionTradeTable
         sggCode={targetRegion ?? ""}
         onSelectPrice={(won) =>
           // shouldValidate가 없으면 값은 채워졌는데 기존 검증 오류가 남는다.
