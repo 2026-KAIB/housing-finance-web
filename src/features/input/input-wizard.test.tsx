@@ -151,6 +151,60 @@ describe("InputWizard", () => {
     ).not.toBeInTheDocument();
   });
 
+  it("프리필이 온전하면 다음을 바로 누를 수 있다", async () => {
+    await renderWizard();
+
+    expect(screen.getByRole("button", { name: "다음" })).toBeEnabled();
+    expect(
+      screen.queryByText("희망 주택의 지역과 목표 가격을 입력해주세요."),
+    ).not.toBeInTheDocument();
+  });
+
+  it("목표 가격을 비우면 다음이 잠기고 사유를 알린다", async () => {
+    const user = userEvent.setup();
+    await renderWizard();
+
+    await user.click(screen.getByRole("button", { name: "희망 주택" }));
+    await user.clear(screen.getByLabelText("목표 가격 (원)"));
+
+    expect(screen.getByRole("button", { name: "다음" })).toBeDisabled();
+    expect(
+      screen.getByText("희망 주택의 지역과 목표 가격을 입력해주세요."),
+    ).toBeInTheDocument();
+  });
+
+  it("목표 가격을 비운 채 패널을 닫아도 잠금과 사유가 남는다", async () => {
+    const user = userEvent.setup();
+    await renderWizard();
+
+    const openPanel = screen.getByRole("button", { name: "희망 주택" });
+    await user.click(openPanel);
+    await user.clear(screen.getByLabelText("목표 가격 (원)"));
+    await user.click(openPanel);
+
+    // 패널을 접으면 입력은 사라지지만 react-hook-form이 값을 버리지 않으므로
+    // 빈 값이 그대로 남는다. 사유 문구가 없으면 원인 모를 막다른 길이 된다.
+    expect(
+      screen.queryByLabelText("목표 가격 (원)"),
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "다음" })).toBeDisabled();
+    expect(
+      screen.getByText("희망 주택의 지역과 목표 가격을 입력해주세요."),
+    ).toBeInTheDocument();
+  });
+
+  it("목표 가격을 다시 채우면 다음이 풀린다", async () => {
+    const user = userEvent.setup();
+    await renderWizard();
+
+    await user.click(screen.getByRole("button", { name: "희망 주택" }));
+    const target = screen.getByLabelText("목표 가격 (원)");
+    await user.clear(target);
+    await user.type(target, "5000000");
+
+    expect(screen.getByRole("button", { name: "다음" })).toBeEnabled();
+  });
+
   it("희망 주택 패널을 열어도 다음 단계로 넘어간다", async () => {
     const user = userEvent.setup();
     await renderWizard();

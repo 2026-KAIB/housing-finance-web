@@ -22,8 +22,7 @@ export const inputFormSchema = z.object({
   monthly_income: won,
   monthly_average_expense: won,
   current_assets: won.optional(),
-  // 필수 제약(.min)은 [다음] 버튼 잠금과 함께 들어온다.
-  target_region: z.string(),
+  target_region: z.string().min(1, "지역을 선택하세요"),
   target_price: won,
   // 계약(픽스처)은 YYYYMM이지만 입력은 YYYY-MM으로 받는다. 경계 변환은
   // toFormValues(→ 폼)와 parseYmInput(→ 계약)이 담당한다.

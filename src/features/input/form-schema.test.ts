@@ -183,6 +183,18 @@ describe("target_region", () => {
         .target_region,
     ).toBe("ALL");
   });
+
+  it("빈 값을 거부한다", () => {
+    const result = inputFormSchema.safeParse({
+      ...validInput,
+      target_region: "",
+    });
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues[0]?.message).toBe("지역을 선택하세요");
+    }
+  });
 });
 
 describe("toFormValues의 지역 프리필", () => {

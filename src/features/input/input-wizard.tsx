@@ -52,6 +52,15 @@ export function InputWizard({
     mode: "onSubmit",
   });
 
+  // 두 필드만 구독한다. formState.isValid를 쓰면 나이·월소득 등 모든 필드로
+  // 잠금 조건이 번져 기존 동작(누르면 에러 표시)이 통째로 바뀐다.
+  const [targetRegion, targetPrice] = form.watch([
+    "target_region",
+    "target_price",
+  ]);
+  const goalIncomplete = isBlank(targetRegion) || isBlank(targetPrice);
+  const nextBlocked = step === 0 && goalIncomplete;
+
   async function goNext() {
     // 사용자가 입력하는 값은 전부 step 1에 있으므로 여기서만 검증한다.
     if (step === 0) {
@@ -112,9 +121,19 @@ export function InputWizard({
               </Button>
             )}
             {step < STEP_TITLES.length - 1 && (
-              <Button type="button" variant="brand" onClick={goNext}>
+              <Button
+                type="button"
+                variant="brand"
+                onClick={goNext}
+                disabled={nextBlocked}
+              >
                 다음
               </Button>
+            )}
+            {nextBlocked && (
+              <p className="self-center text-xs text-brand-muted">
+                희망 주택의 지역과 목표 가격을 입력해주세요.
+              </p>
             )}
             {step === STEP_TITLES.length - 1 && (
               <Button type="button" variant="brand" onClick={onSubmit}>
@@ -126,4 +145,12 @@ export function InputWizard({
       </FormProvider>
     </section>
   );
+}
+
+/**
+ * 숫자 입력을 비우면 ""가 오고 defaultValues는 number를 넣으므로 둘 다 받는다.
+ * 0은 유효한 금액이므로 falsy 검사로 뭉뚱그리지 않는다.
+ */
+function isBlank(value: unknown): boolean {
+  return value === "" || value === undefined || value === null;
 }
