@@ -50,7 +50,9 @@ export function StepInput({
         }
       >
         <GoalFields profile={profile} />
-        {homePanelOpen && <DesiredHomePanel id={DESIRED_HOME_PANEL_ID} />}
+        {homePanelOpen && (
+          <DesiredHomePanel id={DESIRED_HOME_PANEL_ID} profile={profile} />
+        )}
       </Group>
 
       <Group title="저축 계획">

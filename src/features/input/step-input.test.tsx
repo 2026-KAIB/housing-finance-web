@@ -64,16 +64,16 @@ describe("StepInput 희망 주택", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("버튼을 누르면 토글과 지도가 나타난다", async () => {
+  it("버튼을 누르면 지역·목표 가격 필드와 지도가 나타난다", async () => {
     const user = userEvent.setup();
     await renderStep();
 
     await user.click(screen.getByRole("button", { name: "희망 주택" }));
 
-    expect(screen.getByRole("button", { name: "지역" })).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: "목표 가격" }),
-    ).toBeInTheDocument();
+    // 지역·목표 가격은 Task 3에서 토글 버튼(role=button)이 아닌 폼 필드로
+    // 바뀌었다. 라벨로 찾는다.
+    expect(screen.getByLabelText("지역")).toBeInTheDocument();
+    expect(screen.getByLabelText("목표 가격 (원)")).toBeInTheDocument();
     expect(
       screen.getByRole("region", { name: "대한민국 지도" }),
     ).toBeInTheDocument();
@@ -97,12 +97,12 @@ describe("StepInput 희망 주택", () => {
     expect(button).toHaveAttribute("aria-expanded", "false");
   });
 
-  it("패널을 열어도 목표 금액 입력은 그대로다", async () => {
+  it("패널을 열어도 목표 시점 입력은 그대로다", async () => {
     const user = userEvent.setup();
     await renderStep();
 
     await user.click(screen.getByRole("button", { name: "희망 주택" }));
 
-    expect(screen.getByLabelText("목표 금액 (원)")).toHaveValue(5000000);
+    expect(screen.getByLabelText("목표 시점 (YYYY-MM)")).toHaveValue("2028-07");
   });
 });

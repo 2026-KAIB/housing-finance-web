@@ -66,7 +66,6 @@ describe("InputWizard", () => {
     expect(screen.getByLabelText("나이")).toHaveValue(25);
     expect(screen.getByLabelText("월 소득 (원)")).toHaveValue(800000);
     expect(screen.getByLabelText("월 평균 지출 (원)")).toHaveValue(700000);
-    expect(screen.getByLabelText("목표 금액 (원)")).toHaveValue(5000000);
     expect(screen.getByLabelText("월 저축 예산 (원)")).toHaveValue(100000);
   });
 
@@ -221,7 +220,8 @@ describe("InputWizard", () => {
     const user = userEvent.setup();
     await renderWizard();
 
-    const target = screen.getByLabelText("목표 금액 (원)");
+    await user.click(screen.getByRole("button", { name: "희망 주택" }));
+    const target = screen.getByLabelText("목표 가격 (원)");
     await user.clear(target);
     await user.type(target, "9000000");
 
