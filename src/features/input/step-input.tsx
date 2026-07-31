@@ -1,12 +1,14 @@
 "use client";
 
 import { type ReactNode, useState } from "react";
+import { useFormContext } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import type { PersonaIndexEntry, PersonaProfile } from "@/lib/contracts/persona";
 
 import { BasicFields } from "./basic-fields";
 import { DesiredHomePanel } from "./desired-home-panel";
+import type { InputFormValues } from "./form-schema";
 import { GoalFields } from "./goal-fields";
 import { PersonaPicker } from "./persona-picker";
 import { SavingsFields } from "./savings-fields";
@@ -24,6 +26,14 @@ export function StepInput({
 }) {
   // 폼 값이 아니라 화면 상태이므로 react-hook-form이 아닌 로컬 state로 둔다.
   const [homePanelOpen, setHomePanelOpen] = useState(false);
+  const {
+    formState: { errors },
+  } = useFormContext<InputFormValues>();
+
+  // 두 필드가 접힌 패널 안에 있으므로, 검증 에러가 났는데 패널이 닫혀 있으면
+  // 사용자는 [다음]이 반응하지 않는 이유를 화면 어디에서도 볼 수 없다.
+  const panelOpen =
+    homePanelOpen || Boolean(errors.target_region || errors.target_price);
 
   return (
     <div className="grid gap-8">
@@ -41,7 +51,7 @@ export function StepInput({
             type="button"
             variant="outline"
             size="sm"
-            aria-expanded={homePanelOpen}
+            aria-expanded={panelOpen}
             aria-controls={DESIRED_HOME_PANEL_ID}
             onClick={() => setHomePanelOpen((open) => !open)}
           >
@@ -50,7 +60,7 @@ export function StepInput({
         }
       >
         <GoalFields profile={profile} />
-        {homePanelOpen && (
+        {panelOpen && (
           <DesiredHomePanel id={DESIRED_HOME_PANEL_ID} profile={profile} />
         )}
       </Group>

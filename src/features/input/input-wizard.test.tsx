@@ -205,6 +205,42 @@ describe("InputWizard", () => {
     expect(screen.getByRole("button", { name: "다음" })).toBeEnabled();
   });
 
+  it("음수 목표 가격으로 다음을 누르면 패널이 열리며 에러를 보여준다", async () => {
+    const user = userEvent.setup();
+    await renderWizard();
+
+    const openPanel = screen.getByRole("button", { name: "희망 주택" });
+    await user.click(openPanel);
+    const target = screen.getByLabelText("목표 가격 (원)");
+    await user.clear(target);
+    await user.type(target, "-5");
+    await user.click(openPanel);
+
+    // 음수는 비어 있지 않으므로 [다음]은 활성이다. 눌러야 비로소 검증이 돈다.
+    expect(screen.getByRole("button", { name: "다음" })).toBeEnabled();
+    await user.click(screen.getByRole("button", { name: "다음" }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "0 이상이어야 합니다",
+    );
+    expect(
+      screen.queryByRole("heading", { level: 2, name: /마이데이터/ }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("목표 가격이 0이어도 다음은 열려 있다", async () => {
+    const user = userEvent.setup();
+    await renderWizard();
+
+    await user.click(screen.getByRole("button", { name: "희망 주택" }));
+    const target = screen.getByLabelText("목표 가격 (원)");
+    await user.clear(target);
+    await user.type(target, "0");
+
+    // 0은 유효한 금액이다(zod는 min(0)). isBlank를 !value로 바꾸면 여기서 깨진다.
+    expect(screen.getByRole("button", { name: "다음" })).toBeEnabled();
+  });
+
   it("희망 주택 패널을 열어도 다음 단계로 넘어간다", async () => {
     const user = userEvent.setup();
     await renderWizard();

@@ -23,6 +23,7 @@ import { StepMydata } from "./step-mydata";
 import { StepReview } from "./step-review";
 
 const STEP_TITLES = ["정보 입력", "마이데이터 연동", "입력 확인"] as const;
+const NEXT_BLOCKED_REASON_ID = "next-blocked-reason";
 
 export function InputWizard({
   personaId,
@@ -126,12 +127,19 @@ export function InputWizard({
                 variant="brand"
                 onClick={goNext}
                 disabled={nextBlocked}
+                aria-describedby={
+                  nextBlocked ? NEXT_BLOCKED_REASON_ID : undefined
+                }
               >
                 다음
               </Button>
             )}
             {nextBlocked && (
-              <p className="self-center text-xs text-brand-muted">
+              <p
+                id={NEXT_BLOCKED_REASON_ID}
+                role="status"
+                className="self-center text-xs text-brand-muted"
+              >
                 희망 주택의 지역과 목표 가격을 입력해주세요.
               </p>
             )}

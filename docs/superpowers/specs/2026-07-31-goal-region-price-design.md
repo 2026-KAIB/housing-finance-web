@@ -268,3 +268,6 @@ npm run build
 - `fn_price_reference` 결과를 어느 시점에 `target_price` 기본값으로 채울지 (지역 선택 직후 vs 명시적 버튼)
 - `평형(area_band)` 입력이 필요한데 현재 폼에 없다 — 어디에 둘지
 - `ALL` 선택 시 시세를 어떻게 낼지 (25개 구 통합 중위값 vs 시세 제안 생략)
+- `toFormValues`는 동기 함수인데 `isSeoulDistrict`에 의존한다. 구 목록이 API에서 오면
+  동기 프리필 검증이 불가능해진다 — `SEOUL_DISTRICTS`를 정적 시드로 남기고 API는 갱신만
+  하게 하거나, "모르는 코드는 미선택으로" 판단을 `toFormValues` 밖 effect로 옮겨야 한다.

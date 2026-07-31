@@ -231,7 +231,7 @@ Expected: PASS — 11 tests (5 + 3 + 3)
 - [ ] **Step 5: 전체 검증**
 
 Run: `npm test && npm run typecheck`
-Expected: 전부 통과 (기존 292 + 신규 12)
+Expected: 전부 통과 (기존 292 + 신규 11)
 
 - [ ] **Step 6: 커밋**
 
@@ -691,7 +691,7 @@ export function DesiredHomePanel({
 - [ ] **Step 6: 패널 테스트가 통과하는지 확인한다**
 
 Run: `npx vitest run src/features/input/desired-home-panel.test.tsx`
-Expected: PASS — 9 tests
+Expected: PASS — 8 tests
 
 - [ ] **Step 7: 기존 테스트 3개를 새 라벨·위치에 맞춘다**
 

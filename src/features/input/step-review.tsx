@@ -4,8 +4,8 @@ import type { ReactNode } from "react";
 import { useFormContext } from "react-hook-form";
 
 import { Badge } from "@/components/ui/badge";
-import type { Mydata, PersonaProfile } from "@/lib/contracts/persona";
 import { seoulDistrictLabel } from "@/lib/constants/seoul-districts";
+import type { Mydata, PersonaProfile } from "@/lib/contracts/persona";
 import { riskPreferenceLabel } from "@/lib/format/codes";
 import { formatYm, formatYmd, parseYmInput } from "@/lib/format/date";
 import { formatWon } from "@/lib/format/money";
