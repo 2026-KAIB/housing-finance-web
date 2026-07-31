@@ -13,6 +13,7 @@ describe("inputFormSchema", () => {
       household_size: "3",
       monthly_income: "800000",
       monthly_average_expense: "700000",
+      target_region: "11650",
       target_price: "5000000",
       target_move_in_ym: "2028-07",
       risk_preference: "stability",
@@ -31,6 +32,7 @@ describe("inputFormSchema", () => {
       household_size: 3,
       monthly_income: 800000,
       monthly_average_expense: 700000,
+      target_region: "11650",
       target_price: 5000000,
       risk_preference: "stability",
       monthly_savings_budget: 100000,
@@ -65,6 +67,7 @@ describe("금액 필드(won)", () => {
     household_size: 3,
     monthly_income: 800000,
     monthly_average_expense: 700000,
+    target_region: "11650",
     target_price: 5000000,
     target_move_in_ym: "2028-07",
     risk_preference: "stability",
@@ -152,5 +155,50 @@ describe("changedFields", () => {
   it("그대로면 빈 배열이다", async () => {
     const defaults = toFormValues(await loadProfile(SAMPLE));
     expect(changedFields(defaults, { ...defaults })).toEqual([]);
+  });
+});
+
+describe("target_region", () => {
+  const validInput = {
+    age: 25,
+    household_size: 3,
+    monthly_income: 800000,
+    monthly_average_expense: 700000,
+    target_region: "11650",
+    target_price: 5000000,
+    target_move_in_ym: "2028-07",
+    risk_preference: "stability",
+    monthly_savings_budget: 100000,
+    lump_sum_budget: 300000,
+    emergency_reserve: 700000,
+  };
+
+  it("서울 구 코드를 통과시킨다", () => {
+    expect(inputFormSchema.parse(validInput).target_region).toBe("11650");
+  });
+
+  it("전체 센티널을 통과시킨다", () => {
+    expect(
+      inputFormSchema.parse({ ...validInput, target_region: "ALL" })
+        .target_region,
+    ).toBe("ALL");
+  });
+});
+
+describe("toFormValues의 지역 프리필", () => {
+  it("픽스처의 서울 구 코드를 그대로 옮긴다", async () => {
+    // persona_e는 커밋 0e168c6에서 30200(대전 유성) → 11650(서초구)으로 정리됐다.
+    expect(toFormValues(await loadProfile(SAMPLE)).target_region).toBe("11650");
+  });
+
+  it("서울 밖 코드는 미선택으로 떨어뜨린다", async () => {
+    // 픽스처에는 더 이상 서울 밖 값이 없으므로 합성 프로필로 방어 경로를 검증한다.
+    const profile = await loadProfile(SAMPLE);
+    const outside = {
+      ...profile,
+      goal: { ...profile.goal, target_region: "30200" },
+    };
+
+    expect(toFormValues(outside).target_region).toBe("");
   });
 });
