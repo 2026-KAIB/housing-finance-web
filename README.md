@@ -28,7 +28,8 @@ Copy-Item .env.example .env.local
 ```
 
 - 웹: http://localhost:3000
-- 기본 API 주소: http://localhost:8000
+- 브라우저 API 주소: 같은 출처의 `/api/*`
+- Next.js가 전달하는 로컬 백엔드 주소: http://localhost:8000
 
 현재 Windows 한글 경로에서 발생하는 Turbopack 경로 처리 문제를 피하기 위해 개발·빌드 명령은 Webpack 모드로 고정되어 있습니다.
 
@@ -43,3 +44,9 @@ src/
    ├─ api/       백엔드 호출
    └─ contracts/ 백엔드 응답 TypeScript 타입
 ```
+
+## 홈서버 배포
+
+Docker, 외부 포트, GitHub Actions 자동 배포 설정은
+[`docs/HOME_SERVER_FRONTEND_DEPLOYMENT.md`](docs/HOME_SERVER_FRONTEND_DEPLOYMENT.md)를
+따릅니다.
