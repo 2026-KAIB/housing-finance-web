@@ -722,7 +722,10 @@ git commit -m "feat(services): 시세 공급자 스위치를 추가한다"
 
 **Files:**
 - Modify: `app/api/routes/properties.py`
-- Test: `tests/api/test_region_price.py`
+- Test: `tests/api/test_region_price_endpoint.py`
+  (`tests/services/test_region_price.py`와 basename이 겹치면 안 된다 — 테스트
+  하위 디렉터리에 `__init__.py`가 없어 pytest가 두 모듈을 구분하지 못하고
+  `import file mismatch`로 수집이 중단된다)
 
 **Interfaces:**
 - Consumes: Task 3의 `load_region_price_reference`·`RegionPriceUnavailable`·`RegionNotFound`
@@ -730,7 +733,7 @@ git commit -m "feat(services): 시세 공급자 스위치를 추가한다"
 
 - [ ] **Step 1: 실패하는 테스트 작성**
 
-`tests/api/test_region_price.py`를 만든다. 기존 `tests/api/test_property_search.py`의 클라이언트 구성 방식을 그대로 따른다.
+`tests/api/test_region_price_endpoint.py`를 만든다. 기존 `tests/api/test_property_search.py`의 클라이언트 구성 방식을 그대로 따른다.
 
 ```python
 from datetime import datetime

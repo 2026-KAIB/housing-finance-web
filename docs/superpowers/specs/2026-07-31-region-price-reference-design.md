@@ -138,9 +138,13 @@ GET /api/v1/properties/price-reference?sgg_code=11680
 기존 `/search`가 `POST`인 것은 검색 조건이 복합 객체이기 때문이며, 두 엔드포인트의
 메서드가 다른 것은 형태가 다르기 때문이지 일관성이 깨진 것이 아니다.
 
-`sgg_code`는 서울 25개 구 코드만 받는다(`^11\d{3}$` + 목록 대조).
-`ALL`이나 다른 시도 코드는 **422**로 거절한다 — 웹이 애초에 보내지 않지만,
-검증 없이 받으면 빈 결과와 잘못된 코드를 구분할 수 없다.
+`sgg_code`는 `^11\d{3}$`로 검증한다(FastAPI `Query(pattern=...)` → 422 자동).
+`ALL`·`26440`(부산)·`abc`는 여기서 걸린다.
+
+25개 구 목록을 core에 다시 두지 않는 이유: 그 목록의 정본은 DB의 `sgg_codes`
+테이블이고, 조회가 어차피 그 테이블을 지난다. 상수로 복제하면 DB와 어긋날 때
+어느 쪽이 맞는지 판단할 근거가 없어진다. 형식만 코드로 막고 **존재 여부는 DB가
+답한다.**
 
 ### 3.3 응답 계약
 
@@ -165,14 +169,16 @@ class RegionPriceBand(BaseModel):
     is_reliable: bool
 
 class RegionPriceReference(BaseModel):
-    schema_version: Literal["1.0.0"]
+    schema_version: Literal["1.0.0"] = "1.0.0"
     sgg_code: str
     sgg_name: str
-    stat_level: Literal["sgg_all"]
-    period_key: str           # "ALL"
-    computed_at: datetime
+    stat_level: Literal["sgg_all"] = "sgg_all"
+    computed_at: datetime | None       # 통계가 없으면 None
     bands: tuple[RegionPriceBand, ...]
 ```
+
+`period_key`는 응답에 넣지 않는다. `sgg_all` 행에서는 항상 `"ALL"`이라
+`stat_level`이 이미 말하는 것을 반복할 뿐이다.
 
 `stat_level`과 `computed_at`을 응답에 포함하는 이유는 스키마 문서 §10의 근거와 같다 —
 **사용자가 보는 숫자가 어느 단위·어느 기준일의 것인지 화면이 말할 수 있어야 한다.**
@@ -188,13 +194,16 @@ class RegionPriceReference(BaseModel):
 기존 `loan_product_repository.py`와 같은 자리·같은 방식(`sqlalchemy.text` + 명시 파라미터).
 
 ```sql
-SELECT s.area_band, s.trade_cnt, s.median_price_won,
-       s.p25_price_won, s.p75_price_won, s.median_ppp_won,
-       s.is_reliable, s.computed_at, c.sgg_nm
-  FROM apt_price_stats s
-  JOIN sgg_codes c ON c.sgg_cd = s.sgg_cd
- WHERE s.stat_level = 'sgg_all'
-   AND s.scope_cd = :sgg_code
+-- 1) 구 존재 확인 + 이름
+SELECT sgg_nm FROM sgg_codes WHERE sgg_cd = :sgg_code
+
+-- 2) 시세 통계
+SELECT area_band, trade_cnt, median_price_won,
+       p25_price_won, p75_price_won, median_ppp_won,
+       is_reliable, computed_at
+  FROM apt_price_stats
+ WHERE stat_level = 'sgg_all'
+   AND scope_cd = :sgg_code
 ```
 
 `scope_cd`로 거르는 이유: `UNIQUE (stat_level, scope_cd, area_band, period_key)`가
@@ -225,12 +234,19 @@ DB가 필요한 이 엔드포인트만 **503**을 내야 한다. JSON 폴백은 
 
 | 상태 | 응답 |
 |---|---|
+| 코드 형식 오류 | 422 (FastAPI 기본) |
 | `disabled` | 503 `시세 데이터 공급자가 설정되지 않았습니다.` |
 | `database`, 연결 실패 | 503 `시세 데이터를 불러올 수 없습니다.` |
-| `database`, 해당 구 행 없음 | 200, `bands: []` |
+| `sgg_codes`에 없는 코드 | 404 `해당 시군구 코드를 찾을 수 없습니다.` |
+| 구는 있으나 통계 행 없음 | 200, `bands: []`, `computed_at: null` |
 
-**연결 실패(503)와 데이터 없음(200 + 빈 배열)을 구분한다.** 둘을 합치면
-터널이 끊긴 것과 그 구에 통계가 없는 것을 화면이 같은 말로 설명하게 된다.
+**세 가지 실패를 구분한다.** 연결 실패(503) / 없는 구(404) / 통계 없음(200 + 빈 배열)을
+합치면, 터널이 끊긴 것과 코드가 틀린 것과 그 구에 통계가 없는 것을 화면이 같은 말로
+설명하게 된다.
+
+이 구분 때문에 조회는 **쿼리 두 개**다 — 먼저 `sgg_codes`에서 구 이름을 찾고(없으면 404),
+그다음 `apt_price_stats`를 읽는다. 한 번의 JOIN으로 합치면 결과가 0행일 때 두 원인을
+구별할 수 없다. 두 쿼리 모두 PK/UNIQUE 인덱스를 타므로 비용은 무시할 수 있다.
 
 DB 오류는 `logger.error(..., exc_info=True)`로 남기되 응답 본문에는 넣지 않는다.
 접속 정보가 예외 메시지를 타고 나가지 않게 하기 위해서다.
@@ -255,7 +271,7 @@ DB 오류는 `logger.error(..., exc_info=True)`로 남기되 응답 본문에는
 │ 40~60㎡  │ 14억 5,000만원 │ 210건  │     목표 가격에 채워짐
 │ 60~85㎡  │ 22억 8,000만원 │ 342건  │
 │ 85~135㎡ │ 31억 1,000만원 │ 156건  │
-│ 135㎡ 이상│ 45억 0,000만원 │  41건  │
+│ 135㎡ 이상│ 45억원        │  41건  │
 └──────────┴──────────────┴────────┘
 
 ┌──────────────────────────────────────────────────┐
