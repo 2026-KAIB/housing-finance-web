@@ -10,8 +10,8 @@ Docker 이미지 발행, 홈서버 교체, 헬스체크를 자동으로 수행�
 
 ```text
 인터넷 사용자
-  -> 공유기 외부 TCP 18080
-  -> 홈서버 TCP 13000
+  -> 공유기 외부 TCP 18082
+  -> 홈서버 TCP 18082
   -> housing-finance-web:3000
   -> /api 프록시
   -> housing-finance-api:8000
@@ -36,20 +36,20 @@ Docker 이미지 발행, 홈서버 교체, 헬스체크를 자동으로 수행�
 | 구간 | 값 |
 | --- | --- |
 | Next.js 컨테이너 | `3000` |
-| 홈서버 호스트 | `13000` |
-| 공유기 외부 포트 | `18080/TCP` |
+| 홈서버 호스트 | `18082` |
+| 공유기 외부 포트 | `18082/TCP` |
 | FastAPI 컨테이너 | `8000`, 외부 미공개 |
 | PostgreSQL 컨테이너 | `5432`, 외부 미공개 |
 
 공유기에는 다음 규칙 하나만 만든다.
 
 ```text
-외부 TCP 18080
--> 홈서버 고정 내부 IP의 TCP 13000
+외부 TCP 18082
+-> 홈서버 고정 내부 IP의 TCP 18082
 ```
 
-접속 주소는 `http://공인IP:18080` 또는 `http://DDNS주소:18080`이다.
-외부 포트 `18080`은 다른 미사용 포트로 바꿔도 된다. 포트 번호 변경은
+접속 주소는 `http://공인IP:18082` 또는 `http://DDNS주소:18082`이다.
+외부 포트 `18082`는 다른 미사용 포트로 바꿔도 된다. 포트 번호 변경은
 암호화를 제공하지 않으므로 공개 운영 전에는 HTTPS를 적용한다.
 
 ## 3. 홈서버 Docker 네트워크 준비
@@ -77,7 +77,7 @@ sudo nano /opt/housing-finance/.env
 
 ```dotenv
 WEB_BIND_ADDRESS=0.0.0.0
-WEB_HOST_PORT=13000
+WEB_HOST_PORT=18082
 BACKEND_API_URL=http://housing-finance-api:8000
 PLATFORM_NETWORK=housing-platform
 ```
@@ -192,7 +192,7 @@ PR 코드는 GitHub가 제공하는 runner에서만 검사한다. 홈서버 runn
 ```bash
 docker ps --filter name=housing-finance-web
 docker logs --tail 200 housing-finance-web
-curl --fail http://127.0.0.1:13000/health
+curl --fail http://127.0.0.1:18082/health
 ```
 
 정상 응답 예시는 다음과 같다.

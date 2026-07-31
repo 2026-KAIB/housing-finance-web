@@ -10,7 +10,7 @@ services:
       PORT: "3000"
       BACKEND_API_URL: ${BACKEND_API_URL:-http://housing-finance-api:8000}
     ports:
-      - "${WEB_BIND_ADDRESS:-0.0.0.0}:${WEB_HOST_PORT:-13000}:3000"
+      - "${WEB_BIND_ADDRESS:-0.0.0.0}:${WEB_HOST_PORT:-18082}:3000"
     networks:
       - platform
     healthcheck:
