@@ -3,15 +3,15 @@
 import { useFormContext } from "react-hook-form";
 
 import { Input } from "@/components/ui/input";
-import type { PersonaProfile } from "@/lib/contracts/persona";
-import { formatKoreanUnit } from "@/lib/format/money";
+import { koreanUnitHint } from "@/lib/format/money";
 
 import { FieldRow } from "./field-row";
 import type { InputFormValues } from "./form-schema";
 
-export function SavingsFields({ profile }: { profile: PersonaProfile }) {
+export function SavingsFields() {
   const {
     register,
+    watch,
     formState: { errors },
   } = useFormContext<InputFormValues>();
 
@@ -20,7 +20,7 @@ export function SavingsFields({ profile }: { profile: PersonaProfile }) {
       <FieldRow
         label="월 저축 예산 (원)"
         htmlFor="monthly_savings_budget"
-        hint={formatKoreanUnit(profile.savings.monthly_savings_budget)}
+        hint={koreanUnitHint(watch("monthly_savings_budget"))}
         error={errors.monthly_savings_budget?.message}
       >
         <Input
@@ -33,7 +33,7 @@ export function SavingsFields({ profile }: { profile: PersonaProfile }) {
       <FieldRow
         label="일시 예치금 (원)"
         htmlFor="lump_sum_budget"
-        hint={formatKoreanUnit(profile.savings.lump_sum_budget)}
+        hint={koreanUnitHint(watch("lump_sum_budget"))}
         error={errors.lump_sum_budget?.message}
       >
         <Input
@@ -46,7 +46,7 @@ export function SavingsFields({ profile }: { profile: PersonaProfile }) {
       <FieldRow
         label="비상 예비금 (원)"
         htmlFor="emergency_reserve"
-        hint={formatKoreanUnit(profile.savings.emergency_reserve)}
+        hint={koreanUnitHint(watch("emergency_reserve"))}
         error={errors.emergency_reserve?.message}
       >
         <Input

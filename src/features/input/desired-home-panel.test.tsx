@@ -22,7 +22,7 @@ function Harness({ profile }: { profile: PersonaProfile }) {
 
   return (
     <FormProvider {...form}>
-      <DesiredHomePanel id="desired-home-panel" profile={profile} />
+      <DesiredHomePanel id="desired-home-panel" />
     </FormProvider>
   );
 }

@@ -10,21 +10,15 @@ import {
   REGION_PLACEHOLDER_LABEL,
   SEOUL_DISTRICTS,
 } from "@/lib/constants/seoul-districts";
-import type { PersonaProfile } from "@/lib/contracts/persona";
-import { formatKoreanUnit } from "@/lib/format/money";
+import { koreanUnitHint } from "@/lib/format/money";
 
 import { FieldRow } from "./field-row";
 import type { InputFormValues } from "./form-schema";
 
-export function DesiredHomePanel({
-  id,
-  profile,
-}: {
-  id: string;
-  profile: PersonaProfile;
-}) {
+export function DesiredHomePanel({ id }: { id: string }) {
   const {
     register,
+    watch,
     formState: { errors },
   } = useFormContext<InputFormValues>();
 
@@ -60,7 +54,7 @@ export function DesiredHomePanel({
         <FieldRow
           label="목표 가격 (원)"
           htmlFor="target_price"
-          hint={formatKoreanUnit(profile.goal.target_price)}
+          hint={koreanUnitHint(watch("target_price"))}
           error={errors.target_price?.message}
         >
           <Input id="target_price" type="number" {...register("target_price")} />

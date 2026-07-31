@@ -61,12 +61,12 @@ export function StepInput({
       >
         <GoalFields profile={profile} />
         {panelOpen && (
-          <DesiredHomePanel id={DESIRED_HOME_PANEL_ID} profile={profile} />
+          <DesiredHomePanel id={DESIRED_HOME_PANEL_ID} />
         )}
       </Group>
 
       <Group title="저축 계획">
-        <SavingsFields profile={profile} />
+        <SavingsFields />
       </Group>
     </div>
   );

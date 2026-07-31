@@ -42,6 +42,16 @@ async function renderWizard() {
   return { profile, mydata };
 }
 
+/**
+ * FieldRow는 힌트와 에러를 같은 자리에 배타적으로 그린다(<p> 하나).
+ * 라벨로 입력을 찾고 그 행 안의 <p>를 읽어, 다른 행의 같은 문자열과 섞이지
+ * 않게 한다 — "70만원"은 월 평균 지출과 비상 예비금 양쪽에 나타난다.
+ */
+function hintFor(label: string): string | null {
+  const row = screen.getByLabelText(label).parentElement;
+  return row?.querySelector("p")?.textContent ?? null;
+}
+
 /** step 1 → step 2 → step 3. 단계마다 [다음] 한 번. */
 async function goToReview(user: ReturnType<typeof userEvent.setup>) {
   await user.click(screen.getByRole("button", { name: "다음" }));
@@ -142,6 +152,43 @@ describe("InputWizard", () => {
     expect(
       screen.queryByRole("heading", { level: 2, name: /마이데이터/ }),
     ).not.toBeInTheDocument();
+  });
+
+  it("금액 힌트가 입력한 값을 따라간다", async () => {
+    const user = userEvent.setup();
+    await renderWizard();
+
+    // persona_e의 월 소득은 800,000원이다.
+    expect(hintFor("월 소득 (원)")).toBe("80만원");
+
+    const income = screen.getByLabelText("월 소득 (원)");
+    await user.clear(income);
+    await user.type(income, "700000");
+
+    expect(hintFor("월 소득 (원)")).toBe("70만원");
+  });
+
+  it("희망 주택의 목표 가격 힌트도 입력을 따라간다", async () => {
+    const user = userEvent.setup();
+    await renderWizard();
+
+    await user.click(screen.getByRole("button", { name: "희망 주택" }));
+    expect(hintFor("목표 가격 (원)")).toBe("500만원");
+
+    const target = screen.getByLabelText("목표 가격 (원)");
+    await user.clear(target);
+    await user.type(target, "120000000");
+
+    expect(hintFor("목표 가격 (원)")).toBe("1억 2,000만원");
+  });
+
+  it("금액을 비우면 힌트를 숨긴다", async () => {
+    const user = userEvent.setup();
+    await renderWizard();
+
+    await user.clear(screen.getByLabelText("월 소득 (원)"));
+
+    expect(hintFor("월 소득 (원)")).toBeNull();
   });
 
   it("step 1에서는 이전 버튼이 없다", async () => {
