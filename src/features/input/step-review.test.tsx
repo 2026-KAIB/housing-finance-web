@@ -86,7 +86,7 @@ describe("StepReview", () => {
     expect(rowValue("월 소득")).toBe("800,000원");
     expect(rowValue("월 평균 지출")).toBe("700,000원");
     expect(rowValue("지역")).toBe("서초구");
-    expect(rowValue("목표 가격")).toBe("5,000,000원");
+    expect(rowValue("목표 가격")).toBe("325,000,000원");
     expect(rowValue("목표 시점")).toBe("2028년 7월");
     expect(rowValue("위험 성향")).toBe("안정형");
     expect(rowValue("월 저축 예산")).toBe("100,000원");

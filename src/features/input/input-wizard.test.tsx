@@ -186,7 +186,7 @@ describe("InputWizard", () => {
     await renderWizard();
 
     await user.click(screen.getByRole("button", { name: "희망 주택" }));
-    expect(hintFor("목표 가격 (원)")).toBe("500만원");
+    expect(hintFor("목표 가격 (원)")).toBe("3억 2,500만원");
 
     const target = screen.getByLabelText("목표 가격 (원)");
     await user.clear(target);
@@ -322,7 +322,7 @@ describe("InputWizard", () => {
     expect(
       screen.getByRole("heading", { level: 2, name: "입력한 정보" }),
     ).toBeInTheDocument();
-    expect(screen.getByText("5,000,000원")).toBeInTheDocument();
+    expect(screen.getByText("325,000,000원")).toBeInTheDocument();
     expect(screen.getByText("2028년 7월")).toBeInTheDocument();
   });
 

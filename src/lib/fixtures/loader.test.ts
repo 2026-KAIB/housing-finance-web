@@ -30,7 +30,7 @@ describe("페르소나별 로더", () => {
   it("profile을 파싱해서 돌려준다", async () => {
     const profile = await loadProfile(SAMPLE);
     expect(profile.persona_id).toBe(SAMPLE);
-    expect(profile.goal.target_housing_type).toBe("monthly_rent");
+    expect(profile.goal.target_housing_type).toBe("purchase");
   });
 
   it("mydata를 파싱해서 돌려준다", async () => {

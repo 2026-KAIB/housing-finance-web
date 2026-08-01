@@ -130,7 +130,7 @@ describe("toFormValues", () => {
 
     expect(values.age).toBe(25);
     expect(values.monthly_income).toBe(800000);
-    expect(values.target_price).toBe(5000000);
+    expect(values.target_price).toBe(325000000);
     expect(values.target_move_in_ym).toBe("2028-07");
     expect(values.monthly_savings_budget).toBe(100000);
   });
