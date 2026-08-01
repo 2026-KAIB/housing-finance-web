@@ -28,13 +28,18 @@ export default function HomePage() {
 
   return (
     <main>
-      <section className="grid items-center gap-8 pt-16 pb-16 md:grid-cols-2 md:pt-24">
+      <section className="grid items-center gap-8 pt-16 pb-16 md:grid-cols-[1.15fr_0.85fr] md:pt-24">
         <div className="order-2 grid gap-6 md:order-1">
           <p className="m-0 font-bold text-accent">
             HOUSING FINANCE CONSULTING
           </p>
-          <h1 className="m-0 max-w-[760px] text-[clamp(40px,7vw,72px)] font-bold leading-[1.05] tracking-[-0.06em]">
-            내 금융 흐름으로 계산하는 주택 매매 자금 로드맵
+          {/* 한 문장으로 두면 컬럼 폭에 맞춰 아무 데서나 접혀 "계/산하는"처럼
+              끊긴다. 의미 단위로 줄을 직접 나누고, 폰트 크기도 각 줄이 컬럼
+              안에 들어가는 선까지 낮춘다. break-keep은 좁은 화면에서 한 줄이
+              더 접히더라도 단어 중간에서 끊기지 않게 한다. */}
+          <h1 className="m-0 text-[clamp(28px,4.7vw,56px)] font-bold leading-[1.15] tracking-[-0.06em] break-keep">
+            <span className="block">내 금융 흐름으로 계산하는</span>
+            <span className="block">주택 매매 자금 로드맵</span>
           </h1>
           <p className="m-0 max-w-[680px] text-lg leading-[1.7] text-brand-muted">
             단순한 금리 비교가 아니라 비상자금, 저축여력, 목표 시점을 함께
@@ -51,7 +56,7 @@ export default function HomePage() {
         </div>
 
         <div className="order-1 flex justify-center md:order-2 md:justify-end">
-          <div className="relative flex aspect-square w-40 items-center justify-center md:w-[320px]">
+          <div className="relative flex aspect-square w-36 items-center justify-center md:w-[260px]">
             {/* 캐릭터 몸통이 옐로라 솔리드 옐로 배경에서는 분리가 약하다.
                 부드러운 글로우로 브랜드색을 깔고 캐릭터는 띄운다. */}
             <div
