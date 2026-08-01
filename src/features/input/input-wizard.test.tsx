@@ -61,8 +61,20 @@ function hintFor(label: string): string | null {
   return row?.querySelector("p")?.textContent ?? null;
 }
 
+/**
+ * persona_e 프로필에는 보유 자산 정보가 없어 프리필되지 않는다(Task 3에서
+ * current_assets가 필수가 됐으므로, 없으면 검증에 실패해 다음으로 못
+ * 넘어간다). step 1을 통과해야 하는 테스트는 실제 사용자처럼 직접 채운다.
+ */
+async function fillCurrentAssets(user: ReturnType<typeof userEvent.setup>) {
+  // 1,000,000은 persona_e의 mydata.totals.total_balance와 같은 값이라 텍스트가
+  // 중복돼 getByText가 여러 개를 찾는다. 겹치지 않는 값을 쓴다.
+  await user.type(screen.getByLabelText("보유 자산 (원)"), "8000000");
+}
+
 /** step 1 → step 2 → step 3. 단계마다 [다음] 한 번. */
 async function goToReview(user: ReturnType<typeof userEvent.setup>) {
+  await fillCurrentAssets(user);
   await user.click(screen.getByRole("button", { name: "다음" }));
   await user.click(screen.getByRole("button", { name: "다음" }));
 }
@@ -116,6 +128,7 @@ describe("InputWizard", () => {
     const user = userEvent.setup();
     await renderWizard();
 
+    await fillCurrentAssets(user);
     await user.click(screen.getByRole("button", { name: "다음" }));
     expect(
       screen.getByRole("heading", { level: 2, name: /마이데이터/ }),
@@ -126,6 +139,7 @@ describe("InputWizard", () => {
     const user = userEvent.setup();
     await renderWizard();
 
+    await fillCurrentAssets(user);
     await user.clear(screen.getByLabelText("나이"));
     await user.click(screen.getByRole("button", { name: "다음" }));
 
@@ -141,6 +155,7 @@ describe("InputWizard", () => {
     const user = userEvent.setup();
     await renderWizard();
 
+    await fillCurrentAssets(user);
     await user.clear(screen.getByLabelText("월 소득 (원)"));
     await user.click(screen.getByRole("button", { name: "다음" }));
 
@@ -269,6 +284,7 @@ describe("InputWizard", () => {
     const user = userEvent.setup();
     await renderWizard();
 
+    await fillCurrentAssets(user);
     const openPanel = screen.getByRole("button", { name: "희망 주택" });
     await user.click(openPanel);
     const target = screen.getByLabelText("목표 가격 (원)");
@@ -305,6 +321,7 @@ describe("InputWizard", () => {
     const user = userEvent.setup();
     await renderWizard();
 
+    await fillCurrentAssets(user);
     await user.click(screen.getByRole("button", { name: "희망 주택" }));
     await user.click(screen.getByRole("button", { name: "다음" }));
 
@@ -341,6 +358,7 @@ describe("InputWizard", () => {
     const user = userEvent.setup();
     const { mydata } = await renderWizard();
 
+    await fillCurrentAssets(user);
     await user.click(screen.getByRole("button", { name: "다음" }));
     await user.click(
       screen.getByRole("button", { name: "마이데이터 불러오기" }),
@@ -360,10 +378,12 @@ describe("InputWizard", () => {
     const user = userEvent.setup();
     await renderWizard();
 
+    // goToReview가 보유 자산을 직접 채운다(프리필 없음) — 그 자체가 기본값과
+    // 달라지는 것이므로 edited=1이 항상 붙는다.
     await goToReview(user);
     await user.click(screen.getByRole("button", { name: "결과 보기" }));
 
-    expect(push).toHaveBeenCalledWith(`/dashboard?persona=${SAMPLE}`);
+    expect(push).toHaveBeenCalledWith(`/dashboard?persona=${SAMPLE}&edited=1`);
   });
 
   it("값을 바꾸면 edited 표시를 붙여 이동한다", async () => {
