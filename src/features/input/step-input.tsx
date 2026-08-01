@@ -45,7 +45,7 @@ export function StepInput({
 
       <Group
         title="목표 설정"
-        description="현재 페르소나의 목표 금액은 월세 보증금 시나리오로 생성된 원본 데이터 값입니다. 매매 시나리오 페르소나 4명은 현금흐름 엔진이 비어 있어 1차 범위에서 제외했습니다."
+        description="현재 페르소나의 목표 금액은 해당 자치구의 실거래 하위 5% 값입니다. 지역과 금액은 [희망 주택]에서 직접 바꿀 수 있습니다."
         action={
           <Button
             type="button"

@@ -52,16 +52,15 @@ export const personaProfileSchema = z.object({
     tuition_payer: z.string(),
     current_housing_type: z.string(),
   }),
-  goal: z.object({
-    target_housing_type: z.string(),
-    target_region: z.string(),
-    target_price: z.number(),
-    target_lease_deposit: z.number(),
-    target_monthly_rent: z.number(),
-    target_management_fee: z.number(),
-    target_move_in_ym: z.string().regex(YM),
-    risk_preference: z.string(),
-  }),
+  goal: z
+    .object({
+      target_housing_type: z.string(),
+      target_region: z.string(),
+      target_price: z.number(),
+      target_move_in_ym: z.string().regex(YM),
+      risk_preference: z.string(),
+    })
+    .strict(),
   finance: z.object({
     annual_income_verified: z.number(),
     monthly_income: z.number(),

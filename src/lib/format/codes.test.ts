@@ -34,6 +34,10 @@ describe("codes", () => {
     expect(liquidityPreferenceLabel("high")).toBe("높음");
   });
 
+  it("매매 목표를 한국어로 옮긴다", () => {
+    expect(housingTypeLabel("purchase")).toBe("매매");
+  });
+
   it("모르는 코드는 원문을 그대로 돌려준다", () => {
     expect(housingTypeLabel("villa")).toBe("villa");
     expect(riskPreferenceLabel("aggressive_x")).toBe("aggressive_x");

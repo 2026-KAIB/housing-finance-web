@@ -27,6 +27,7 @@ export function portfolioStatusLabel(status: PortfolioStatus): string {
 export function housingTypeLabel(code: string): string {
   return lookup(
     {
+      purchase: "매매",
       monthly_rent: "월세",
       jeonse: "전세",
       owned: "자가",
