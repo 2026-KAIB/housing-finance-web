@@ -62,18 +62,26 @@ export const inputFormSchema = z.object({
 
 export type InputFormValues = z.infer<typeof inputFormSchema>;
 
-export function toFormValues(profile: PersonaProfile): InputFormValues {
+/**
+ * toFormValues()가 실제로 돌려주는 모양. current_assets만 InputFormValues와
+ * 다르다 — 제출 시엔 필수이지만, 일부 페르소나(예: 대학생)는 프로필에 자산
+ * 정보가 없어 프리필할 값이 없다. 모르는 값을 0으로 채우면 "0원 보유"와
+ * "모름"을 같은 값으로 뭉개는 것이므로, 그런 페르소나는 정직하게
+ * current_assets가 없는 채로 돌려주고 사용자가 직접 입력하게 한다. 캐스트로
+ * 타입을 속이면 이 함수를 거치지 않고 곧장 페이로드를 만드는 호출자가
+ * undefined를 number로 착각해 그대로 흘려보낼 수 있다.
+ */
+export type FormDefaults = Omit<InputFormValues, "current_assets"> & {
+  current_assets?: number;
+};
+
+export function toFormValues(profile: PersonaProfile): FormDefaults {
   return {
     age: profile.basic.age,
     household_size: profile.basic.household_size,
     monthly_income: profile.finance.monthly_income,
     monthly_average_expense: profile.finance.monthly_average_expense,
-    // current_assets는 제출 시 필수이지만, 일부 페르소나(예: 대학생)는 프로필에
-    // 자산 정보가 없다. 모르는 값을 0으로 채우면 "0원 보유"와 "모름"을 같은
-    // 값으로 뭉개는 것이므로, 그대로 undefined를 넘겨 사용자가 직접 입력하게
-    // 한다. InputFormValues는 제출 후(검증 통과) 형태를 가리키므로 프리필
-    // 단계에서는 타입과 런타임이 어긋난다 — 캐스트로 그 경계를 표시한다.
-    current_assets: profile.finance.current_assets as number,
+    current_assets: profile.finance.current_assets,
     // 서울 25개 구가 아니면 미선택으로 떨어뜨린다. 검증되지 않은 코드를
     // 드롭다운 값으로 흘리는 것보다 사용자가 직접 고르게 하는 편이 안전하다.
     target_region: isSeoulDistrict(profile.goal.target_region)
@@ -99,7 +107,7 @@ export function toFormValues(profile: PersonaProfile): InputFormValues {
 }
 
 export function changedFields(
-  defaults: InputFormValues,
+  defaults: FormDefaults,
   values: InputFormValues,
 ): string[] {
   return (Object.keys(defaults) as (keyof InputFormValues)[])
