@@ -9,7 +9,7 @@
         "age": 25,
         "monthly_income": 800000,
         "monthly_expense": 700000,
-        "target_price": 5000000,
+        "target_price": 325000000,
         "target_move_in_ym": "202807"
       },
       "portfolio_status": "COMPLETE"
@@ -22,7 +22,7 @@
         "age": 21,
         "monthly_income": 900000,
         "monthly_expense": 700000,
-        "target_price": 6000000,
+        "target_price": 390000000,
         "target_move_in_ym": "202807"
       },
       "portfolio_status": "COMPLETE"
@@ -35,7 +35,7 @@
         "age": 22,
         "monthly_income": 1200000,
         "monthly_expense": 900000,
-        "target_price": 8000000,
+        "target_price": 262500000,
         "target_move_in_ym": "202901"
       },
       "portfolio_status": "COMPLETE"
@@ -48,7 +48,7 @@
         "age": 24,
         "monthly_income": 1100000,
         "monthly_expense": 850000,
-        "target_price": 7000000,
+        "target_price": 337000000,
         "target_move_in_ym": "202807"
       },
       "portfolio_status": "COMPLETE"
@@ -61,7 +61,7 @@
         "age": 23,
         "monthly_income": 800000,
         "monthly_expense": 750000,
-        "target_price": 5000000,
+        "target_price": 300000000,
         "target_move_in_ym": "202807"
       },
       "portfolio_status": "COMPLETE"
@@ -74,7 +74,7 @@
         "age": 26,
         "monthly_income": 1500000,
         "monthly_expense": 1100000,
-        "target_price": 10000000,
+        "target_price": 550000000,
         "target_move_in_ym": "202901"
       },
       "portfolio_status": "COMPLETE"
@@ -87,7 +87,7 @@
         "age": 25,
         "monthly_income": 1000000,
         "monthly_expense": 900000,
-        "target_price": 8000000,
+        "target_price": 365000000,
         "target_move_in_ym": "202801"
       },
       "portfolio_status": "COMPLETE"
@@ -100,7 +100,7 @@
         "age": 21,
         "monthly_income": 2000000,
         "monthly_expense": 1000000,
-        "target_price": 30000000,
+        "target_price": 233000000,
         "target_move_in_ym": "202807"
       },
       "portfolio_status": "COMPLETE"
@@ -113,7 +113,7 @@
         "age": 23,
         "monthly_income": 3000000,
         "monthly_expense": 1200000,
-        "target_price": 50000000,
+        "target_price": 262500000,
         "target_move_in_ym": "202801"
       },
       "portfolio_status": "INFEASIBLE"
@@ -126,7 +126,7 @@
         "age": 25,
         "monthly_income": 4000000,
         "monthly_expense": 1800000,
-        "target_price": 40000000,
+        "target_price": 260000000,
         "target_move_in_ym": "202801"
       },
       "portfolio_status": "COMPLETE"
@@ -139,7 +139,7 @@
         "age": 24,
         "monthly_income": 2500000,
         "monthly_expense": 1500000,
-        "target_price": 70000000,
+        "target_price": 285000000,
         "target_move_in_ym": "202807"
       },
       "portfolio_status": "INFEASIBLE"
@@ -152,7 +152,7 @@
         "age": 22,
         "monthly_income": 1800000,
         "monthly_expense": 900000,
-        "target_price": 30000000,
+        "target_price": 259500000,
         "target_move_in_ym": "202901"
       },
       "portfolio_status": "COMPLETE"
@@ -165,7 +165,7 @@
         "age": 26,
         "monthly_income": 5000000,
         "monthly_expense": 2000000,
-        "target_price": 80000000,
+        "target_price": 370000000,
         "target_move_in_ym": "202707"
       },
       "portfolio_status": "INFEASIBLE"
@@ -178,7 +178,7 @@
         "age": 20,
         "monthly_income": 600000,
         "monthly_expense": 550000,
-        "target_price": 3000000,
+        "target_price": 337000000,
         "target_move_in_ym": "202807"
       },
       "portfolio_status": "COMPLETE"
@@ -191,7 +191,7 @@
         "age": 24,
         "monthly_income": 800000,
         "monthly_expense": 650000,
-        "target_price": 5000000,
+        "target_price": 285000000,
         "target_move_in_ym": "202901"
       },
       "portfolio_status": "COMPLETE"
@@ -204,7 +204,7 @@
         "age": 23,
         "monthly_income": 1000000,
         "monthly_expense": 950000,
-        "target_price": 5000000,
+        "target_price": 281700000,
         "target_move_in_ym": "202807"
       },
       "portfolio_status": "COMPLETE"
@@ -217,7 +217,7 @@
         "age": 22,
         "monthly_income": 500000,
         "monthly_expense": 520000,
-        "target_price": 3000000,
+        "target_price": 365000000,
         "target_move_in_ym": "202807"
       },
       "portfolio_status": "NO_ALLOCATION_REQUIRED"
@@ -230,7 +230,7 @@
         "age": 25,
         "monthly_income": 700000,
         "monthly_expense": 700000,
-        "target_price": 4000000,
+        "target_price": 460000000,
         "target_move_in_ym": "202801"
       },
       "portfolio_status": "NO_ALLOCATION_REQUIRED"
@@ -243,7 +243,7 @@
         "age": 26,
         "monthly_income": 900000,
         "monthly_expense": 800000,
-        "target_price": 5000000,
+        "target_price": 660000000,
         "target_move_in_ym": "202907"
       },
       "portfolio_status": "COMPLETE"
@@ -256,7 +256,7 @@
         "age": 21,
         "monthly_income": 400000,
         "monthly_expense": 600000,
-        "target_price": 3000000,
+        "target_price": 372500000,
         "target_move_in_ym": "202807"
       },
       "portfolio_status": "NO_ALLOCATION_REQUIRED"

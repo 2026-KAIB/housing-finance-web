@@ -15,12 +15,9 @@
     "current_housing_type": "monthly_rent"
   },
   "goal": {
-    "target_housing_type": "monthly_rent",
+    "target_housing_type": "purchase",
     "target_region": "11230",
-    "target_price": 5000000,
-    "target_lease_deposit": 5000000,
-    "target_monthly_rent": 250000,
-    "target_management_fee": 50000,
+    "target_price": 281700000,
     "target_move_in_ym": "202807",
     "risk_preference": "stability"
   },

@@ -15,12 +15,9 @@
     "current_housing_type": "parents"
   },
   "goal": {
-    "target_housing_type": "monthly_rent",
-    "target_region": "11680",
-    "target_price": 70000000,
-    "target_lease_deposit": 70000000,
-    "target_monthly_rent": 1000000,
-    "target_management_fee": 180000,
+    "target_housing_type": "purchase",
+    "target_region": "11320",
+    "target_price": 285000000,
     "target_move_in_ym": "202807",
     "risk_preference": "stability"
   },
