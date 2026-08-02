@@ -382,12 +382,10 @@ describe("InputWizard", () => {
     const user = userEvent.setup();
     await renderWizard();
 
-    // goToReview가 보유 자산을 직접 채운다(프리필 없음) — 그 자체가 기본값과
-    // 달라지는 것이므로 edited=1이 항상 붙는다.
     await goToReview(user);
     await user.click(screen.getByRole("button", { name: "결과 보기" }));
 
-    expect(push).toHaveBeenCalledWith(`/dashboard?persona=${SAMPLE}&edited=1`);
+    expect(push).toHaveBeenCalledWith(`/dashboard?persona=${SAMPLE}`);
   });
 
   it("결과 보기를 누르면 입력값을 대시보드로 넘긴다", async () => {
@@ -401,20 +399,5 @@ describe("InputWizard", () => {
 
     expect(readInputHandoff(SAMPLE)).not.toBeNull();
     expect(push).toHaveBeenCalled();
-  });
-
-  it("값을 바꾸면 edited 표시를 붙여 이동한다", async () => {
-    const user = userEvent.setup();
-    await renderWizard();
-
-    await user.click(screen.getByRole("button", { name: "희망 주택" }));
-    const target = screen.getByLabelText("목표 가격 (원)");
-    await user.clear(target);
-    await user.type(target, "9000000");
-
-    await goToReview(user);
-    await user.click(screen.getByRole("button", { name: "결과 보기" }));
-
-    expect(push).toHaveBeenCalledWith(`/dashboard?persona=${SAMPLE}&edited=1`);
   });
 });

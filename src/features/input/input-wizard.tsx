@@ -15,7 +15,6 @@ import { saveInputHandoff } from "@/lib/session/input-handoff";
 
 import {
   type InputFormValues,
-  changedFields,
   inputFormSchema,
   toFormValues,
 } from "./form-schema";
@@ -75,10 +74,7 @@ export function InputWizard({
 
   const onSubmit = form.handleSubmit((values) => {
     saveInputHandoff(personaId, values);
-    const edited = changedFields(defaultValues, values).length > 0;
-    router.push(
-      `/dashboard?persona=${personaId}${edited ? "&edited=1" : ""}`,
-    );
+    router.push(`/dashboard?persona=${personaId}`);
   });
 
   return (

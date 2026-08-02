@@ -1,19 +1,19 @@
-import { PortfolioView } from "@/features/dashboard/portfolio-view";
+import { LiveDashboard } from "@/features/dashboard/live-dashboard";
 import { requirePersonaId } from "@/lib/fixtures/guard";
-import { loadResult } from "@/lib/fixtures/loader";
+import { loadProfile } from "@/lib/fixtures/loader";
 
 export default async function DashboardPage({
   searchParams,
 }: {
-  searchParams: Promise<{ persona?: string | string[]; edited?: string }>;
+  searchParams: Promise<{ persona?: string | string[] }>;
 }) {
   const params = await searchParams;
   const personaId = requirePersonaId(params.persona);
-  const result = await loadResult(personaId);
+  const profile = await loadProfile(personaId);
 
   return (
     <main>
-      <PortfolioView result={result} edited={params.edited === "1"} />
+      <LiveDashboard profile={profile} />
     </main>
   );
 }
