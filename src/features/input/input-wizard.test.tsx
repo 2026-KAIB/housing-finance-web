@@ -321,6 +321,36 @@ describe("InputWizard", () => {
     expect(screen.getByRole("button", { name: "다음" })).toBeEnabled();
   });
 
+  it("전용면적을 0으로 두고 패널을 닫은 채 다음을 누르면 패널이 열리며 에러를 보여준다", async () => {
+    // 전용면적은 지역·목표가격과 같은 패널 안에 있지만 nextBlocked(빈값
+    // 가드)의 대상이 아니다 — 0은 "비어 있지 않다"고 판단되어 [다음]이
+    // 활성 상태로 남는다. 눌러야 form.trigger()가 돌아 검증에 걸리는데,
+    // 패널이 닫혀 있으면 그 에러를 화면 어디서도 볼 수 없었다.
+    const user = userEvent.setup();
+    await renderWizard();
+
+    await fillCurrentAssets(user);
+    const openPanel = screen.getByRole("button", { name: "희망 주택" });
+    await user.click(openPanel);
+    const area = screen.getByLabelText("전용면적 (㎡)");
+    await user.clear(area);
+    await user.type(area, "0");
+    await user.click(openPanel);
+
+    expect(screen.queryByLabelText("전용면적 (㎡)")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "다음" })).toBeEnabled();
+
+    await user.click(screen.getByRole("button", { name: "다음" }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "0보다 커야 합니다",
+    );
+    expect(screen.getByLabelText("전용면적 (㎡)")).toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { level: 2, name: /마이데이터/ }),
+    ).not.toBeInTheDocument();
+  });
+
   it("희망 주택 패널을 열어도 다음 단계로 넘어간다", async () => {
     const user = userEvent.setup();
     await renderWizard();

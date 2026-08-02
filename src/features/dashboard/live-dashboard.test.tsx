@@ -137,6 +137,90 @@ describe("LiveDashboard", () => {
     );
   });
 
+  it("저축 절이 NOT_RUN이면 배분 불가 대신 미실행 패널을 그리고 빠진 값을 이름으로 알린다", async () => {
+    // 이 픽스처는 이 브랜치의 자체 기본 상태다: 예·적금 상품 후보 제공자가
+    // 설정되지 않으면 엔진은 판정을 내리지 않고 NOT_RUN으로 돌아온다. 이걸
+    // "조건을 만족하는 조합이 없습니다"(INFEASIBLE)로 보여주면 엔진이 내리지
+    // 않은 판정을 웹이 대신 내리는 것이 된다.
+    const notRunSimulation = {
+      as_of: "2026-08-02",
+      savings_portfolio: {
+        run_status: "NOT_RUN",
+        result: null,
+        missing_inputs: ["savings_product_candidates"],
+        reasons: [
+          "예·적금 상품 후보가 전달되지 않아 계산하지 않았습니다. 후보 0건은 '조건을 만족하는 상품이 없음'과 다른 상태입니다.",
+        ],
+      },
+    };
+    mockFetch((url) =>
+      url.includes("/simulations")
+        ? Response.json(notRunSimulation)
+        : (new Promise(() => {}) as never),
+    );
+
+    render(<LiveDashboard profile={await loadProfile(PERSONA_F)} />);
+
+    await waitFor(() =>
+      expect(
+        screen.getByText(/저축 배분 계산이 실행되지 않았습니다/),
+      ).toBeInTheDocument(),
+    );
+    expect(
+      screen.getByText(/예·적금 상품 후보가 전달되지 않아/),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/savings_product_candidates/)).toBeInTheDocument();
+    expect(
+      screen.queryByText("조건을 만족하는 배분 조합이 없습니다"),
+    ).not.toBeInTheDocument();
+  });
+
+  it("진짜 INFEASIBLE 결과는 여전히 배분 불가 문구를 보여준다", async () => {
+    // NOT_RUN 패널을 새로 들이면서 진짜 INFEASIBLE(엔진이 계산은 했지만
+    // 조건을 만족하는 조합이 없다고 판정한 경우)까지 가려지면 안 된다.
+    const infeasibleSimulation = {
+      as_of: "2026-08-02",
+      savings_portfolio: {
+        run_status: "COMPLETED",
+        engine_status: "INFEASIBLE",
+        result: {
+          status: "INFEASIBLE",
+          coverage_ratio: "0",
+          monthly_allocated: "0",
+          monthly_unallocated: "500000",
+          lump_sum_allocated: "0",
+          lump_sum_unallocated: "0",
+          expected_total_principal: "0",
+          expected_maturity_amount: "0",
+          expected_net_interest: "0",
+          allocations: [],
+          reasons: ["예금자보호 제약을 만족하는 조합이 없습니다."],
+          final_policy_status: "FAIL",
+          final_policy_valid: false,
+          validation_reasons: [],
+        },
+        missing_inputs: [],
+        reasons: [],
+      },
+    };
+    mockFetch((url) =>
+      url.includes("/simulations")
+        ? Response.json(infeasibleSimulation)
+        : (new Promise(() => {}) as never),
+    );
+
+    render(<LiveDashboard profile={await loadProfile(PERSONA_F)} />);
+
+    await waitFor(() =>
+      expect(
+        screen.getByText("조건을 만족하는 배분 조합이 없습니다"),
+      ).toBeInTheDocument(),
+    );
+    expect(
+      screen.queryByText(/저축 배분 계산이 실행되지 않았습니다/),
+    ).not.toBeInTheDocument();
+  });
+
   it("카드 호출이 실패해도 보고서는 따로 시도한다", async () => {
     const calls: string[] = [];
     vi.stubGlobal(

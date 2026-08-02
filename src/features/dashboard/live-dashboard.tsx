@@ -6,7 +6,11 @@ import { inputFormSchema, toFormValues } from "@/features/input/form-schema";
 import { ReportViewer } from "@/features/report/report-viewer";
 import { apiErrorMessage } from "@/lib/api/errors";
 import { postSimulation } from "@/lib/api/client";
-import { toPortfolioResult } from "@/lib/api/portfolio-result";
+import {
+  type NotRunSavingsSection,
+  savingsSectionNotRun,
+  toPortfolioResult,
+} from "@/lib/api/portfolio-result";
 import { buildSimulationInput } from "@/lib/api/simulation-input";
 import type { PersonaProfile } from "@/lib/contracts/persona";
 import type { PortfolioResult } from "@/lib/contracts/result";
@@ -44,6 +48,7 @@ function fieldLabel(name: string): string {
  */
 export function LiveDashboard({ profile }: { profile: PersonaProfile }) {
   const [result, setResult] = useState<PortfolioResult | null>(null);
+  const [notRun, setNotRun] = useState<NotRunSavingsSection | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   // 위저드를 거치지 않고 바로 들어온 경우 페르소나 기준값으로 계산한다.
@@ -64,11 +69,19 @@ export function LiveDashboard({ profile }: { profile: PersonaProfile }) {
     postSimulation(input)
       .then((simulation) => {
         if (cancelled) return;
+        // 엔진이 계산을 거부한 것(NOT_RUN)과 "조건을 만족하는 조합이
+        // 없다"(INFEASIBLE)는 서로 다른 판정이다. toPortfolioResult로
+        // 넘기기 전에 걸러내, 앞의 것이 뒤의 것으로 뭉개지지 않게 한다.
+        const sectionNotRun = savingsSectionNotRun(simulation);
+        if (sectionNotRun) {
+          setNotRun(sectionNotRun);
+          return;
+        }
         setResult(toPortfolioResult(simulation, profile, values));
       })
       .catch((cause) => {
         if (cancelled) return;
-        setError(apiErrorMessage(cause));
+        setError(apiErrorMessage(cause, "계산 결과"));
       });
 
     return () => {
@@ -86,9 +99,14 @@ export function LiveDashboard({ profile }: { profile: PersonaProfile }) {
   // 추론하지 못한다. input을 직접 좁혀야 아래 ReportViewer 호출부에서
   // 단언(!) 없이 SimulationInputPayload로 좁혀진다.
   if (input === null) {
-    const missing = parsed.success
-      ? []
-      : [...new Set(parsed.error.issues.map((issue) => String(issue.path[0])))];
+    // input이 null이면 parsed.success는 항상 false다(둘 다 위에서
+    // `parsed.success ? ... : null`로 함께 만들어진다). zod의
+    // SafeParseReturnType은 성공 분기에 `error?: never`를 둬서 별도 narrowing
+    // 없이 `parsed.error?.issues`로 바로 읽을 수 있다 — `parsed.success ? []
+    // : ...`처럼 도달하지 않는 `[]` 분기를 둘 필요가 없다.
+    const missing = [
+      ...new Set((parsed.error?.issues ?? []).map((issue) => String(issue.path[0]))),
+    ];
     return (
       <section className="py-12">
         <p className="rounded-xl border border-line bg-accent-soft p-4 text-sm">
@@ -111,6 +129,26 @@ export function LiveDashboard({ profile }: { profile: PersonaProfile }) {
         <section className="py-12">
           <p className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
             {error}
+          </p>
+        </section>
+      ) : notRun ? (
+        // 엔진이 계산을 거부했다는 사실 자체가 정보다. "조건을 만족하는
+        // 조합이 없습니다"(INFEASIBLE)와 같은 화면으로 보이면 안 되므로
+        // PortfolioView 대신 이 패널을 그린다. 이유는 엔진의 reasons를
+        // 그대로 옮기고, 우리가 따로 해석해 지어내지 않는다.
+        <section className="py-12">
+          <p className="rounded-xl border border-line bg-accent-soft p-4 text-sm">
+            저축 배분 계산이 실행되지 않았습니다.
+            {notRun.reasons.map((reason) => (
+              <span className="mt-1 block" key={reason}>
+                {reason}
+              </span>
+            ))}
+            {notRun.missingInputs.length > 0 && (
+              <span className="mt-1 block">
+                필요한 값: {notRun.missingInputs.map(fieldLabel).join(", ")}
+              </span>
+            )}
           </p>
         </section>
       ) : result ? (

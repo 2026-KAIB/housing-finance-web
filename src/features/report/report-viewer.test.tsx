@@ -80,4 +80,13 @@ describe("ReportViewer", () => {
 
     expect(screen.getByText(/고급주택이 아닌 것으로/)).toBeInTheDocument();
   });
+
+  it("전용면적 84㎡ 고정도 취득 가정으로 함께 밝힌다", () => {
+    // 고급주택 가정만 공개하고 전용면적 가정을 빠뜨리면, 취득세를 과소
+    // 계산하는 쪽으로 미는 가정 하나가 사용자 눈에 닿지 않는다.
+    mockFetch(new Promise(() => {}) as never);
+    render(<ReportViewer input={INPUT} />);
+
+    expect(screen.getByText(/전용면적은 84㎡/)).toBeInTheDocument();
+  });
 });

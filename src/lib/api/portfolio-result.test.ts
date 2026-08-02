@@ -5,7 +5,7 @@ import { toFormValues } from "@/features/input/form-schema";
 import { portfolioResultSchema } from "@/lib/contracts/result";
 import { loadProfile } from "@/lib/fixtures/loader";
 
-import { toPortfolioResult } from "./portfolio-result";
+import { savingsSectionNotRun, toPortfolioResult } from "./portfolio-result";
 
 const PERSONA = "persona_e_college_student_basic";
 
@@ -79,7 +79,12 @@ describe("toPortfolioResult", () => {
     expect(result.final_policy_valid).toBe(false);
   });
 
-  it("저축 절이 NOT_RUN이면 사유를 담아 INFEASIBLE로 만든다", async () => {
+  it("저축 절이 NOT_RUN이어도 (호출자가 먼저 걸러야 하는) 방어적 기본값으로 INFEASIBLE을 만든다", async () => {
+    // toPortfolioResult 자체는 NOT_RUN을 전용으로 다루지 않는다 — payload가
+    // null일 때의 방어적 기본값일 뿐이다. 실제 화면에서는 LiveDashboard가
+    // savingsSectionNotRun()으로 이 경우를 먼저 걸러내 별도 패널을 그리고,
+    // toPortfolioResult에는 애초에 넘기지 않는다. 이 테스트는 그 방어값이
+    // 여전히 정직하게 동작함을 확인할 뿐, 이것이 설계된 경로라는 뜻은 아니다.
     const notRun = {
       as_of: "2026-08-02",
       savings_portfolio: {
@@ -127,5 +132,36 @@ describe("toPortfolioResult", () => {
     const result = await map();
 
     expect(portfolioResultSchema.safeParse(result).success).toBe(true);
+  });
+});
+
+describe("savingsSectionNotRun", () => {
+  it("NOT_RUN이면 missing_inputs와 reasons를 이름 그대로 돌려준다", () => {
+    const notRun = {
+      as_of: "2026-08-02",
+      savings_portfolio: {
+        run_status: "NOT_RUN",
+        result: null,
+        missing_inputs: ["savings_product_candidates"],
+        reasons: [
+          "예·적금 상품 후보가 전달되지 않아 계산하지 않았습니다. 후보 0건은 '조건을 만족하는 상품이 없음'과 다른 상태입니다.",
+        ],
+      },
+    };
+
+    const result = savingsSectionNotRun(notRun);
+
+    expect(result).toEqual({
+      missingInputs: ["savings_product_candidates"],
+      reasons: [
+        "예·적금 상품 후보가 전달되지 않아 계산하지 않았습니다. 후보 0건은 '조건을 만족하는 상품이 없음'과 다른 상태입니다.",
+      ],
+    });
+  });
+
+  it("NOT_RUN이 아니면 null이다 — 진짜 INFEASIBLE을 가짜 미실행으로 만들지 않는다", async () => {
+    const result = savingsSectionNotRun(SIMULATION);
+
+    expect(result).toBeNull();
   });
 });

@@ -33,10 +33,38 @@ export async function apiRequest<ResponseBody>(
   return (await response.json()) as ResponseBody;
 }
 
+/** FastAPI가 422에서 돌려주는 검증 오류 한 건. `loc`의 마지막 항목이 필드 이름이다. */
+type FastApiValidationIssue = {
+  loc?: unknown[];
+  msg?: string;
+};
+
+/**
+ * FastAPI의 `detail`은 문자열(대부분의 오류)일 수도, 리스트(422 검증 오류)일
+ * 수도 있다. 리스트를 문자열로 가정하면 `""`가 되어 어떤 필드가 왜 걸렸는지
+ * 사라진다 — 예: emergency_reserve > liquid_assets일 때. 각 항목의 필드
+ * 이름과 메시지를 이어붙여 사용자가 무엇을 고쳐야 하는지 알 수 있게 한다.
+ */
+function joinValidationIssues(issues: unknown[]): string {
+  return issues
+    .map((issue) => {
+      const { loc, msg } = issue as FastApiValidationIssue;
+      const field = Array.isArray(loc) ? loc.at(-1) : undefined;
+      const message = typeof msg === "string" ? msg : "";
+      return field !== undefined && field !== null
+        ? `${field}: ${message}`
+        : message;
+    })
+    .filter((line) => line.length > 0)
+    .join("; ");
+}
+
 async function detailOf(response: Response): Promise<string> {
   try {
     const body = (await response.json()) as { detail?: unknown };
-    return typeof body.detail === "string" ? body.detail : "";
+    if (typeof body.detail === "string") return body.detail;
+    if (Array.isArray(body.detail)) return joinValidationIssues(body.detail);
+    return "";
   } catch {
     return "";
   }

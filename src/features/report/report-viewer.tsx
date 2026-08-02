@@ -30,7 +30,7 @@ export function ReportViewer({ input }: { input: SimulationInputPayload }) {
         if (!cancelled) setReportId(id);
       })
       .catch((cause) => {
-        if (!cancelled) setError(apiErrorMessage(cause));
+        if (!cancelled) setError(apiErrorMessage(cause, "보고서"));
       });
 
     return () => {

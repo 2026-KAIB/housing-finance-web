@@ -14,6 +14,30 @@ function section(simulation: unknown): Section {
   return root?.savings_portfolio ?? {};
 }
 
+export type NotRunSavingsSection = {
+  missingInputs: string[];
+  reasons: string[];
+};
+
+/**
+ * 저축 절이 `NOT_RUN`이면 이름 있는 사유를 돌려주고, 아니면 `null`이다.
+ *
+ * 엔진이 계산을 거부한 것과 "조건을 만족하는 조합이 없다"는 서로 다른
+ * 판정이다. 호출자는 이 함수로 NOT_RUN을 먼저 걸러내고, `toPortfolioResult`가
+ * 그 결과를 INFEASIBLE로 뭉개기 전에 별도 화면을 그려야 한다.
+ */
+export function savingsSectionNotRun(
+  simulation: unknown,
+): NotRunSavingsSection | null {
+  const sec = section(simulation);
+  if (sec.run_status !== "NOT_RUN") return null;
+
+  return {
+    missingInputs: sec.missing_inputs ?? [],
+    reasons: sec.reasons ?? [],
+  };
+}
+
 /**
  * 저축 절 결과를 대시보드 뷰모델로 옮긴다.
  *

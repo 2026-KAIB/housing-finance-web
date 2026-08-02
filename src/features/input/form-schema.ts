@@ -105,12 +105,3 @@ export function toFormValues(profile: PersonaProfile): FormDefaults {
     exclusive_area_m2: 84,
   };
 }
-
-export function changedFields(
-  defaults: FormDefaults,
-  values: InputFormValues,
-): string[] {
-  return (Object.keys(defaults) as (keyof InputFormValues)[])
-    .filter((key) => defaults[key] !== values[key])
-    .map(String);
-}

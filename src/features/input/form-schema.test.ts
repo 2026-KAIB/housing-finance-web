@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { loadProfile } from "@/lib/fixtures/loader";
 
-import { changedFields, inputFormSchema, toFormValues } from "./form-schema";
+import { inputFormSchema, toFormValues } from "./form-schema";
 
 const SAMPLE = "persona_e_college_student_basic";
 
@@ -152,34 +152,6 @@ describe("toFormValues", () => {
 
   it("current_assets가 없는 프로필도 처리한다", async () => {
     expect(toFormValues(await loadProfile(SAMPLE)).current_assets).toBeUndefined();
-  });
-});
-
-describe("changedFields", () => {
-  it("바뀐 필드 이름을 돌려준다", async () => {
-    // SAMPLE(persona_e)에는 current_assets가 없다. changedFields의 두 번째
-    // 인자는 제출된 값(InputFormValues)이라 current_assets가 필수이므로,
-    // 여기서 실제 사용자가 입력했을 값으로 채워 둔다 — defaults와 values
-    // 양쪽에 같은 값을 줘 이 필드 자체는 "바뀐 필드"에 안 잡히게 한다.
-    const defaults = {
-      ...toFormValues(await loadProfile(SAMPLE)),
-      current_assets: 8000000,
-    };
-    const changed = changedFields(defaults, {
-      ...defaults,
-      target_price: 9000000,
-      monthly_savings_budget: 250000,
-    });
-
-    expect(changed.sort()).toEqual(["monthly_savings_budget", "target_price"]);
-  });
-
-  it("그대로면 빈 배열이다", async () => {
-    const defaults = {
-      ...toFormValues(await loadProfile(SAMPLE)),
-      current_assets: 8000000,
-    };
-    expect(changedFields(defaults, { ...defaults })).toEqual([]);
   });
 });
 

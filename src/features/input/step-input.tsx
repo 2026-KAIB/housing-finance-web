@@ -16,6 +16,17 @@ import { SavingsFields } from "./savings-fields";
 
 const DESIRED_HOME_PANEL_ID = "desired-home-panel";
 
+// DesiredHomePanel(./desired-home-panel.tsx)이 그리는 필드와 정확히 같아야
+// 한다 — 패널이 접혀 있을 때 이 중 하나라도 검증 에러가 나면 사용자는
+// [다음]이 반응하지 않는 이유를 화면 어디에서도 볼 수 없다. 필드를 하나씩
+// 나열하는 대신 이 목록 하나로 관리해, 패널에 필드가 늘어나도 여기 한 곳만
+// 손보면 되게 한다.
+const DESIRED_HOME_PANEL_FIELDS = [
+  "target_region",
+  "target_price",
+  "exclusive_area_m2",
+] as const satisfies readonly (keyof InputFormValues)[];
+
 export function StepInput({
   personaId,
   personas,
@@ -31,10 +42,11 @@ export function StepInput({
     formState: { errors },
   } = useFormContext<InputFormValues>();
 
-  // 두 필드가 접힌 패널 안에 있으므로, 검증 에러가 났는데 패널이 닫혀 있으면
-  // 사용자는 [다음]이 반응하지 않는 이유를 화면 어디에서도 볼 수 없다.
+  // 이 필드들이 접힌 패널 안에 있으므로, 검증 에러가 났는데 패널이 닫혀
+  // 있으면 사용자는 [다음]이 반응하지 않는 이유를 화면 어디에서도 볼 수 없다.
   const panelOpen =
-    homePanelOpen || Boolean(errors.target_region || errors.target_price);
+    homePanelOpen ||
+    DESIRED_HOME_PANEL_FIELDS.some((field) => Boolean(errors[field]));
 
   return (
     <div className="grid gap-8">

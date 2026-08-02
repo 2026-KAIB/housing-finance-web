@@ -22,10 +22,21 @@ export function saveInputHandoff(
   personaId: string,
   values: InputFormValues,
 ): void {
+  // Node는 전역 sessionStorage를 제공하지만(kakao-loader.ts와 같은 이유로
+  // 여기서도 가드가 필요하다), 그 전역은 프로세스 전체에서 공유된다 —
+  // 서버에서 쓰면 다른 요청과 값이 섞일 수 있다. 서버에서는 아무것도 하지
+  // 않는다.
+  if (typeof window === "undefined") return;
   sessionStorage.setItem(KEY, JSON.stringify({ personaId, values }));
 }
 
 export function readInputHandoff(personaId: string): InputFormValues | null {
+  // 위와 같은 이유로 서버에서는 항상 null이다. null을 돌려주면 호출자는
+  // 페르소나 기본값으로 대체한다 — 서버 렌더와 하이드레이션이 같은 값을
+  // 보게 되어, "값이 채워지지 않았습니다"가 잠깐 보였다가 실제 값으로
+  // 바뀌는 하이드레이션 불일치가 사라진다.
+  if (typeof window === "undefined") return null;
+
   const raw = sessionStorage.getItem(KEY);
   if (!raw) return null;
 

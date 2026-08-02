@@ -61,6 +61,27 @@ describe("PortfolioView — NO_ALLOCATION_REQUIRED", () => {
   });
 });
 
+describe("PortfolioView — PARTIAL", () => {
+  // PARTIAL은 20개 픽스처 어디에도 없다(portfolio-result.test.ts의 같은
+  // 주석 참고) — 실시간 경로에서만 나오는 상태라 실제 결과에서 상태만 바꿔
+  // 합성한다. PARTIAL은 COMPLETE와 같은 가지(배분표 있음)로 그려지므로,
+  // 배지가 없으면 예산의 일부만 배분됐다는 사실이 헤드라인에서 사라진다.
+  it("일부 배분 상태를 배지로 보여준다", async () => {
+    const base = await loadResult(COMPLETE);
+    const result = { ...base, status: "PARTIAL" as const, success: false };
+
+    render(<PortfolioView result={result} />);
+
+    expect(screen.getByText("일부 배분")).toBeInTheDocument();
+  });
+
+  it("COMPLETE는 일부 배분 배지를 보여주지 않는다 — PARTIAL과 구별돼야 한다", async () => {
+    render(<PortfolioView result={await loadResult(COMPLETE)} />);
+
+    expect(screen.queryByText("일부 배분")).not.toBeInTheDocument();
+  });
+});
+
 describe("PortfolioView — COMPLETE에서도 엔진의 caveat를 보여준다", () => {
   // No COMPLETE fixture exercises this today (all 14 have empty reason
   // arrays and zero unallocated amounts) — this is the latent case a live

@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { toFormValues } from "@/features/input/form-schema";
 import { loadProfile } from "@/lib/fixtures/loader";
 
-import { buildSimulationInput } from "./simulation-input";
+import { buildSimulationInput, FIXED_ACQUISITION_ASSUMPTIONS } from "./simulation-input";
 
 const PERSONA = "persona_e_college_student_basic";
 
@@ -77,5 +77,40 @@ describe("buildSimulationInput", () => {
     const input = await build();
 
     expect(input.acquisition_costs.is_luxury_home).toBe(false);
+  });
+
+  it("전용면적 84㎡ 고정을 취득세를 과소 계산하는 방향으로 명시한다", async () => {
+    // 84는 <=85 국민주택규모(농어촌특별세 없음)를 확정한다. 실제 면적이
+    // 85~100㎡이면 엔진은 그 여부를 확정하지 못하는데(None), 84로 고정하면
+    // 그 미확정을 "세금 없음"(True)으로 만들어버린다 — 취득세를 실제보다
+    // 작게 보이게 하는 방향이므로 고급주택 가정과 같은 이유로 화면에 밝혀야
+    // 한다.
+    const input = await build();
+
+    expect(input.acquisition_costs.exclusive_area_m2).toBe(84);
+    expect(
+      FIXED_ACQUISITION_ASSUMPTIONS.some((note) => note.includes("전용면적")),
+    ).toBe(true);
+  });
+});
+
+describe("FIXED_ACQUISITION_ASSUMPTIONS", () => {
+  // 이 목록의 각 항목은 사용자에게 실제로 공개되는 가정이다(ReportViewer가
+  // 그대로 렌더한다). 새 고정 가정을 추가하면서 이 개수를 갱신하지 않으면,
+  // 그 가정이 공개 없이 조용히 계산에만 반영되는 사고가 재발할 수 있다.
+  it("네 가지 고정 가정을 모두 담는다", () => {
+    expect(FIXED_ACQUISITION_ASSUMPTIONS).toHaveLength(4);
+  });
+
+  it("고급주택 가정과 전용면적 가정 모두 비용이 커지는 방향임을 밝힌다", () => {
+    const luxury = FIXED_ACQUISITION_ASSUMPTIONS.find((note) =>
+      note.includes("고급주택"),
+    );
+    const area = FIXED_ACQUISITION_ASSUMPTIONS.find((note) =>
+      note.includes("전용면적"),
+    );
+
+    expect(luxury).toContain("실제 비용은 더 큽니다");
+    expect(area).toContain("실제 취득세는 이 계산보다 커질 수 있습니다");
   });
 });
