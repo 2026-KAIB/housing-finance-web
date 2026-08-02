@@ -12,8 +12,8 @@ import {
 const SAMPLE = "persona_e_college_student_basic";
 
 describe("loadPersonaIndex", () => {
-  it("20명을 검증된 형태로 돌려준다", () => {
-    expect(loadPersonaIndex().personas).toHaveLength(20);
+  it("6명을 검증된 형태로 돌려준다", () => {
+    expect(loadPersonaIndex().personas).toHaveLength(6);
   });
 });
 

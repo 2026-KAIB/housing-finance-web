@@ -34,7 +34,7 @@ export function PersonaGrid({ personas }: { personas: PersonaIndexEntry[] }) {
         페르소나 선택
       </h1>
       <p className="mb-6 text-brand-muted">
-        대학생 20명의 합성 마이데이터입니다. 한 명을 고르면 입력폼이 자동으로
+        대학생 6명의 합성 마이데이터입니다. 한 명을 고르면 입력폼이 자동으로
         채워집니다.
       </p>
 

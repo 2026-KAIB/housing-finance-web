@@ -9,9 +9,9 @@ import { PersonaGrid } from "./persona-grid";
 const personas = loadPersonaIndex().personas;
 
 describe("PersonaGrid", () => {
-  it("20명을 카드로 보여준다", () => {
+  it("6명을 카드로 보여준다", () => {
     render(<PersonaGrid personas={personas} />);
-    expect(screen.getAllByRole("link")).toHaveLength(20);
+    expect(screen.getAllByRole("link")).toHaveLength(6);
   });
 
   it("카드가 입력 화면으로 연결된다", () => {
@@ -34,18 +34,18 @@ describe("PersonaGrid", () => {
     render(<PersonaGrid personas={personas} />);
 
     await user.click(screen.getByRole("button", { name: /여유형/ }));
-    expect(screen.getAllByRole("link")).toHaveLength(6);
+    expect(screen.getAllByRole("link")).toHaveLength(2);
 
     await user.click(screen.getByRole("button", { name: /취약형/ }));
-    expect(screen.getAllByRole("link")).toHaveLength(7);
+    expect(screen.getAllByRole("link")).toHaveLength(2);
 
     await user.click(screen.getByRole("button", { name: /전체/ }));
-    expect(screen.getAllByRole("link")).toHaveLength(20);
+    expect(screen.getAllByRole("link")).toHaveLength(6);
   });
 
   it("배분 불가 페르소나에 상태 배지를 붙인다", () => {
     render(<PersonaGrid personas={personas} />);
-    expect(screen.getAllByText("배분 불가")).toHaveLength(3);
-    expect(screen.getAllByText("배분 불필요")).toHaveLength(3);
+    expect(screen.getAllByText("배분 불가")).toHaveLength(1);
+    expect(screen.queryByText("배분 불필요")).not.toBeInTheDocument();
   });
 });

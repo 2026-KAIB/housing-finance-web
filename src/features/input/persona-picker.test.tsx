@@ -26,11 +26,11 @@ describe("PersonaPicker", () => {
     push.mockClear();
   });
 
-  it("페르소나 20명을 모두 선택지로 둔다", () => {
+  it("페르소나 6명을 모두 선택지로 둔다", () => {
     const personas = renderPicker();
 
     expect(screen.getAllByRole("option")).toHaveLength(personas.length);
-    expect(personas).toHaveLength(20);
+    expect(personas).toHaveLength(6);
   });
 
   it("현재 페르소나가 선택되어 있다", () => {

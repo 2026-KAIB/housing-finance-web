@@ -28,71 +28,6 @@
       "portfolio_status": "COMPLETE"
     },
     {
-      "persona_id": "persona_g_college_student_03_basic",
-      "display_name": "대학생3(기본형)",
-      "category": "basic",
-      "headline": {
-        "age": 22,
-        "monthly_income": 1200000,
-        "monthly_expense": 900000,
-        "target_price": 262500000,
-        "target_move_in_ym": "202901"
-      },
-      "portfolio_status": "COMPLETE"
-    },
-    {
-      "persona_id": "persona_h_college_student_04_basic",
-      "display_name": "대학생4(기본형)",
-      "category": "basic",
-      "headline": {
-        "age": 24,
-        "monthly_income": 1100000,
-        "monthly_expense": 850000,
-        "target_price": 337000000,
-        "target_move_in_ym": "202807"
-      },
-      "portfolio_status": "COMPLETE"
-    },
-    {
-      "persona_id": "persona_i_college_student_05_basic",
-      "display_name": "대학생5(기본형)",
-      "category": "basic",
-      "headline": {
-        "age": 23,
-        "monthly_income": 800000,
-        "monthly_expense": 750000,
-        "target_price": 300000000,
-        "target_move_in_ym": "202807"
-      },
-      "portfolio_status": "COMPLETE"
-    },
-    {
-      "persona_id": "persona_j_college_student_06_basic",
-      "display_name": "대학생6(기본형)",
-      "category": "basic",
-      "headline": {
-        "age": 26,
-        "monthly_income": 1500000,
-        "monthly_expense": 1100000,
-        "target_price": 550000000,
-        "target_move_in_ym": "202901"
-      },
-      "portfolio_status": "COMPLETE"
-    },
-    {
-      "persona_id": "persona_k_college_student_07_basic",
-      "display_name": "대학생7(기본형)",
-      "category": "basic",
-      "headline": {
-        "age": 25,
-        "monthly_income": 1000000,
-        "monthly_expense": 900000,
-        "target_price": 365000000,
-        "target_move_in_ym": "202801"
-      },
-      "portfolio_status": "COMPLETE"
-    },
-    {
       "persona_id": "persona_l_college_student_08_affluent",
       "display_name": "대학생8(부유형)",
       "category": "affluent",
@@ -115,58 +50,6 @@
         "monthly_expense": 1200000,
         "target_price": 262500000,
         "target_move_in_ym": "202801"
-      },
-      "portfolio_status": "INFEASIBLE"
-    },
-    {
-      "persona_id": "persona_n_college_student_10_affluent",
-      "display_name": "대학생10(부유형)",
-      "category": "affluent",
-      "headline": {
-        "age": 25,
-        "monthly_income": 4000000,
-        "monthly_expense": 1800000,
-        "target_price": 260000000,
-        "target_move_in_ym": "202801"
-      },
-      "portfolio_status": "COMPLETE"
-    },
-    {
-      "persona_id": "persona_o_college_student_11_affluent",
-      "display_name": "대학생11(부유형)",
-      "category": "affluent",
-      "headline": {
-        "age": 24,
-        "monthly_income": 2500000,
-        "monthly_expense": 1500000,
-        "target_price": 285000000,
-        "target_move_in_ym": "202807"
-      },
-      "portfolio_status": "INFEASIBLE"
-    },
-    {
-      "persona_id": "persona_p_college_student_12_affluent",
-      "display_name": "대학생12(부유형)",
-      "category": "affluent",
-      "headline": {
-        "age": 22,
-        "monthly_income": 1800000,
-        "monthly_expense": 900000,
-        "target_price": 259500000,
-        "target_move_in_ym": "202901"
-      },
-      "portfolio_status": "COMPLETE"
-    },
-    {
-      "persona_id": "persona_q_college_student_13_affluent",
-      "display_name": "대학생13(부유형)",
-      "category": "affluent",
-      "headline": {
-        "age": 26,
-        "monthly_income": 5000000,
-        "monthly_expense": 2000000,
-        "target_price": 370000000,
-        "target_move_in_ym": "202707"
       },
       "portfolio_status": "INFEASIBLE"
     },
@@ -195,71 +78,6 @@
         "target_move_in_ym": "202901"
       },
       "portfolio_status": "COMPLETE"
-    },
-    {
-      "persona_id": "persona_t_college_student_16_poor",
-      "display_name": "대학생16(가난형)",
-      "category": "poor",
-      "headline": {
-        "age": 23,
-        "monthly_income": 1000000,
-        "monthly_expense": 950000,
-        "target_price": 281700000,
-        "target_move_in_ym": "202807"
-      },
-      "portfolio_status": "COMPLETE"
-    },
-    {
-      "persona_id": "persona_u_college_student_17_poor",
-      "display_name": "대학생17(가난형)",
-      "category": "poor",
-      "headline": {
-        "age": 22,
-        "monthly_income": 500000,
-        "monthly_expense": 520000,
-        "target_price": 365000000,
-        "target_move_in_ym": "202807"
-      },
-      "portfolio_status": "NO_ALLOCATION_REQUIRED"
-    },
-    {
-      "persona_id": "persona_v_college_student_18_poor",
-      "display_name": "대학생18(가난형)",
-      "category": "poor",
-      "headline": {
-        "age": 25,
-        "monthly_income": 700000,
-        "monthly_expense": 700000,
-        "target_price": 460000000,
-        "target_move_in_ym": "202801"
-      },
-      "portfolio_status": "NO_ALLOCATION_REQUIRED"
-    },
-    {
-      "persona_id": "persona_w_college_student_19_poor",
-      "display_name": "대학생19(가난형)",
-      "category": "poor",
-      "headline": {
-        "age": 26,
-        "monthly_income": 900000,
-        "monthly_expense": 800000,
-        "target_price": 660000000,
-        "target_move_in_ym": "202907"
-      },
-      "portfolio_status": "COMPLETE"
-    },
-    {
-      "persona_id": "persona_x_college_student_20_poor",
-      "display_name": "대학생20(가난형)",
-      "category": "poor",
-      "headline": {
-        "age": 21,
-        "monthly_income": 400000,
-        "monthly_expense": 600000,
-        "target_price": 372500000,
-        "target_move_in_ym": "202807"
-      },
-      "portfolio_status": "NO_ALLOCATION_REQUIRED"
     }
   ]
 }

@@ -7,7 +7,6 @@ import { PortfolioView } from "./portfolio-view";
 
 const COMPLETE = "persona_e_college_student_basic";
 const INFEASIBLE = "persona_m_college_student_09_affluent";
-const NO_ALLOCATION = "persona_u_college_student_17_poor";
 
 describe("PortfolioView — COMPLETE", () => {
   it("배분된 상품명과 점수를 보여준다", async () => {
@@ -52,8 +51,19 @@ describe("PortfolioView — INFEASIBLE", () => {
 });
 
 describe("PortfolioView — NO_ALLOCATION_REQUIRED", () => {
+  // 대학생 페르소나를 6명으로 줄이면서 NO_ALLOCATION_REQUIRED 픽스처
+  // (persona_u_college_student_17_poor)가 사라졌다. 위 PARTIAL 케이스와 같은
+  // 이유로, 실제 결과에서 상태만 바꿔 합성한다.
   it("추가 저축이 필요 없다는 사유를 보여준다", async () => {
-    render(<PortfolioView result={await loadResult(NO_ALLOCATION)} />);
+    const base = await loadResult(COMPLETE);
+    const result = {
+      ...base,
+      status: "NO_ALLOCATION_REQUIRED" as const,
+      allocations: [],
+      reasons: ["배분할 월 적립액과 일시예치금이 모두 0원입니다."],
+    };
+
+    render(<PortfolioView result={result} />);
 
     expect(
       screen.getByText(/월 적립액과 일시예치금이 모두 0원입니다/),
