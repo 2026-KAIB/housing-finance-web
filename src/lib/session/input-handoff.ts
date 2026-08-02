@@ -1,6 +1,12 @@
-import type { InputFormValues } from "@/features/input/form-schema";
+import { type InputFormValues, inputFormSchema } from "@/features/input/form-schema";
 
 const KEY = "hf:input-handoff";
+
+// inputFormSchema에 정의된 필드 이름만 가져온다. 값 자체의 타입까지
+// 검사하지는 않는다 — 호출자가 어차피 inputFormSchema로 다시 검증한다.
+const INPUT_FORM_KEYS = Object.keys(
+  inputFormSchema.shape,
+) as (keyof InputFormValues)[];
 
 /**
  * 위저드가 입력한 값을 대시보드로 넘긴다.
@@ -26,11 +32,28 @@ export function readInputHandoff(personaId: string): InputFormValues | null {
   try {
     const parsed = JSON.parse(raw) as {
       personaId?: string;
-      values?: InputFormValues;
+      values?: unknown;
     };
-    if (parsed.personaId !== personaId || !parsed.values) return null;
+    if (parsed.personaId !== personaId || !hasInputFormShape(parsed.values)) {
+      return null;
+    }
     return parsed.values;
   } catch {
     return null;
   }
+}
+
+/**
+ * JSON.parse가 성공해도 저장된 값이 InputFormValues 모양이라는 보장은 없다
+ * — 이전 버전이 다른 필드 구성으로 저장했거나, 사용자가 sessionStorage를
+ * 직접 건드렸을 수 있다. 필드가 하나라도 없으면 절반만 채워진 객체를 그대로
+ * 돌려주지 않고 null로 떨어뜨린다. 호출자는 null을 페르소나 기본값으로
+ * 대체할 수 있지만, 반쯤 채워진 객체는 대체할 수 없다 — 값이 있는 것처럼
+ * 보이기 때문이다.
+ */
+function hasInputFormShape(value: unknown): value is InputFormValues {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    return false;
+  }
+  return INPUT_FORM_KEYS.every((key) => key in value);
 }

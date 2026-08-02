@@ -47,4 +47,25 @@ describe("입력 핸드오프", () => {
 
     expect(readInputHandoff("persona_e")).toBeNull();
   });
+
+  it("값이 빈 객체이면 null이다", () => {
+    // JSON.parse는 성공하지만 필드가 하나도 없다 — 이전 버전이 다른
+    // 필드 구성으로 저장했을 수 있다. 반쯤 채워진 객체를 그대로 돌려주면
+    // 호출자가 값이 있는 것으로 착각한다.
+    sessionStorage.setItem(
+      "hf:input-handoff",
+      JSON.stringify({ personaId: "persona_e", values: {} }),
+    );
+
+    expect(readInputHandoff("persona_e")).toBeNull();
+  });
+
+  it("값이 객체가 아니면 null이다", () => {
+    sessionStorage.setItem(
+      "hf:input-handoff",
+      JSON.stringify({ personaId: "persona_e", values: "not-an-object" }),
+    );
+
+    expect(readInputHandoff("persona_e")).toBeNull();
+  });
 });
