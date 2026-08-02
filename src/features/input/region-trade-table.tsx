@@ -164,7 +164,7 @@ export function RegionTradeTable({
               <button
                 type="button"
                 onClick={() => onSelectPrice(trade.deal_amount_won)}
-                className="bg-trade-gradient grid h-full w-full gap-1 rounded-lg border border-line px-3 py-3 text-left transition-colors hover:bg-surface"
+                className="bg-trade-gradient grid h-full w-full gap-1 rounded-lg border border-line px-3 py-3 text-left transition hover:border-brand-strong hover:bg-surface hover:shadow-md"
               >
                 <span className="flex items-baseline justify-between gap-2">
                   <span className="text-sm font-semibold">{trade.apt_name}</span>
