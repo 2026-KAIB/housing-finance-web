@@ -48,4 +48,15 @@ describe("LoanFields", () => {
 
     expect(screen.getByText(/총지출이 아니라/)).toBeInTheDocument();
   });
+
+  it("필수생활비를 비워도 'undefined'를 보여주지 않고 설명은 남긴다", () => {
+    render(
+      <Harness
+        defaults={{ monthly_essential_expense: "" as unknown as number }}
+      />,
+    );
+
+    expect(screen.queryByText(/undefined/)).not.toBeInTheDocument();
+    expect(screen.getByText(/총지출이 아니라/)).toBeInTheDocument();
+  });
 });

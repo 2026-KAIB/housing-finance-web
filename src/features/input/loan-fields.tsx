@@ -16,6 +16,9 @@ import {
 const SELECT_CLASS =
   "h-9 rounded-md border border-line bg-surface px-3 text-sm";
 
+const MONTHLY_ESSENTIAL_EXPENSE_EXPLANATION =
+  "총지출이 아니라 줄일 수 없는 생활비입니다. 기본값은 월평균지출 전액입니다.";
+
 export function LoanFields() {
   const {
     register,
@@ -24,6 +27,13 @@ export function LoanFields() {
   } = useFormContext<InputFormValues>();
 
   const housingStatus = watch("housing_status");
+  // 필드가 비어 있으면 koreanUnitHint가 undefined를 돌려준다(money.ts 참고).
+  // "+"로 그냥 이어붙이면 "undefined · ..."가 그대로 화면에 남는다. 설명
+  // 문구는 값이 없을 때도 계속 보여야 하므로(FieldRow의 hint && !error 가드로
+  // 통째로 지워버리지 않는다), 금액 부분만 없을 때 깔끔히 사라지게 한다.
+  const essentialExpenseHint = koreanUnitHint(
+    watch("monthly_essential_expense"),
+  );
 
   return (
     <div className="grid gap-4 md:grid-cols-3">
@@ -64,8 +74,9 @@ export function LoanFields() {
         label="필수 생활비 (원)"
         htmlFor="monthly_essential_expense"
         hint={
-          koreanUnitHint(watch("monthly_essential_expense")) +
-          " · 총지출이 아니라 줄일 수 없는 생활비입니다. 기본값은 월평균지출 전액입니다."
+          essentialExpenseHint
+            ? `${essentialExpenseHint} · ${MONTHLY_ESSENTIAL_EXPENSE_EXPLANATION}`
+            : MONTHLY_ESSENTIAL_EXPENSE_EXPLANATION
         }
         error={errors.monthly_essential_expense?.message}
       >
