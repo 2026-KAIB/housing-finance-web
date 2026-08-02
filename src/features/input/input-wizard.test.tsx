@@ -8,6 +8,7 @@ import {
   loadProfile,
 } from "@/lib/fixtures/loader";
 import { formatWon } from "@/lib/format/money";
+import { readInputHandoff } from "@/lib/session/input-handoff";
 
 import { InputWizard } from "./input-wizard";
 
@@ -89,6 +90,9 @@ describe("InputWizard", () => {
     fetchRegionTrades.mockReset();
     fetchRegionTrades.mockReturnValue(new Promise(() => {}));
     vi.stubEnv("NEXT_PUBLIC_KAKAO_MAP_APP_KEY", "TEST_KEY");
+    // 앞선 테스트가 남긴 핸드오프 값으로 통과하면 해당 테스트는 아무것도
+    // 검증하지 않는다.
+    sessionStorage.clear();
   });
 
   afterEach(() => {
@@ -384,6 +388,19 @@ describe("InputWizard", () => {
     await user.click(screen.getByRole("button", { name: "결과 보기" }));
 
     expect(push).toHaveBeenCalledWith(`/dashboard?persona=${SAMPLE}&edited=1`);
+  });
+
+  it("결과 보기를 누르면 입력값을 대시보드로 넘긴다", async () => {
+    const user = userEvent.setup();
+    await renderWizard();
+
+    // persona_e에는 보유 자산 프리필이 없어 goToReview가 직접 채운 뒤
+    // step 3까지 이동한다.
+    await goToReview(user);
+    await user.click(screen.getByRole("button", { name: "결과 보기" }));
+
+    expect(readInputHandoff(SAMPLE)).not.toBeNull();
+    expect(push).toHaveBeenCalled();
   });
 
   it("값을 바꾸면 edited 표시를 붙여 이동한다", async () => {

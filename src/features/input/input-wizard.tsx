@@ -11,6 +11,7 @@ import type {
   PersonaIndexEntry,
   PersonaProfile,
 } from "@/lib/contracts/persona";
+import { saveInputHandoff } from "@/lib/session/input-handoff";
 
 import {
   type InputFormValues,
@@ -73,6 +74,7 @@ export function InputWizard({
   }
 
   const onSubmit = form.handleSubmit((values) => {
+    saveInputHandoff(personaId, values);
     const edited = changedFields(defaultValues, values).length > 0;
     router.push(
       `/dashboard?persona=${personaId}${edited ? "&edited=1" : ""}`,
