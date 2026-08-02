@@ -35,7 +35,9 @@ describe("personaIndexSchema", () => {
 
   it("모르는 portfolio_status를 거부한다", () => {
     const invalid = structuredClone(valid);
-    invalid.personas[0].portfolio_status = "PARTIAL";
+    // PARTIAL은 이제 유효한 상태다(엔진 SavingsPortfolioStatus에 실재).
+    // 여전히 모르는 값을 예로 든다.
+    invalid.personas[0].portfolio_status = "PENDING";
     expect(() => personaIndexSchema.parse(invalid)).toThrow();
   });
 

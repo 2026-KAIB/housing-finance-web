@@ -12,6 +12,7 @@ const CATEGORY: Record<PersonaCategory, string> = {
 
 const PORTFOLIO_STATUS: Record<PortfolioStatus, string> = {
   COMPLETE: "배분 완료",
+  PARTIAL: "일부 배분",
   INFEASIBLE: "배분 불가",
   NO_ALLOCATION_REQUIRED: "배분 불필요",
 };

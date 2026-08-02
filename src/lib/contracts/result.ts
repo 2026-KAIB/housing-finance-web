@@ -45,10 +45,15 @@ export const portfolioResultSchema = z.object({
     lump_sum_budget: z.number(),
     fund_needed_date: z.string().regex(/^\d{8}$/),
   }),
-  evaluation: z.object({
-    ELIGIBLE: z.number().int(),
-    INELIGIBLE: z.number().int(),
-  }),
+  // ELIGIBLE/INELIGIBLE 집계는 배치 파이프라인이 만드는 값이라 실시간
+  // SimulationResult에는 없다. 0으로 채우면 "검토한 상품 0건"이라는 거짓이
+  // 되므로 없는 상태로 둔다.
+  evaluation: z
+    .object({
+      ELIGIBLE: z.number().int(),
+      INELIGIBLE: z.number().int(),
+    })
+    .optional(),
   source: sourceSchema,
 });
 

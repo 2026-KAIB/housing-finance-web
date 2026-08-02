@@ -31,7 +31,7 @@ export function PortfolioView({
         </p>
       )}
 
-      {result.status === "COMPLETE" ? (
+      {result.status === "COMPLETE" || result.status === "PARTIAL" ? (
         <>
           <PortfolioSummary result={result} />
           <AllocationTable allocations={result.allocations} />

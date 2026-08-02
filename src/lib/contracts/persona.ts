@@ -13,6 +13,8 @@ export const personaCategorySchema = z.enum(["basic", "affluent", "poor"]);
 
 export const portfolioStatusSchema = z.enum([
   "COMPLETE",
+  // 예산의 일부만 배분된 상태. 배분표가 있으므로 COMPLETE와 같이 그린다.
+  "PARTIAL",
   "INFEASIBLE",
   "NO_ALLOCATION_REQUIRED",
 ]);
