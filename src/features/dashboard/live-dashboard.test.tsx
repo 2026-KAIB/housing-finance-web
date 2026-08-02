@@ -73,7 +73,14 @@ describe("LiveDashboard", () => {
   });
 
   it("백엔드가 꺼져 있으면 그렇게 말한다", async () => {
-    mockFetch(() => Response.json({ detail: "Backend API is unavailable" }, { status: 502 }));
+    // 보고서 호출(/reports)은 카드와 별개로 나간다(Step 4b). 이 테스트는
+    // 카드 쪽 오류 문구만 보므로 보고서 호출은 응답하지 않게 두어, 같은
+    // 문구가 두 번 뜨는 것을 막는다.
+    mockFetch((url) =>
+      url.includes("/simulations")
+        ? Response.json({ detail: "Backend API is unavailable" }, { status: 502 })
+        : (new Promise(() => {}) as never),
+    );
     render(<LiveDashboard profile={await loadProfile(PERSONA_F)} />);
 
     await waitFor(() =>
@@ -110,5 +117,41 @@ describe("LiveDashboard", () => {
     await waitFor(() =>
       expect(screen.getByText("예적금 포트폴리오")).toBeInTheDocument(),
     );
+  });
+
+  it("카드가 아직 안 떠도 보고서 요청을 시작한다", async () => {
+    // 카드 호출은 응답하지 않게 두고, 보고서 호출이 나갔는지만 본다.
+    const calls: string[] = [];
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((url: RequestInfo) => {
+        calls.push(String(url));
+        return new Promise(() => {}) as never;
+      }),
+    );
+
+    render(<LiveDashboard profile={await loadProfile(PERSONA_F)} />);
+
+    await waitFor(() =>
+      expect(calls.some((url) => url.includes("/reports"))).toBe(true),
+    );
+  });
+
+  it("카드 호출이 실패해도 보고서는 따로 시도한다", async () => {
+    const calls: string[] = [];
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((url: RequestInfo) => {
+        calls.push(String(url));
+        return String(url).includes("/simulations")
+          ? Response.json({ detail: "Backend API is unavailable" }, { status: 502 })
+          : (new Promise(() => {}) as never);
+      }),
+    );
+
+    render(<LiveDashboard profile={await loadProfile(PERSONA_F)} />);
+
+    await waitFor(() => expect(screen.getByText(/실행 중인지/)).toBeInTheDocument());
+    expect(calls.some((url) => url.includes("/reports"))).toBe(true);
   });
 });

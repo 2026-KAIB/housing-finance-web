@@ -105,29 +105,23 @@ export function LiveDashboard({ profile }: { profile: PersonaProfile }) {
     );
   }
 
-  if (error) {
-    return (
-      <section className="py-12">
-        <p className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
-          {error}
-        </p>
-      </section>
-    );
-  }
-
-  if (!result) {
-    return (
-      <section className="py-12">
-        <p className="text-sm text-brand-muted" role="status">
-          입력하신 값으로 계산하고 있습니다…
-        </p>
-      </section>
-    );
-  }
-
   return (
     <>
-      <PortfolioView result={result} />
+      {error ? (
+        <section className="py-12">
+          <p className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+            {error}
+          </p>
+        </section>
+      ) : result ? (
+        <PortfolioView result={result} />
+      ) : (
+        <section className="py-12">
+          <p className="text-sm text-brand-muted" role="status">
+            입력하신 값으로 계산하고 있습니다…
+          </p>
+        </section>
+      )}
       <ReportViewer input={input} />
     </>
   );
