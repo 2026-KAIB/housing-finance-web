@@ -65,6 +65,20 @@ export function DesiredHomePanel({ id }: { id: string }) {
         </FieldRow>
       </div>
 
+      <FieldRow
+        label="전용면적 (㎡)"
+        htmlFor="exclusive_area_m2"
+        hint="취득세를 확정하는 데 씁니다. 85㎡ 이하면 농어촌특별세가 붙지 않습니다."
+        error={errors.exclusive_area_m2?.message}
+      >
+        <Input
+          id="exclusive_area_m2"
+          type="number"
+          step="0.01"
+          {...register("exclusive_area_m2")}
+        />
+      </FieldRow>
+
       <RegionTradeTable
         sggCode={targetRegion ?? ""}
         onSelectPrice={(won) =>

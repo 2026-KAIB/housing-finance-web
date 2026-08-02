@@ -10,6 +10,7 @@ import { BasicFields } from "./basic-fields";
 import { DesiredHomePanel } from "./desired-home-panel";
 import type { InputFormValues } from "./form-schema";
 import { GoalFields } from "./goal-fields";
+import { LoanFields } from "./loan-fields";
 import { PersonaPicker } from "./persona-picker";
 import { SavingsFields } from "./savings-fields";
 
@@ -63,6 +64,13 @@ export function StepInput({
         {panelOpen && (
           <DesiredHomePanel id={DESIRED_HOME_PANEL_ID} />
         )}
+      </Group>
+
+      <Group
+        title="대출 조건"
+        description="이 세 값이 없으면 보고서의 대출 관련 절이 계산되지 않습니다."
+      >
+        <LoanFields />
       </Group>
 
       <Group title="저축 계획">
