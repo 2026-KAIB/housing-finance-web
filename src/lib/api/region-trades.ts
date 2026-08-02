@@ -19,7 +19,7 @@ export const TRADE_SORT_OPTIONS: ReadonlyArray<{
 ];
 
 export const DEFAULT_TRADE_SORT: TradeSort = "area_asc";
-export const TRADE_PAGE_SIZE = 5;
+export const TRADE_PAGE_SIZE = 9;
 
 export type RegionTrade = {
   trade_id: number;

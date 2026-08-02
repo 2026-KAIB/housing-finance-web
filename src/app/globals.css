@@ -66,6 +66,18 @@ a {
   text-decoration: none;
 }
 
+/* body의 노란 그라데이션과 같은 색·불투명도. 반경만 rem 대신 %로 둬서
+   카드처럼 작은 요소에서도 body와 같은 비율로 보인다. */
+.bg-trade-gradient {
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(255, 204, 0, 0.22),
+      transparent 70%
+    ),
+    var(--color-surface);
+}
+
 @theme inline {
   --font-heading: var(--font-sans);
   --font-sans: var(--font-sans);
