@@ -21,8 +21,8 @@ function readJson(path: string): unknown {
 const index = personaIndexSchema.parse(readJson(join(FIXTURE_DIR, "index.json")));
 
 describe("픽스처 목록", () => {
-  it("대학생 20명이 있다", () => {
-    expect(index.personas).toHaveLength(20);
+  it("대학생 6명(기본·부유·가난 각 2명)이 있다", () => {
+    expect(index.personas).toHaveLength(6);
   });
 
   it("주택구매 페르소나(a~d)는 들어있지 않다", () => {
@@ -40,9 +40,8 @@ describe("픽스처 목록", () => {
     );
 
     expect(counts).toEqual({
-      COMPLETE: 14,
-      INFEASIBLE: 3,
-      NO_ALLOCATION_REQUIRED: 3,
+      COMPLETE: 5,
+      INFEASIBLE: 1,
     });
   });
 
