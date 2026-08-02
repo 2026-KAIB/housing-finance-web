@@ -12,15 +12,14 @@
     "household_size": 3,
     "lives_with_parents": false,
     "tuition_payer": "scholarship",
-    "current_housing_type": "dormitory"
+    "current_housing_type": "dormitory",
+    "is_first_home_buyer": true,
+    "owns_property": false
   },
   "goal": {
-    "target_housing_type": "monthly_rent",
-    "target_region": "11290",
-    "target_price": 30000000,
-    "target_lease_deposit": 30000000,
-    "target_monthly_rent": 600000,
-    "target_management_fee": 100000,
+    "target_housing_type": "purchase",
+    "target_region": "11215",
+    "target_price": 259500000,
     "target_move_in_ym": "202901",
     "risk_preference": "stability"
   },

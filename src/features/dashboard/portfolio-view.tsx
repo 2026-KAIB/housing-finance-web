@@ -6,13 +6,7 @@ import { PortfolioCaveats } from "./portfolio-caveats";
 import { PortfolioStatusNotice } from "./portfolio-status-notice";
 import { PortfolioSummary } from "./portfolio-summary";
 
-export function PortfolioView({
-  result,
-  edited,
-}: {
-  result: PortfolioResult;
-  edited: boolean;
-}) {
+export function PortfolioView({ result }: { result: PortfolioResult }) {
   return (
     <section className="grid gap-6 py-12">
       <div>
@@ -24,14 +18,7 @@ export function PortfolioView({
         </h1>
       </div>
 
-      {edited && (
-        <p className="rounded-xl border border-line bg-accent-soft p-4 text-sm">
-          변경한 목표값은 백엔드 시뮬레이션 연동 후 반영됩니다. 현재 결과는
-          페르소나 기준값 기준입니다.
-        </p>
-      )}
-
-      {result.status === "COMPLETE" ? (
+      {result.status === "COMPLETE" || result.status === "PARTIAL" ? (
         <>
           <PortfolioSummary result={result} />
           <AllocationTable allocations={result.allocations} />

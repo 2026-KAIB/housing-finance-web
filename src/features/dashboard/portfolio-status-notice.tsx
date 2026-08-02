@@ -41,10 +41,12 @@ export function PortfolioStatusNotice({
             label="일시 예치 예산"
             value={formatKoreanUnit(result.input.lump_sum_budget)}
           />
-          <Row
-            label="검토한 상품 조합"
-            value={`${result.evaluation.ELIGIBLE + result.evaluation.INELIGIBLE}건`}
-          />
+          {result.evaluation && (
+            <Row
+              label="검토한 상품 조합"
+              value={`${result.evaluation.ELIGIBLE + result.evaluation.INELIGIBLE}건`}
+            />
+          )}
           <Row
             label="자금 필요 시점"
             value={formatYmd(result.input.fund_needed_date)}

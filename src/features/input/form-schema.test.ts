@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { loadProfile } from "@/lib/fixtures/loader";
 
-import { changedFields, inputFormSchema, toFormValues } from "./form-schema";
+import { inputFormSchema, toFormValues } from "./form-schema";
 
 const SAMPLE = "persona_e_college_student_basic";
 
@@ -13,6 +13,7 @@ describe("inputFormSchema", () => {
       household_size: "3",
       monthly_income: "800000",
       monthly_average_expense: "700000",
+      current_assets: "1000000",
       target_region: "11650",
       target_price: "5000000",
       target_move_in_ym: "2028-07",
@@ -20,6 +21,10 @@ describe("inputFormSchema", () => {
       monthly_savings_budget: "100000",
       lump_sum_budget: "300000",
       emergency_reserve: "700000",
+      months: "360",
+      housing_status: "NO_HOUSE",
+      monthly_essential_expense: "700000",
+      exclusive_area_m2: "84",
     });
 
     expect(parsed.age).toBe(25);
@@ -32,12 +37,17 @@ describe("inputFormSchema", () => {
       household_size: 3,
       monthly_income: 800000,
       monthly_average_expense: 700000,
+      current_assets: 1000000,
       target_region: "11650",
       target_price: 5000000,
       risk_preference: "stability",
       monthly_savings_budget: 100000,
       lump_sum_budget: 300000,
       emergency_reserve: 700000,
+      months: 360,
+      housing_status: "NO_HOUSE",
+      monthly_essential_expense: 700000,
+      exclusive_area_m2: 84,
     };
 
     for (const invalid of ["202807", "2028-13", "2028-7", "2028/07"]) {
@@ -67,6 +77,7 @@ describe("금액 필드(won)", () => {
     household_size: 3,
     monthly_income: 800000,
     monthly_average_expense: 700000,
+    current_assets: 1000000,
     target_region: "11650",
     target_price: 5000000,
     target_move_in_ym: "2028-07",
@@ -74,6 +85,10 @@ describe("금액 필드(won)", () => {
     monthly_savings_budget: 100000,
     lump_sum_budget: 300000,
     emergency_reserve: 700000,
+    months: 360,
+    housing_status: "NO_HOUSE",
+    monthly_essential_expense: 700000,
+    exclusive_area_m2: 84,
   };
 
   it("빈 문자열이면 거부한다", () => {
@@ -130,7 +145,7 @@ describe("toFormValues", () => {
 
     expect(values.age).toBe(25);
     expect(values.monthly_income).toBe(800000);
-    expect(values.target_price).toBe(5000000);
+    expect(values.target_price).toBe(325000000);
     expect(values.target_move_in_ym).toBe("2028-07");
     expect(values.monthly_savings_budget).toBe(100000);
   });
@@ -140,30 +155,13 @@ describe("toFormValues", () => {
   });
 });
 
-describe("changedFields", () => {
-  it("바뀐 필드 이름을 돌려준다", async () => {
-    const defaults = toFormValues(await loadProfile(SAMPLE));
-    const changed = changedFields(defaults, {
-      ...defaults,
-      target_price: 9000000,
-      monthly_savings_budget: 250000,
-    });
-
-    expect(changed.sort()).toEqual(["monthly_savings_budget", "target_price"]);
-  });
-
-  it("그대로면 빈 배열이다", async () => {
-    const defaults = toFormValues(await loadProfile(SAMPLE));
-    expect(changedFields(defaults, { ...defaults })).toEqual([]);
-  });
-});
-
 describe("target_region", () => {
   const validInput = {
     age: 25,
     household_size: 3,
     monthly_income: 800000,
     monthly_average_expense: 700000,
+    current_assets: 1000000,
     target_region: "11650",
     target_price: 5000000,
     target_move_in_ym: "2028-07",
@@ -171,6 +169,10 @@ describe("target_region", () => {
     monthly_savings_budget: 100000,
     lump_sum_budget: 300000,
     emergency_reserve: 700000,
+    months: 360,
+    housing_status: "NO_HOUSE",
+    monthly_essential_expense: 700000,
+    exclusive_area_m2: 84,
   };
 
   it("서울 구 코드를 통과시킨다", () => {
@@ -212,5 +214,101 @@ describe("toFormValues의 지역 프리필", () => {
     };
 
     expect(toFormValues(outside).target_region).toBe("");
+  });
+});
+
+const VALID_FORM_VALUES = {
+  age: 24,
+  household_size: 1,
+  monthly_income: 2000000,
+  monthly_average_expense: 1200000,
+  current_assets: 8000000,
+  target_region: "11650",
+  target_price: 325000000,
+  target_move_in_ym: "2028-07",
+  risk_preference: "stability",
+  monthly_savings_budget: 500000,
+  lump_sum_budget: 0,
+  emergency_reserve: 1000000,
+  months: 360,
+  housing_status: "NO_HOUSE",
+  monthly_essential_expense: 1200000,
+  exclusive_area_m2: 84,
+};
+
+describe("대출 조건 필드", () => {
+  it("기본값은 만기 360개월·전용면적 84이다", async () => {
+    const values = toFormValues(await loadProfile(SAMPLE));
+
+    expect(values.months).toBe(360);
+    expect(values.exclusive_area_m2).toBe(84);
+  });
+
+  it("필수생활비 기본값은 월평균지출과 같다", async () => {
+    // 비율을 도입하면 근거 없는 숫자가 계산에 들어가고, 그 방향이 한도를
+    // 키운다. 지출 전액을 필수로 보는 것이 지어내지 않으면서 보수적이다.
+    const profile = await loadProfile(SAMPLE);
+    const values = toFormValues(profile);
+
+    expect(values.monthly_essential_expense).toBe(
+      profile.finance.monthly_average_expense,
+    );
+  });
+
+  it("생애최초 프로필이면 주택보유상태를 생애최초로 채운다", async () => {
+    // 프로필이 답을 갖고 있는데 무주택으로 두면 LTV 70%를 40%로 과소평가한다.
+    // 추측이 아니라 확정된 사실이므로 그대로 쓴다.
+    const values = toFormValues(await loadProfile(SAMPLE));
+
+    expect(values.housing_status).toBe("FIRST_HOME_BUYER");
+  });
+
+  it("유주택이면 주택보유상태를 비워 사용자가 고르게 한다", async () => {
+    const base = await loadProfile(SAMPLE);
+    // 1주택 처분조건부·미처분·다주택은 LTV가 0%~80%로 갈리고, 그 구분은
+    // 등기와 처분 계획의 문제라 어떤 금융 데이터로도 알 수 없다. 아무 값이나
+    // 채우면(특히 무주택 40%) 1주택 미처분(0%)에게 한도를 열어 준다.
+    const owner = {
+      ...base,
+      basic: {
+        ...base.basic,
+        is_first_home_buyer: false,
+        owns_property: true,
+      },
+    };
+
+    expect(toFormValues(owner).housing_status).toBeUndefined();
+  });
+
+  it("무주택이지만 생애최초가 아니면 무주택으로 채운다", async () => {
+    const base = await loadProfile(SAMPLE);
+    const secondTime = {
+      ...base,
+      basic: {
+        ...base.basic,
+        is_first_home_buyer: false,
+        owns_property: false,
+      },
+    };
+
+    expect(toFormValues(secondTime).housing_status).toBe("NO_HOUSE");
+  });
+
+  it("보유자산을 비우면 검증에 실패한다", () => {
+    const result = inputFormSchema.safeParse({
+      ...VALID_FORM_VALUES,
+      current_assets: "",
+    });
+
+    expect(result.success).toBe(false);
+  });
+
+  it("전용면적 0은 거부한다", () => {
+    const result = inputFormSchema.safeParse({
+      ...VALID_FORM_VALUES,
+      exclusive_area_m2: 0,
+    });
+
+    expect(result.success).toBe(false);
   });
 });

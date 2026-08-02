@@ -2,7 +2,6 @@
 
 import { useFormContext } from "react-hook-form";
 
-import { KakaoMap } from "@/components/map/kakao-map";
 import { Input } from "@/components/ui/input";
 import {
   ALL_DISTRICTS,
@@ -16,7 +15,7 @@ import { FieldRow } from "./field-row";
 import type { InputFormValues } from "./form-schema";
 import { RegionTradeTable } from "./region-trade-table";
 
-export function DesiredHomePanel({ id }: { id: string }) {
+export function DesiredHomePanel() {
   const {
     register,
     setValue,
@@ -27,7 +26,7 @@ export function DesiredHomePanel({ id }: { id: string }) {
   const targetRegion = watch("target_region");
 
   return (
-    <div id={id} className="grid gap-4">
+    <div className="grid gap-4">
       {/* 목표 시점·위험 성향과 같은 2열 그리드를 한 벌 더 쓴다.
           열 너비가 정확히 일치해야 "같은 형식"이 된다. */}
       <div className="grid gap-4 md:grid-cols-2">
@@ -65,6 +64,20 @@ export function DesiredHomePanel({ id }: { id: string }) {
         </FieldRow>
       </div>
 
+      <FieldRow
+        label="전용면적 (㎡)"
+        htmlFor="exclusive_area_m2"
+        hint="취득세를 확정하는 데 씁니다. 85㎡ 이하면 농어촌특별세가 붙지 않습니다."
+        error={errors.exclusive_area_m2?.message}
+      >
+        <Input
+          id="exclusive_area_m2"
+          type="number"
+          step="0.01"
+          {...register("exclusive_area_m2")}
+        />
+      </FieldRow>
+
       <RegionTradeTable
         sggCode={targetRegion ?? ""}
         onSelectPrice={(won) =>
@@ -72,8 +85,6 @@ export function DesiredHomePanel({ id }: { id: string }) {
           setValue("target_price", won, { shouldValidate: true })
         }
       />
-
-      <KakaoMap className="h-[260px] md:h-[360px]" />
     </div>
   );
 }

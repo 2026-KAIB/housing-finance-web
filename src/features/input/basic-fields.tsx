@@ -60,19 +60,18 @@ export function BasicFields({ profile }: { profile: PersonaProfile }) {
         />
       </FieldRow>
 
-      {profile.finance.current_assets !== undefined && (
-        <FieldRow
-          label="보유 자산 (원)"
-          htmlFor="current_assets"
-          error={errors.current_assets?.message}
-        >
-          <Input
-            id="current_assets"
-            type="number"
-            {...register("current_assets")}
-          />
-        </FieldRow>
-      )}
+      <FieldRow
+        label="보유 자산 (원)"
+        htmlFor="current_assets"
+        error={errors.current_assets?.message}
+        hint={koreanUnitHint(watch("current_assets"))}
+      >
+        <Input
+          id="current_assets"
+          type="number"
+          {...register("current_assets")}
+        />
+      </FieldRow>
     </div>
   );
 }

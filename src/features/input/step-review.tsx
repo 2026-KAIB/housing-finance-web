@@ -6,7 +6,7 @@ import { useFormContext } from "react-hook-form";
 import { Badge } from "@/components/ui/badge";
 import { seoulDistrictLabel } from "@/lib/constants/seoul-districts";
 import type { Mydata, PersonaProfile } from "@/lib/contracts/persona";
-import { riskPreferenceLabel } from "@/lib/format/codes";
+import { housingStatusLabel, loanTermLabel, riskPreferenceLabel } from "@/lib/format/codes";
 import { formatYm, formatYmd, parseYmInput } from "@/lib/format/date";
 import { formatWon } from "@/lib/format/money";
 
@@ -44,12 +44,10 @@ export function StepReview({
               label="월 평균 지출"
               value={formatWon(values.monthly_average_expense)}
             />
-            {values.current_assets !== undefined && (
-              <ReadonlyRow
-                label="보유 자산"
-                value={formatWon(values.current_assets)}
-              />
-            )}
+            <ReadonlyRow
+              label="보유 자산"
+              value={formatWon(values.current_assets)}
+            />
           </div>
 
           <div>
@@ -80,6 +78,19 @@ export function StepReview({
             <ReadonlyRow
               label="비상 예비금"
               value={formatWon(values.emergency_reserve)}
+            />
+            <ReadonlyRow label="만기" value={loanTermLabel(values.months)} />
+            <ReadonlyRow
+              label="주택 보유 상태"
+              value={housingStatusLabel(values.housing_status)}
+            />
+            <ReadonlyRow
+              label="필수 생활비"
+              value={formatWon(values.monthly_essential_expense)}
+            />
+            <ReadonlyRow
+              label="전용면적"
+              value={`${values.exclusive_area_m2}㎡`}
             />
           </div>
         </div>

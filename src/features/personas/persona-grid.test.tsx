@@ -26,7 +26,7 @@ describe("PersonaGrid", () => {
   it("금액을 한글 단위로 보여준다", () => {
     render(<PersonaGrid personas={[personas[0]]} />);
     expect(screen.getByText("80만원")).toBeInTheDocument();
-    expect(screen.getByText("500만원")).toBeInTheDocument();
+    expect(screen.getByText("3억 2,500만원")).toBeInTheDocument();
   });
 
   it("카테고리 필터가 목록을 줄인다", async () => {

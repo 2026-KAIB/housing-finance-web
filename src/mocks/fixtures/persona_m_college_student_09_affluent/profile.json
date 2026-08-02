@@ -12,15 +12,14 @@
     "household_size": 3,
     "lives_with_parents": true,
     "tuition_payer": "parents",
-    "current_housing_type": "parents"
+    "current_housing_type": "parents",
+    "is_first_home_buyer": true,
+    "owns_property": false
   },
   "goal": {
-    "target_housing_type": "monthly_rent",
-    "target_region": "11680",
-    "target_price": 50000000,
-    "target_lease_deposit": 50000000,
-    "target_monthly_rent": 900000,
-    "target_management_fee": 150000,
+    "target_housing_type": "purchase",
+    "target_region": "11260",
+    "target_price": 262500000,
     "target_move_in_ym": "202801",
     "risk_preference": "stability"
   },

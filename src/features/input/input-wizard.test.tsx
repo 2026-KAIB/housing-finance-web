@@ -8,6 +8,7 @@ import {
   loadProfile,
 } from "@/lib/fixtures/loader";
 import { formatWon } from "@/lib/format/money";
+import { readInputHandoff } from "@/lib/session/input-handoff";
 
 import { InputWizard } from "./input-wizard";
 
@@ -61,8 +62,20 @@ function hintFor(label: string): string | null {
   return row?.querySelector("p")?.textContent ?? null;
 }
 
+/**
+ * persona_e 프로필에는 보유 자산 정보가 없어 프리필되지 않는다(Task 3에서
+ * current_assets가 필수가 됐으므로, 없으면 검증에 실패해 다음으로 못
+ * 넘어간다). step 1을 통과해야 하는 테스트는 실제 사용자처럼 직접 채운다.
+ */
+async function fillCurrentAssets(user: ReturnType<typeof userEvent.setup>) {
+  // 1,000,000은 persona_e의 mydata.totals.total_balance와 같은 값이라 텍스트가
+  // 중복돼 getByText가 여러 개를 찾는다. 겹치지 않는 값을 쓴다.
+  await user.type(screen.getByLabelText("보유 자산 (원)"), "8000000");
+}
+
 /** step 1 → step 2 → step 3. 단계마다 [다음] 한 번. */
 async function goToReview(user: ReturnType<typeof userEvent.setup>) {
+  await fillCurrentAssets(user);
   await user.click(screen.getByRole("button", { name: "다음" }));
   await user.click(screen.getByRole("button", { name: "다음" }));
 }
@@ -77,6 +90,9 @@ describe("InputWizard", () => {
     fetchRegionTrades.mockReset();
     fetchRegionTrades.mockReturnValue(new Promise(() => {}));
     vi.stubEnv("NEXT_PUBLIC_KAKAO_MAP_APP_KEY", "TEST_KEY");
+    // 앞선 테스트가 남긴 핸드오프 값으로 통과하면 해당 테스트는 아무것도
+    // 검증하지 않는다.
+    sessionStorage.clear();
   });
 
   afterEach(() => {
@@ -116,6 +132,7 @@ describe("InputWizard", () => {
     const user = userEvent.setup();
     await renderWizard();
 
+    await fillCurrentAssets(user);
     await user.click(screen.getByRole("button", { name: "다음" }));
     expect(
       screen.getByRole("heading", { level: 2, name: /마이데이터/ }),
@@ -126,6 +143,7 @@ describe("InputWizard", () => {
     const user = userEvent.setup();
     await renderWizard();
 
+    await fillCurrentAssets(user);
     await user.clear(screen.getByLabelText("나이"));
     await user.click(screen.getByRole("button", { name: "다음" }));
 
@@ -141,6 +159,7 @@ describe("InputWizard", () => {
     const user = userEvent.setup();
     await renderWizard();
 
+    await fillCurrentAssets(user);
     await user.clear(screen.getByLabelText("월 소득 (원)"));
     await user.click(screen.getByRole("button", { name: "다음" }));
 
@@ -185,8 +204,7 @@ describe("InputWizard", () => {
     const user = userEvent.setup();
     await renderWizard();
 
-    await user.click(screen.getByRole("button", { name: "희망 주택" }));
-    expect(hintFor("목표 가격 (원)")).toBe("500만원");
+    expect(hintFor("목표 가격 (원)")).toBe("3억 2,500만원");
 
     const target = screen.getByLabelText("목표 가격 (원)");
     await user.clear(target);
@@ -224,7 +242,6 @@ describe("InputWizard", () => {
     const user = userEvent.setup();
     await renderWizard();
 
-    await user.click(screen.getByRole("button", { name: "희망 주택" }));
     await user.clear(screen.getByLabelText("목표 가격 (원)"));
 
     expect(screen.getByRole("button", { name: "다음" })).toBeDisabled();
@@ -233,20 +250,14 @@ describe("InputWizard", () => {
     ).toBeInTheDocument();
   });
 
-  it("목표 가격을 비운 채 패널을 닫아도 잠금과 사유가 남는다", async () => {
+  it("목표 가격을 비우면 입력이 보이는 채로 잠금과 사유가 남는다", async () => {
     const user = userEvent.setup();
     await renderWizard();
 
-    const openPanel = screen.getByRole("button", { name: "희망 주택" });
-    await user.click(openPanel);
     await user.clear(screen.getByLabelText("목표 가격 (원)"));
-    await user.click(openPanel);
 
-    // 패널을 접으면 입력은 사라지지만 react-hook-form이 값을 버리지 않으므로
-    // 빈 값이 그대로 남는다. 사유 문구가 없으면 원인 모를 막다른 길이 된다.
-    expect(
-      screen.queryByLabelText("목표 가격 (원)"),
-    ).not.toBeInTheDocument();
+    // 입력이 화면에 그대로 있으므로 사용자는 무엇을 고쳐야 하는지 볼 수 있다.
+    expect(screen.getByLabelText("목표 가격 (원)")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "다음" })).toBeDisabled();
     expect(
       screen.getByText("희망 주택의 지역과 목표 가격을 입력해주세요."),
@@ -257,7 +268,6 @@ describe("InputWizard", () => {
     const user = userEvent.setup();
     await renderWizard();
 
-    await user.click(screen.getByRole("button", { name: "희망 주택" }));
     const target = screen.getByLabelText("목표 가격 (원)");
     await user.clear(target);
     await user.type(target, "5000000");
@@ -265,16 +275,14 @@ describe("InputWizard", () => {
     expect(screen.getByRole("button", { name: "다음" })).toBeEnabled();
   });
 
-  it("음수 목표 가격으로 다음을 누르면 패널이 열리며 에러를 보여준다", async () => {
+  it("음수 목표 가격으로 다음을 누르면 에러를 보여준다", async () => {
     const user = userEvent.setup();
     await renderWizard();
 
-    const openPanel = screen.getByRole("button", { name: "희망 주택" });
-    await user.click(openPanel);
+    await fillCurrentAssets(user);
     const target = screen.getByLabelText("목표 가격 (원)");
     await user.clear(target);
     await user.type(target, "-5");
-    await user.click(openPanel);
 
     // 음수는 비어 있지 않으므로 [다음]은 활성이다. 눌러야 비로소 검증이 돈다.
     expect(screen.getByRole("button", { name: "다음" })).toBeEnabled();
@@ -292,7 +300,6 @@ describe("InputWizard", () => {
     const user = userEvent.setup();
     await renderWizard();
 
-    await user.click(screen.getByRole("button", { name: "희망 주택" }));
     const target = screen.getByLabelText("목표 가격 (원)");
     await user.clear(target);
     await user.type(target, "0");
@@ -301,11 +308,38 @@ describe("InputWizard", () => {
     expect(screen.getByRole("button", { name: "다음" })).toBeEnabled();
   });
 
-  it("희망 주택 패널을 열어도 다음 단계로 넘어간다", async () => {
+  it("전용면적을 0으로 두고 다음을 누르면 에러를 보여준다", async () => {
+    // 전용면적은 지역·목표가격과 같은 패널 안에 있지만 nextBlocked(빈값
+    // 가드)의 대상이 아니다 — 0은 "비어 있지 않다"고 판단되어 [다음]이
+    // 활성 상태로 남는다. 눌러야 form.trigger()가 돌아 검증에 걸리는데,
+    // 패널이 닫혀 있으면 그 에러를 화면 어디서도 볼 수 없었다.
     const user = userEvent.setup();
     await renderWizard();
 
-    await user.click(screen.getByRole("button", { name: "희망 주택" }));
+    await fillCurrentAssets(user);
+    const area = screen.getByLabelText("전용면적 (㎡)");
+    await user.clear(area);
+    await user.type(area, "0");
+
+    expect(screen.getByLabelText("전용면적 (㎡)")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "다음" })).toBeEnabled();
+
+    await user.click(screen.getByRole("button", { name: "다음" }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "0보다 커야 합니다",
+    );
+    expect(screen.getByLabelText("전용면적 (㎡)")).toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { level: 2, name: /마이데이터/ }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("희망 주택 입력을 건드리지 않아도 다음 단계로 넘어간다", async () => {
+    const user = userEvent.setup();
+    await renderWizard();
+
+    await fillCurrentAssets(user);
     await user.click(screen.getByRole("button", { name: "다음" }));
 
     expect(
@@ -322,7 +356,7 @@ describe("InputWizard", () => {
     expect(
       screen.getByRole("heading", { level: 2, name: "입력한 정보" }),
     ).toBeInTheDocument();
-    expect(screen.getByText("5,000,000원")).toBeInTheDocument();
+    expect(screen.getByText("325,000,000원")).toBeInTheDocument();
     expect(screen.getByText("2028년 7월")).toBeInTheDocument();
   });
 
@@ -341,6 +375,7 @@ describe("InputWizard", () => {
     const user = userEvent.setup();
     const { mydata } = await renderWizard();
 
+    await fillCurrentAssets(user);
     await user.click(screen.getByRole("button", { name: "다음" }));
     await user.click(
       screen.getByRole("button", { name: "마이데이터 불러오기" }),
@@ -366,18 +401,16 @@ describe("InputWizard", () => {
     expect(push).toHaveBeenCalledWith(`/dashboard?persona=${SAMPLE}`);
   });
 
-  it("값을 바꾸면 edited 표시를 붙여 이동한다", async () => {
+  it("결과 보기를 누르면 입력값을 대시보드로 넘긴다", async () => {
     const user = userEvent.setup();
     await renderWizard();
 
-    await user.click(screen.getByRole("button", { name: "희망 주택" }));
-    const target = screen.getByLabelText("목표 가격 (원)");
-    await user.clear(target);
-    await user.type(target, "9000000");
-
+    // persona_e에는 보유 자산 프리필이 없어 goToReview가 직접 채운 뒤
+    // step 3까지 이동한다.
     await goToReview(user);
     await user.click(screen.getByRole("button", { name: "결과 보기" }));
 
-    expect(push).toHaveBeenCalledWith(`/dashboard?persona=${SAMPLE}&edited=1`);
+    expect(readInputHandoff(SAMPLE)).not.toBeNull();
+    expect(push).toHaveBeenCalled();
   });
 });

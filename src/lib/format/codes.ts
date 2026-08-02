@@ -12,6 +12,7 @@ const CATEGORY: Record<PersonaCategory, string> = {
 
 const PORTFOLIO_STATUS: Record<PortfolioStatus, string> = {
   COMPLETE: "배분 완료",
+  PARTIAL: "일부 배분",
   INFEASIBLE: "배분 불가",
   NO_ALLOCATION_REQUIRED: "배분 불필요",
 };
@@ -27,6 +28,7 @@ export function portfolioStatusLabel(status: PortfolioStatus): string {
 export function housingTypeLabel(code: string): string {
   return lookup(
     {
+      purchase: "매매",
       monthly_rent: "월세",
       jeonse: "전세",
       owned: "자가",
@@ -78,4 +80,20 @@ export function tuitionPayerLabel(code: string): string {
 
 export function liquidityPreferenceLabel(code: string): string {
   return lookup({ high: "높음", medium: "보통", low: "낮음" }, code);
+}
+
+const HOUSING_STATUS_LABELS: Record<string, string> = {
+  NO_HOUSE: "무주택",
+  FIRST_HOME_BUYER: "생애최초 주택구입",
+  ONE_HOUSE_DISPOSAL_PLEDGED: "1주택 처분조건부",
+  ONE_HOUSE_KEEPING: "1주택 미처분 추가구입",
+  MULTI_HOUSE: "2주택 이상",
+};
+
+export function housingStatusLabel(code: string): string {
+  return HOUSING_STATUS_LABELS[code] ?? code;
+}
+
+export function loanTermLabel(months: number): string {
+  return `${months / 12}년 (${months}개월)`;
 }

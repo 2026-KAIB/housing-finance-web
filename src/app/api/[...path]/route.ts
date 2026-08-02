@@ -1,5 +1,7 @@
 import type { NextRequest } from "next/server";
 
+import { requestTimeoutMs } from "./timeout-budget";
+
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
@@ -9,7 +11,6 @@ type ProxyContext = {
   }>;
 };
 
-const REQUEST_TIMEOUT_MS = 30_000;
 const HOP_BY_HOP_HEADERS = [
   "connection",
   "content-length",
@@ -75,7 +76,7 @@ async function proxyRequest(
       redirect: "manual",
       signal: AbortSignal.any([
         request.signal,
-        AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+        AbortSignal.timeout(requestTimeoutMs(path)),
       ]),
     });
     const responseHeaders = forwardedHeaders(upstream.headers);

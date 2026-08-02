@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 
+import { loadResult } from "@/lib/fixtures/loader";
+
 import { portfolioResultSchema } from "./result";
 
 const base = {
@@ -76,5 +78,12 @@ describe("portfolioResultSchema", () => {
     const invalid = structuredClone(base);
     invalid.final_policy_status = "PENDING";
     expect(() => portfolioResultSchema.parse(invalid)).toThrow();
+  });
+
+  it("evaluation이 없어도 계약을 통과한다", async () => {
+    const base = await loadResult("persona_e_college_student_basic");
+    const { evaluation: _drop, ...withoutEvaluation } = base;
+
+    expect(portfolioResultSchema.safeParse(withoutEvaluation).success).toBe(true);
   });
 });

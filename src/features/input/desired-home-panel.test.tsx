@@ -54,7 +54,7 @@ function Harness({ profile }: { profile: PersonaProfile }) {
 
   return (
     <FormProvider {...form}>
-      <DesiredHomePanel id="desired-home-panel" />
+      <DesiredHomePanel />
     </FormProvider>
   );
 }
@@ -138,33 +138,21 @@ describe("DesiredHomePanel 목표 가격", () => {
 });
 
 describe("DesiredHomePanel 배치", () => {
-  it("두 필드를 지도 바깥에 둔다", async () => {
+  it("세 입력을 모두 그린다", async () => {
     await renderPanel();
 
-    const map = screen.getByRole("region", { name: "대한민국 지도" });
-
-    expect(map.contains(screen.getByLabelText("지역"))).toBe(false);
-    expect(map.contains(screen.getByLabelText("목표 가격 (원)"))).toBe(false);
+    expect(screen.getByLabelText("지역")).toBeInTheDocument();
+    expect(screen.getByLabelText("목표 가격 (원)")).toBeInTheDocument();
+    expect(screen.getByLabelText("전용면적 (㎡)")).toBeInTheDocument();
   });
 
-  it("지역을 바꿔도 지도를 다시 만들지 않는다", async () => {
-    const user = userEvent.setup();
+  it("지도를 그리지 않는다", async () => {
     await renderPanel();
-
-    expect(loadKakaoMaps).toHaveBeenCalledTimes(1);
-    await user.selectOptions(screen.getByLabelText("지역"), "11680");
 
     expect(
-      screen.getByRole("region", { name: "대한민국 지도" }),
-    ).toBeInTheDocument();
-    expect(loadKakaoMaps).toHaveBeenCalledTimes(1);
-  });
-
-  it("전달받은 id를 패널 컨테이너에 붙인다", async () => {
-    const profile = await loadProfile(SAMPLE);
-    const { container } = render(<Harness profile={profile} />);
-
-    expect(container.querySelector("#desired-home-panel")).not.toBeNull();
+      screen.queryByRole("region", { name: "대한민국 지도" }),
+    ).not.toBeInTheDocument();
+    expect(loadKakaoMaps).not.toHaveBeenCalled();
   });
 });
 
@@ -190,12 +178,11 @@ describe("DesiredHomePanel 실거래", () => {
     expect(screen.getByLabelText("목표 가격 (원)")).toHaveValue(1_800_000_000);
   });
 
-  it("실거래 목록은 지도 바깥에 있다", async () => {
+  it("실거래 목록을 그린다", async () => {
     await renderPanel();
 
-    const map = screen.getByRole("region", { name: "대한민국 지도" });
-    const table = await screen.findByRole("region", { name: "실거래 목록" });
-
-    expect(map.contains(table)).toBe(false);
+    expect(
+      await screen.findByRole("region", { name: "실거래 목록" }),
+    ).toBeInTheDocument();
   });
 });

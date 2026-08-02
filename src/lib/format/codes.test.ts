@@ -4,8 +4,10 @@ import {
   categoryLabel,
   educationStatusLabel,
   employmentTypeLabel,
+  housingStatusLabel,
   housingTypeLabel,
   liquidityPreferenceLabel,
+  loanTermLabel,
   portfolioStatusLabel,
   riskPreferenceLabel,
   tuitionPayerLabel,
@@ -34,8 +36,34 @@ describe("codes", () => {
     expect(liquidityPreferenceLabel("high")).toBe("높음");
   });
 
+  it("매매 목표를 한국어로 옮긴다", () => {
+    expect(housingTypeLabel("purchase")).toBe("매매");
+  });
+
   it("모르는 코드는 원문을 그대로 돌려준다", () => {
     expect(housingTypeLabel("villa")).toBe("villa");
     expect(riskPreferenceLabel("aggressive_x")).toBe("aggressive_x");
+  });
+});
+
+describe("housingStatusLabel", () => {
+  it("다섯 구분을 한국어로 옮긴다", () => {
+    expect(housingStatusLabel("NO_HOUSE")).toBe("무주택");
+    expect(housingStatusLabel("FIRST_HOME_BUYER")).toBe("생애최초 주택구입");
+    expect(housingStatusLabel("ONE_HOUSE_DISPOSAL_PLEDGED")).toBe("1주택 처분조건부");
+    expect(housingStatusLabel("ONE_HOUSE_KEEPING")).toBe("1주택 미처분 추가구입");
+    expect(housingStatusLabel("MULTI_HOUSE")).toBe("2주택 이상");
+  });
+
+  it("모르는 코드는 코드 그대로 보여준다", () => {
+    // 임의로 뭉개면 화면이 사실과 달라진다.
+    expect(housingStatusLabel("SOMETHING_ELSE")).toBe("SOMETHING_ELSE");
+  });
+});
+
+describe("loanTermLabel", () => {
+  it("개월을 연 단위로 보여준다", () => {
+    expect(loanTermLabel(360)).toBe("30년 (360개월)");
+    expect(loanTermLabel(120)).toBe("10년 (120개월)");
   });
 });

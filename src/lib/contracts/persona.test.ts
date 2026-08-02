@@ -35,7 +35,9 @@ describe("personaIndexSchema", () => {
 
   it("모르는 portfolio_status를 거부한다", () => {
     const invalid = structuredClone(valid);
-    invalid.personas[0].portfolio_status = "PARTIAL";
+    // PARTIAL은 이제 유효한 상태다(엔진 SavingsPortfolioStatus에 실재).
+    // 여전히 모르는 값을 예로 든다.
+    invalid.personas[0].portfolio_status = "PENDING";
     expect(() => personaIndexSchema.parse(invalid)).toThrow();
   });
 
@@ -62,14 +64,13 @@ describe("personaProfileSchema", () => {
       lives_with_parents: true,
       tuition_payer: "parents",
       current_housing_type: "living_with_parents",
+      is_first_home_buyer: true,
+      owns_property: false,
     },
     goal: {
-      target_housing_type: "monthly_rent",
+      target_housing_type: "purchase",
       target_region: "30200",
       target_price: 5000000,
-      target_lease_deposit: 5000000,
-      target_monthly_rent: 200000,
-      target_management_fee: 50000,
       target_move_in_ym: "202807",
       risk_preference: "stability",
     },
@@ -104,6 +105,12 @@ describe("personaProfileSchema", () => {
   it("필수 필드가 빠지면 거부한다", () => {
     const invalid = structuredClone(valid);
     delete (invalid.savings as Record<string, any>).monthly_savings_budget;
+    expect(() => personaProfileSchema.parse(invalid)).toThrow();
+  });
+
+  it("goal에 전월세 필드가 남아 있으면 거부한다", () => {
+    const invalid = structuredClone(valid);
+    (invalid.goal as Record<string, any>).target_monthly_rent = 200000;
     expect(() => personaProfileSchema.parse(invalid)).toThrow();
   });
 });
