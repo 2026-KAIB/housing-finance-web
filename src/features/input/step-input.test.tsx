@@ -60,60 +60,30 @@ afterEach(() => {
 });
 
 describe("StepInput 희망 주택", () => {
-  it("목표 설정 옆에 희망 주택 버튼을 둔다", async () => {
+  it("희망 주택 입력을 접지 않고 처음부터 보여준다", async () => {
     await renderStep();
 
-    const button = screen.getByRole("button", { name: "희망 주택" });
-    expect(button).toHaveAttribute("aria-expanded", "false");
-    expect(button).toHaveAttribute("aria-controls", "desired-home-panel");
-  });
-
-  it("처음에는 지도 패널이 닫혀 있다", async () => {
-    await renderStep();
-
-    expect(
-      screen.queryByRole("region", { name: "대한민국 지도" }),
-    ).not.toBeInTheDocument();
-  });
-
-  it("버튼을 누르면 지역·목표 가격 필드와 지도가 나타난다", async () => {
-    const user = userEvent.setup();
-    await renderStep();
-
-    await user.click(screen.getByRole("button", { name: "희망 주택" }));
-
-    // 지역·목표 가격은 Task 3에서 토글 버튼(role=button)이 아닌 폼 필드로
-    // 바뀌었다. 라벨로 찾는다.
+    // 접어 두면 이 필드들에 검증 오류가 났을 때 [다음]이 반응하지 않는 이유가
+    // 화면 어디에도 보이지 않는다. 그래서 토글 자체를 없앴다.
     expect(screen.getByLabelText("지역")).toBeInTheDocument();
     expect(screen.getByLabelText("목표 가격 (원)")).toBeInTheDocument();
+    expect(screen.getByLabelText("전용면적 (㎡)")).toBeInTheDocument();
     expect(
-      screen.getByRole("region", { name: "대한민국 지도" }),
-    ).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "희망 주택" })).toHaveAttribute(
-      "aria-expanded",
-      "true",
-    );
+      screen.queryByRole("button", { name: "희망 주택" }),
+    ).not.toBeInTheDocument();
   });
 
-  it("버튼을 다시 누르면 패널이 닫힌다", async () => {
-    const user = userEvent.setup();
+  it("지도를 그리지 않는다", async () => {
     await renderStep();
-
-    const button = screen.getByRole("button", { name: "희망 주택" });
-    await user.click(button);
-    await user.click(button);
 
     expect(
       screen.queryByRole("region", { name: "대한민국 지도" }),
     ).not.toBeInTheDocument();
-    expect(button).toHaveAttribute("aria-expanded", "false");
+    expect(loadKakaoMaps).not.toHaveBeenCalled();
   });
 
-  it("패널을 열어도 목표 시점 입력은 그대로다", async () => {
-    const user = userEvent.setup();
+  it("목표 시점 입력은 그대로다", async () => {
     await renderStep();
-
-    await user.click(screen.getByRole("button", { name: "희망 주택" }));
 
     expect(screen.getByLabelText("목표 시점 (YYYY-MM)")).toHaveValue("2028-07");
   });

@@ -204,7 +204,6 @@ describe("InputWizard", () => {
     const user = userEvent.setup();
     await renderWizard();
 
-    await user.click(screen.getByRole("button", { name: "희망 주택" }));
     expect(hintFor("목표 가격 (원)")).toBe("3억 2,500만원");
 
     const target = screen.getByLabelText("목표 가격 (원)");
@@ -243,7 +242,6 @@ describe("InputWizard", () => {
     const user = userEvent.setup();
     await renderWizard();
 
-    await user.click(screen.getByRole("button", { name: "희망 주택" }));
     await user.clear(screen.getByLabelText("목표 가격 (원)"));
 
     expect(screen.getByRole("button", { name: "다음" })).toBeDisabled();
@@ -252,20 +250,14 @@ describe("InputWizard", () => {
     ).toBeInTheDocument();
   });
 
-  it("목표 가격을 비운 채 패널을 닫아도 잠금과 사유가 남는다", async () => {
+  it("목표 가격을 비우면 입력이 보이는 채로 잠금과 사유가 남는다", async () => {
     const user = userEvent.setup();
     await renderWizard();
 
-    const openPanel = screen.getByRole("button", { name: "희망 주택" });
-    await user.click(openPanel);
     await user.clear(screen.getByLabelText("목표 가격 (원)"));
-    await user.click(openPanel);
 
-    // 패널을 접으면 입력은 사라지지만 react-hook-form이 값을 버리지 않으므로
-    // 빈 값이 그대로 남는다. 사유 문구가 없으면 원인 모를 막다른 길이 된다.
-    expect(
-      screen.queryByLabelText("목표 가격 (원)"),
-    ).not.toBeInTheDocument();
+    // 입력이 화면에 그대로 있으므로 사용자는 무엇을 고쳐야 하는지 볼 수 있다.
+    expect(screen.getByLabelText("목표 가격 (원)")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "다음" })).toBeDisabled();
     expect(
       screen.getByText("희망 주택의 지역과 목표 가격을 입력해주세요."),
@@ -276,7 +268,6 @@ describe("InputWizard", () => {
     const user = userEvent.setup();
     await renderWizard();
 
-    await user.click(screen.getByRole("button", { name: "희망 주택" }));
     const target = screen.getByLabelText("목표 가격 (원)");
     await user.clear(target);
     await user.type(target, "5000000");
@@ -284,17 +275,14 @@ describe("InputWizard", () => {
     expect(screen.getByRole("button", { name: "다음" })).toBeEnabled();
   });
 
-  it("음수 목표 가격으로 다음을 누르면 패널이 열리며 에러를 보여준다", async () => {
+  it("음수 목표 가격으로 다음을 누르면 에러를 보여준다", async () => {
     const user = userEvent.setup();
     await renderWizard();
 
     await fillCurrentAssets(user);
-    const openPanel = screen.getByRole("button", { name: "희망 주택" });
-    await user.click(openPanel);
     const target = screen.getByLabelText("목표 가격 (원)");
     await user.clear(target);
     await user.type(target, "-5");
-    await user.click(openPanel);
 
     // 음수는 비어 있지 않으므로 [다음]은 활성이다. 눌러야 비로소 검증이 돈다.
     expect(screen.getByRole("button", { name: "다음" })).toBeEnabled();
@@ -312,7 +300,6 @@ describe("InputWizard", () => {
     const user = userEvent.setup();
     await renderWizard();
 
-    await user.click(screen.getByRole("button", { name: "희망 주택" }));
     const target = screen.getByLabelText("목표 가격 (원)");
     await user.clear(target);
     await user.type(target, "0");
@@ -321,7 +308,7 @@ describe("InputWizard", () => {
     expect(screen.getByRole("button", { name: "다음" })).toBeEnabled();
   });
 
-  it("전용면적을 0으로 두고 패널을 닫은 채 다음을 누르면 패널이 열리며 에러를 보여준다", async () => {
+  it("전용면적을 0으로 두고 다음을 누르면 에러를 보여준다", async () => {
     // 전용면적은 지역·목표가격과 같은 패널 안에 있지만 nextBlocked(빈값
     // 가드)의 대상이 아니다 — 0은 "비어 있지 않다"고 판단되어 [다음]이
     // 활성 상태로 남는다. 눌러야 form.trigger()가 돌아 검증에 걸리는데,
@@ -330,14 +317,11 @@ describe("InputWizard", () => {
     await renderWizard();
 
     await fillCurrentAssets(user);
-    const openPanel = screen.getByRole("button", { name: "희망 주택" });
-    await user.click(openPanel);
     const area = screen.getByLabelText("전용면적 (㎡)");
     await user.clear(area);
     await user.type(area, "0");
-    await user.click(openPanel);
 
-    expect(screen.queryByLabelText("전용면적 (㎡)")).not.toBeInTheDocument();
+    expect(screen.getByLabelText("전용면적 (㎡)")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "다음" })).toBeEnabled();
 
     await user.click(screen.getByRole("button", { name: "다음" }));
@@ -351,12 +335,11 @@ describe("InputWizard", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("희망 주택 패널을 열어도 다음 단계로 넘어간다", async () => {
+  it("희망 주택 입력을 건드리지 않아도 다음 단계로 넘어간다", async () => {
     const user = userEvent.setup();
     await renderWizard();
 
     await fillCurrentAssets(user);
-    await user.click(screen.getByRole("button", { name: "희망 주택" }));
     await user.click(screen.getByRole("button", { name: "다음" }));
 
     expect(

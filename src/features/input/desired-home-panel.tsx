@@ -2,7 +2,6 @@
 
 import { useFormContext } from "react-hook-form";
 
-import { KakaoMap } from "@/components/map/kakao-map";
 import { Input } from "@/components/ui/input";
 import {
   ALL_DISTRICTS,
@@ -16,7 +15,7 @@ import { FieldRow } from "./field-row";
 import type { InputFormValues } from "./form-schema";
 import { RegionTradeTable } from "./region-trade-table";
 
-export function DesiredHomePanel({ id }: { id: string }) {
+export function DesiredHomePanel() {
   const {
     register,
     setValue,
@@ -27,7 +26,7 @@ export function DesiredHomePanel({ id }: { id: string }) {
   const targetRegion = watch("target_region");
 
   return (
-    <div id={id} className="grid gap-4">
+    <div className="grid gap-4">
       {/* 목표 시점·위험 성향과 같은 2열 그리드를 한 벌 더 쓴다.
           열 너비가 정확히 일치해야 "같은 형식"이 된다. */}
       <div className="grid gap-4 md:grid-cols-2">
@@ -86,8 +85,6 @@ export function DesiredHomePanel({ id }: { id: string }) {
           setValue("target_price", won, { shouldValidate: true })
         }
       />
-
-      <KakaoMap className="h-[260px] md:h-[360px]" />
     </div>
   );
 }

@@ -64,6 +64,7 @@ export function BasicFields({ profile }: { profile: PersonaProfile }) {
         label="보유 자산 (원)"
         htmlFor="current_assets"
         error={errors.current_assets?.message}
+        hint={koreanUnitHint(watch("current_assets"))}
       >
         <Input
           id="current_assets"

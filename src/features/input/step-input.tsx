@@ -1,31 +1,15 @@
 "use client";
 
-import { type ReactNode, useState } from "react";
-import { useFormContext } from "react-hook-form";
+import type { ReactNode } from "react";
 
-import { Button } from "@/components/ui/button";
 import type { PersonaIndexEntry, PersonaProfile } from "@/lib/contracts/persona";
 
 import { BasicFields } from "./basic-fields";
 import { DesiredHomePanel } from "./desired-home-panel";
-import type { InputFormValues } from "./form-schema";
 import { GoalFields } from "./goal-fields";
 import { LoanFields } from "./loan-fields";
 import { PersonaPicker } from "./persona-picker";
 import { SavingsFields } from "./savings-fields";
-
-const DESIRED_HOME_PANEL_ID = "desired-home-panel";
-
-// DesiredHomePanel(./desired-home-panel.tsx)이 그리는 필드와 정확히 같아야
-// 한다 — 패널이 접혀 있을 때 이 중 하나라도 검증 에러가 나면 사용자는
-// [다음]이 반응하지 않는 이유를 화면 어디에서도 볼 수 없다. 필드를 하나씩
-// 나열하는 대신 이 목록 하나로 관리해, 패널에 필드가 늘어나도 여기 한 곳만
-// 손보면 되게 한다.
-const DESIRED_HOME_PANEL_FIELDS = [
-  "target_region",
-  "target_price",
-  "exclusive_area_m2",
-] as const satisfies readonly (keyof InputFormValues)[];
 
 export function StepInput({
   personaId,
@@ -36,18 +20,6 @@ export function StepInput({
   personas: PersonaIndexEntry[];
   profile: PersonaProfile;
 }) {
-  // 폼 값이 아니라 화면 상태이므로 react-hook-form이 아닌 로컬 state로 둔다.
-  const [homePanelOpen, setHomePanelOpen] = useState(false);
-  const {
-    formState: { errors },
-  } = useFormContext<InputFormValues>();
-
-  // 이 필드들이 접힌 패널 안에 있으므로, 검증 에러가 났는데 패널이 닫혀
-  // 있으면 사용자는 [다음]이 반응하지 않는 이유를 화면 어디에서도 볼 수 없다.
-  const panelOpen =
-    homePanelOpen ||
-    DESIRED_HOME_PANEL_FIELDS.some((field) => Boolean(errors[field]));
-
   return (
     <div className="grid gap-8">
       <PersonaPicker personaId={personaId} personas={personas} />
@@ -56,26 +28,15 @@ export function StepInput({
         <BasicFields profile={profile} />
       </Group>
 
+      {/* 희망 주택 입력은 접지 않는다. 접어 두면 그 안의 필드에 검증 오류가
+          났을 때 [다음]이 반응하지 않는 이유가 화면 어디에도 보이지 않는다 —
+          접힘을 없애면 그 결함이 원인째 사라진다. */}
       <Group
         title="목표 설정"
-        description="현재 페르소나의 목표 금액은 해당 자치구의 실거래 하위 5% 값입니다. 지역과 금액은 [희망 주택]에서 직접 바꿀 수 있습니다."
-        action={
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            aria-expanded={panelOpen}
-            aria-controls={DESIRED_HOME_PANEL_ID}
-            onClick={() => setHomePanelOpen((open) => !open)}
-          >
-            희망 주택
-          </Button>
-        }
+        description="현재 페르소나의 목표 금액은 해당 자치구의 실거래 하위 5% 값입니다. 지역과 금액은 아래에서 직접 바꿀 수 있습니다."
       >
         <GoalFields profile={profile} />
-        {panelOpen && (
-          <DesiredHomePanel id={DESIRED_HOME_PANEL_ID} />
-        )}
+        <DesiredHomePanel />
       </Group>
 
       <Group
