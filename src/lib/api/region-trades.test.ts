@@ -13,7 +13,7 @@ const PAGE: RegionTradePage = {
   sgg_name: "강남구",
   sort: "area_asc",
   page: 1,
-  page_size: 5,
+  page_size: 9,
   total_count: 2994,
   total_pages: 599,
   trades: [
@@ -50,14 +50,14 @@ afterEach(() => {
 });
 
 describe("fetchRegionTrades", () => {
-  it("기본값은 면적 오름차순 1페이지 5개다", async () => {
+  it("기본값은 면적 오름차순 1페이지 9개다", async () => {
     await fetchRegionTrades("11680");
 
     const query = queryOf();
     expect(query.get("sgg_code")).toBe("11680");
     expect(query.get("sort")).toBe("area_asc");
     expect(query.get("page")).toBe("1");
-    expect(query.get("page_size")).toBe("5");
+    expect(query.get("page_size")).toBe("9");
   });
 
   it("정렬과 페이지를 질의 문자열로 보낸다", async () => {
