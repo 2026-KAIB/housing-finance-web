@@ -158,15 +158,15 @@ export function RegionTradeTable({
       )}
 
       {result && result.trades.length > 0 && (
-        <ul className="grid gap-1">
+        <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {result.trades.map((trade) => (
             <li key={trade.trade_id}>
               <button
                 type="button"
                 onClick={() => onSelectPrice(trade.deal_amount_won)}
-                className="grid w-full gap-0.5 rounded-lg border border-line px-3 py-2 text-left hover:bg-surface"
+                className="bg-trade-gradient grid h-full w-full gap-1 rounded-lg border border-line px-3 py-3 text-left transition-colors hover:bg-surface"
               >
-                <span className="flex items-baseline justify-between gap-3">
+                <span className="flex items-baseline justify-between gap-2">
                   <span className="text-sm font-semibold">{trade.apt_name}</span>
                   <span className="text-sm font-semibold">
                     {formatKoreanUnit(trade.deal_amount_won)}

@@ -65,7 +65,7 @@ function Group({
   children: ReactNode;
 }) {
   return (
-    <section className="grid gap-4">
+    <section className="grid gap-4 rounded-xl border border-line bg-surface p-4">
       <div className="flex items-start justify-between gap-4">
         <div className="grid gap-1">
           <h2 className="text-lg font-bold tracking-[-0.03em]">{title}</h2>
