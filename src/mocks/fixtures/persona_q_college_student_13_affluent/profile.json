@@ -12,7 +12,9 @@
     "household_size": 1,
     "lives_with_parents": false,
     "tuition_payer": "self",
-    "current_housing_type": "monthly_rent"
+    "current_housing_type": "monthly_rent",
+    "is_first_home_buyer": true,
+    "owns_property": false
   },
   "goal": {
     "target_housing_type": "purchase",

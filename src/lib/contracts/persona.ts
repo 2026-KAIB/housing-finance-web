@@ -53,6 +53,11 @@ export const personaProfileSchema = z.object({
     lives_with_parents: z.boolean(),
     tuition_payer: z.string(),
     current_housing_type: z.string(),
+    // LTV를 가르는 두 사실. 규제지역 기준 생애최초 70% / 무주택 40% /
+    // 1주택 미처분 0%로 갈리므로, 프로필이 확정해 주는 값을 추측으로
+    // 대신하지 않는다(`form-schema.ts`의 housing_status 유도).
+    is_first_home_buyer: z.boolean(),
+    owns_property: z.boolean(),
   }),
   goal: z
     .object({

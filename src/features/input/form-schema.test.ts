@@ -237,11 +237,10 @@ const VALID_FORM_VALUES = {
 };
 
 describe("대출 조건 필드", () => {
-  it("기본값은 만기 360개월·무주택·전용면적 84이다", async () => {
+  it("기본값은 만기 360개월·전용면적 84이다", async () => {
     const values = toFormValues(await loadProfile(SAMPLE));
 
     expect(values.months).toBe(360);
-    expect(values.housing_status).toBe("NO_HOUSE");
     expect(values.exclusive_area_m2).toBe(84);
   });
 
@@ -256,12 +255,43 @@ describe("대출 조건 필드", () => {
     );
   });
 
-  it("주택보유상태 기본값을 생애최초로 두지 않는다", async () => {
-    // 생애최초는 LTV 70%, 무주택은 40%. 아무것도 고르지 않은 사용자가
-    // 가장 유리한 한도를 받아서는 안 된다.
+  it("생애최초 프로필이면 주택보유상태를 생애최초로 채운다", async () => {
+    // 프로필이 답을 갖고 있는데 무주택으로 두면 LTV 70%를 40%로 과소평가한다.
+    // 추측이 아니라 확정된 사실이므로 그대로 쓴다.
     const values = toFormValues(await loadProfile(SAMPLE));
 
-    expect(values.housing_status).not.toBe("FIRST_HOME_BUYER");
+    expect(values.housing_status).toBe("FIRST_HOME_BUYER");
+  });
+
+  it("유주택이면 주택보유상태를 비워 사용자가 고르게 한다", async () => {
+    const base = await loadProfile(SAMPLE);
+    // 1주택 처분조건부·미처분·다주택은 LTV가 0%~80%로 갈리고, 그 구분은
+    // 등기와 처분 계획의 문제라 어떤 금융 데이터로도 알 수 없다. 아무 값이나
+    // 채우면(특히 무주택 40%) 1주택 미처분(0%)에게 한도를 열어 준다.
+    const owner = {
+      ...base,
+      basic: {
+        ...base.basic,
+        is_first_home_buyer: false,
+        owns_property: true,
+      },
+    };
+
+    expect(toFormValues(owner).housing_status).toBeUndefined();
+  });
+
+  it("무주택이지만 생애최초가 아니면 무주택으로 채운다", async () => {
+    const base = await loadProfile(SAMPLE);
+    const secondTime = {
+      ...base,
+      basic: {
+        ...base.basic,
+        is_first_home_buyer: false,
+        owns_property: false,
+      },
+    };
+
+    expect(toFormValues(secondTime).housing_status).toBe("NO_HOUSE");
   });
 
   it("보유자산을 비우면 검증에 실패한다", () => {

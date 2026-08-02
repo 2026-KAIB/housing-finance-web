@@ -188,7 +188,7 @@ describe("StepReview", () => {
     );
 
     expect(screen.getByText("30년 (360개월)")).toBeInTheDocument();
-    expect(screen.getByText("무주택")).toBeInTheDocument();
+    expect(screen.getByText("생애최초 주택구입")).toBeInTheDocument();
     expect(screen.getByText("84㎡")).toBeInTheDocument();
     // toFormValues()는 필수생활비 기본값을 월평균지출과 같은 값으로 채운다
     // (지출 전액을 필수로 본다는 Task 3의 설계). 그래서 이 페르소나에서는 두

@@ -63,7 +63,7 @@ describe("buildSimulationInput", () => {
     });
 
     expect(input.loan_request.months).toBe(240);
-    expect(input.loan_request.housing_status).toBe("NO_HOUSE");
+    expect(input.loan_request.housing_status).toBe("FIRST_HOME_BUYER");
     expect(input.loan_request.monthly_essential_expense).toBe(900000);
   });
 

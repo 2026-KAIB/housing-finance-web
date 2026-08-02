@@ -53,7 +53,9 @@ export function LoanFields() {
         hint={
           housingStatus === "FIRST_HOME_BUYER"
             ? "생애최초는 LTV 70%가 적용됩니다. 무주택(40%)보다 한도가 큽니다."
-            : undefined
+            : housingStatus
+              ? undefined
+              : "주택을 보유하고 계셔서 프로필만으로는 정할 수 없습니다. 규제지역 LTV가 처분조건부·미처분·다주택에 따라 0%까지 갈립니다."
         }
         error={errors.housing_status?.message}
       >
@@ -62,6 +64,13 @@ export function LoanFields() {
           className={SELECT_CLASS}
           {...register("housing_status")}
         >
+          {!housingStatus && (
+            // 프로필이 확정하지 못한 경우(유주택)에만 나타난다. 이게 없으면
+            // 브라우저가 첫 항목을 고른 것처럼 보이는데, 그 항목은
+            // 무주택(LTV 40%)이라 유주택자에게는 고르지도 않은 값으로
+            // 한도가 열린다.
+            <option value="">선택하세요</option>
+          )}
           {HOUSING_STATUS_OPTIONS.map((status) => (
             <option key={status} value={status}>
               {housingStatusLabel(status)}

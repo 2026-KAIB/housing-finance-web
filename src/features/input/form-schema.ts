@@ -71,9 +71,34 @@ export type InputFormValues = z.infer<typeof inputFormSchema>;
  * 타입을 속이면 이 함수를 거치지 않고 곧장 페이로드를 만드는 호출자가
  * undefined를 number로 착각해 그대로 흘려보낼 수 있다.
  */
-export type FormDefaults = Omit<InputFormValues, "current_assets"> & {
+export type FormDefaults = Omit<
+  InputFormValues,
+  "current_assets" | "housing_status"
+> & {
   current_assets?: number;
+  housing_status?: string;
 };
+
+/**
+ * 프로필이 확정해 주는 주택 보유 상태. 확정할 수 없으면 비운다.
+ *
+ * 예전에는 전원 `NO_HOUSE`로 시작했다. 모르는 값을 유리한 쪽에 두지 않으려는
+ * 의도였는데, 프로필에 답이 있는 경우까지 추측값으로 덮어 두 방향으로 틀렸다.
+ *
+ * - 생애최초인데 무주택으로 계산 → 규제지역 LTV 70%를 40%로 **과소평가**
+ * - 유주택인데 무주택으로 계산 → 1주택 미처분은 LTV 0%(금지)인데 40%를
+ *   열어 준다. 이쪽이 **한도가 커지는 방향**이라 더 위험하다.
+ *
+ * 유주택자는 비워 둔다. 1주택 처분조건부·1주택 미처분·다주택은 LTV가
+ * 0%~80%로 갈리는데 그 구분은 등기와 처분 계획의 문제라 어떤 금융 데이터로도
+ * 알 수 없다. 아무 값이나 채우면 위의 과대평가가 그대로 되살아나므로,
+ * 검증에 걸려 사용자가 직접 고르게 한다.
+ */
+function housingStatusFrom(profile: PersonaProfile): string | undefined {
+  if (profile.basic.is_first_home_buyer) return "FIRST_HOME_BUYER";
+  if (!profile.basic.owns_property) return "NO_HOUSE";
+  return undefined;
+}
 
 export function toFormValues(profile: PersonaProfile): FormDefaults {
   return {
@@ -95,9 +120,7 @@ export function toFormValues(profile: PersonaProfile): FormDefaults {
     emergency_reserve: profile.savings.emergency_reserve,
     // 만기는 사용자가 고르는 값이다. 30년이 주택담보대출 표준.
     months: 360,
-    // 생애최초(LTV 70%)를 기본값으로 두지 않는다. 무주택(40%)에서 시작해
-    // 사용자가 직접 주장하게 한다 — 모르는 값을 유리한 쪽에 두지 않는다.
-    housing_status: "NO_HOUSE",
+    housing_status: housingStatusFrom(profile),
     // 지출 전액을 필수로 본다. 비율을 도입하면 근거 없는 숫자가 계산에
     // 들어가고, 필수생활비가 작을수록 Buffer가 작아져 한도가 커진다.
     monthly_essential_expense: profile.finance.monthly_average_expense,

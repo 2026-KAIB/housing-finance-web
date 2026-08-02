@@ -178,6 +178,11 @@ function main() {
         lives_with_parents: userProfile.lives_with_parents,
         tuition_payer: userProfile.tuition_payer,
         current_housing_type: userProfile.current_housing_type,
+        // LTV를 가르는 두 사실. 프로필이 답을 갖고 있는데도 웹으로 넘기지
+        // 않아, 대출 조건의 주택 보유 상태가 전원 "무주택" 기본값으로
+        // 계산됐다 — 생애최초는 규제지역 LTV 70%, 무주택은 40%다.
+        is_first_home_buyer: userProfile.is_first_home_buyer,
+        owns_property: userProfile.owns_property,
       },
       goal: {
         target_housing_type: userProfile.target_housing_type,

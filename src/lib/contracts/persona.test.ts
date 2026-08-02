@@ -64,6 +64,8 @@ describe("personaProfileSchema", () => {
       lives_with_parents: true,
       tuition_payer: "parents",
       current_housing_type: "living_with_parents",
+      is_first_home_buyer: true,
+      owns_property: false,
     },
     goal: {
       target_housing_type: "purchase",
